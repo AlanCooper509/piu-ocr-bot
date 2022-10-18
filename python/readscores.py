@@ -8,132 +8,10 @@ import numpy as np
 import os
 import sys
 
-class Textbox:
-    box = [[-1, -1], [-1, -1], [-1, -1], [-1, -1]]
-    center = [-1, -1]
-    text = ''
-    confidence = 0
-    area = 0
-    value = None
-
-    def __init__(self, entry=None):
-        if entry == None:
-            return
-        self.box = entry[0]
-        self.text = entry[1]
-        self.confidence = entry[2]
-        self.area = self.shoelace_area(entry[0])
-        self.center = self.box_center(entry[0])
-
-    def shoelace_area(self, box):
-        p1 = box[0][0]*box[1][1] + box[1][0]*box[2][1] + box[2][0]*box[3][1] + box[3][0]*box[0][1]
-        p2 = box[1][0]*box[0][1] + box[2][0]*box[1][1] + box[3][0]*box[2][1] + box[0][0]*box[3][1]
-        area = abs(0.5 * (p1 - p2))
-        return area
-
-    def box_center(self, box):
-        xmean = np.mean([box[0][0], box[1][0], box[2][0], box[3][0]])
-        ymean = np.mean([box[0][1], box[1][1], box[2][1], box[3][1]])
-        return [xmean, ymean]
-    
-    def copy(self):
-        return Textbox((self.box, self.text, self.confidence))
-
-def filter_image(image, alpha, beta):
-    """
-    pixel' = alpha*pixel + beta
-        alpha = contrast filter value
-        beta = brightness filter value
-    """
-    # green channel looks good for contrasting text with background
-    green_channel = image[:,:,1]
-    filter = alpha*green_channel - beta
-    filter[filter>255] = 255
-    filter[filter<0] = 0
-    filter = filter.astype("uint8")
-    return filter
-
-def filterProjectedOutliers(digits, axis, tol=0.75):
-    """
-    *********************************************************
-    axis=0 for x-axis, axis=1 for y-axis
-    *********************************************************
-    returns with:
-    - a filtered output of the input 'digits' list
-    - the remaining entries of the input 'digits' list
-    *********************************************************
-    """
-
-    # retrieve box means
-    centers = [entry.center[axis] for entry in digits]
-    
-    # get statistics for preservation boundaries
-    center = 0.5*np.mean(centers) + 0.5*np.median(centers)
-    stdev = np.std(centers)
-    upper = center + tol*stdev
-    lower = center - tol*stdev
-
-    # identify outlier indices
-    outliers = list(map(lambda p: p < lower or p > upper, centers))
-    outlier_idxs = [idx for idx, bool_val in enumerate(outliers) if bool_val]
-
-    # create the filtered list
-    filtered_list = []
-    excluded_list = []
-    for idx, entry in enumerate(digits):
-        if idx in outlier_idxs:
-            excluded_list.append(entry)
-        else:
-            filtered_list.append(entry)
-    
-    return (filtered_list, excluded_list)
-
-def findDisplacementOutliers(digits, axis, tol=1.5):
-    """
-    *********************************************************
-    axis=0 for x-axis, axis=1 for y-axis
-    *********************************************************
-    returns with a filtered output of the input 'digits' list
-    *********************************************************
-    """
-
-    # retrieve box mean displacements
-    centers = [entry.center[axis] for entry in digits]
-    centers = np.diff(centers)
-    center = 0.5*np.mean(centers) + 0.5*np.median(centers)
-
-    # identify outlier indices
-    outliers = list(map(lambda p: p > tol*center, centers))
-    outlier_idxs = [idx for idx, bool_val in enumerate(outliers) if bool_val]
-
-    # using displacements shifts deletion index; shift it back before next step
-    outlier_idxs = [x + 1 for x in outlier_idxs]
-    return outlier_idxs
-
-def filterDisplacementOutliers(digits, axis, tol=3):
-    """
-    *********************************************************
-    axis=0 for x-axis, axis=1 for y-axis
-    *********************************************************
-    returns with:
-    - a filtered output of the input 'digits' list
-    - the remaining entries of the input 'digits' list
-    - whether or not any outliers were found
-    *********************************************************
-    """
-
-    outlier_idxs = findDisplacementOutliers(digits, axis, tol)
-
-    # create the filtered list
-    filtered_list = []
-    excluded_list = []
-    for idx, entry in enumerate(digits):
-        if idx in outlier_idxs:
-            excluded_list.append(entry)
-        else:
-            filtered_list.append(entry)
-    
-    return (filtered_list, excluded_list, len(outlier_idxs) > 0)
+# local imports
+from preprocess import filter
+from postprocess import projection_filters
+from resources.textbox import Textbox
 
 def main(fname):
     # load the input image from disk
@@ -150,7 +28,7 @@ def main(fname):
         print(f'unable to find {fname}')
         return
 
-    filtered = filter_image(image, alpha, beta)
+    filtered = filter.filter_image(image, alpha, beta)
 
     # OCR the input image using EasyOCR
     print("[INFO] OCR'ing input image...")
@@ -183,7 +61,7 @@ def main(fname):
             remaining_results.append(Textbox(result))
 
     # filter outliers using x-axis projections
-    rval = filterProjectedOutliers(digits, axis=0, tol=x_tol)
+    rval = projection_filters.filter_outliers(digits, axis=0, tol=x_tol)
     filtered_numbers = rval[0]
     remaining_digits = rval[1]
 
@@ -191,13 +69,13 @@ def main(fname):
     loop = True
     score_numbers = filtered_numbers.copy()
     while loop:
-        rval = filterDisplacementOutliers(score_numbers, axis=1, tol=y_tol)
+        rval = projection_filters.filter_displacement_outliers(score_numbers, axis=1, tol=y_tol)
         score_numbers = rval[0]
         remaining_digits += rval[1]
         loop = rval[2]
 
     # find any missing (inbetween) entries
-    outliers = findDisplacementOutliers(score_numbers, axis=1, tol=gap_tol)
+    outliers = projection_filters.find_displacement_outliers(score_numbers, axis=1, tol=gap_tol)
 
     # check last entry (TOTAL SCORE), hacky since assumes player scores > 10000
     if len(score_numbers) + len(outliers) < 7:
@@ -377,6 +255,8 @@ def main(fname):
 if __name__ == "__main__":
     args = sys.argv[1:]
     if len(args) > 0:
-        dir = os.path.dirname(__file__)
+        dir = os.path.dirname(os.path.dirname(__file__))
         fname = os.path.join(dir, "input_images", args[0])
         main(fname)
+    else:
+        print("Need to include filename")
