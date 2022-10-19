@@ -12,6 +12,7 @@ import sys
 from preprocess import filter
 from postprocess import projection_filters
 from resources import constants as c
+from resources.constants import ALL_WORDS
 from resources.constants import CHART_TYPES
 from resources.constants import GRADE_LIST
 from resources.constants import NO_MISS
@@ -39,9 +40,10 @@ def main(fname):
     confident_results = [result for result in results if result[2] > params.CONFIDENCE]
 
     # post-processing: categorize template text, digits, and remaining text
-    template = {key: Textbox(entry=None) for key in TEMPLATE_WORDS}
+    template = {key: Textbox(entry=None) for key in ALL_WORDS}
     digits = []
     remaining_results = []
+
     for result in confident_results:
         template_entry = result[1].upper()
         if template_entry in TEMPLATE_WORDS:
