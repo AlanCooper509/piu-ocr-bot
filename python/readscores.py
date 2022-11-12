@@ -21,21 +21,7 @@ from resources.constants import TEMPLATE_WORDS
 from resources import params
 from resources.textbox import Textbox
 
-def main(fname):
-    # load the input image from disk
-    image = cv2.imread(fname)
-    if image is None:
-        print(f'unable to find {fname}')
-        return
-
-    # preprocess the image
-    filtered = filter.filter_image(image, params.ALPHA, params.BETA)
-
-    # OCR the input image using EasyOCR
-    print("[INFO] OCR'ing input image...")
-    reader = Reader(['en'], gpu=True)
-    results = reader.readtext(filtered)
-
+def post_process(results):
     # post-processing: remove low-confidence text
     confident_results = [result for result in results if result[2] > params.CONFIDENCE]
 
@@ -249,6 +235,24 @@ def main(fname):
         except:
             print(f'{word}: NOT FOUND')
     print("======================")
+
+def main(fname):
+    # load the input image from disk
+    image = cv2.imread(fname)
+    if image is None:
+        print(f'unable to find {fname}')
+        return
+    
+    # preprocess the image
+    filtered = filter.filter_image(image, params.ALPHA, params.BETA)
+    
+    # OCR the input image using EasyOCR
+    print("[INFO] OCR'ing input image...")
+    reader = Reader(['en'], gpu=True)
+    results = reader.readtext(filtered)
+    
+    # postprocess the text results
+    post_process(results)
 
 if __name__ == "__main__":
     args = sys.argv[1:]
