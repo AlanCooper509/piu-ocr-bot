@@ -10,14 +10,9 @@ import sys
 
 # local imports
 from preprocess import filter
+from postprocess import categorize_results
 from postprocess import projection_filters
 from resources import constants as c
-from resources.constants import ALL_WORDS
-from resources.constants import CHART_TYPES
-from resources.constants import GRADE_LIST
-from resources.constants import NO_MISS
-from resources.constants import SCORE_WORDS
-from resources.constants import TEMPLATE_WORDS
 from resources import params
 from resources.textbox import Textbox
 
@@ -25,26 +20,8 @@ def post_process(results):
     # post-processing: remove low-confidence text
     confident_results = [result for result in results if result[2] > params.CONFIDENCE]
 
-    # post-processing: categorize template text, digits, and remaining text
-    template = {key: Textbox(entry=None) for key in ALL_WORDS}
-    digits = []
-    remaining_results = []
-
-    for result in confident_results:
-        template_entry = result[1].upper()
-        if template_entry in TEMPLATE_WORDS:
-            # expected template words
-            template[template_entry] = Textbox(result)
-        elif template_entry.isdigit():
-            # other numbers text
-            digits.append(Textbox(result))
-        elif template_entry == c.FREE_PLAY or c.CREDITS in template_entry:
-            # nothing of interest below the footer text on-screen
-            template[c.FOOTER] = Textbox(result)
-            break
-        else:
-            # uncategorized text
-            remaining_results.append(Textbox(result))
+    # categorize remaining text results
+    (template, digits, remaining_results) = categorize_results.categorize(confident_results)
 
     # filter outliers using x-axis projections
     rval = projection_filters.filter_outliers(digits, axis=0, tol=params.X_TOL)
@@ -79,7 +56,7 @@ def post_process(results):
         score_numbers.insert(idx, Textbox(entry=None))
 
     # match scores with their template word's values
-    for idx, word in enumerate(SCORE_WORDS):
+    for idx, word in enumerate(c.SCORE_WORDS):
         template[word].value = score_numbers[idx]
     
     # get song name using PERFECT text as a reference
@@ -120,7 +97,7 @@ def post_process(results):
     # use entry that matches GRADE_LIST text with maximum size (box area)
     max_area = -1
     for entry in remaining_results:
-        if entry.area > max_area and entry.text in GRADE_LIST:
+        if entry.area > max_area and entry.text in c.GRADE_LIST:
             max_area = entry.area
             grade = entry
 
@@ -129,7 +106,7 @@ def post_process(results):
         grade = Textbox(entry = None)
     if template[c.MISS].value:
         try:
-            if grade.text in NO_MISS and int(template[c.MISS].value.text) > 0:
+            if grade.text in c.NO_MISS and int(template[c.MISS].value.text) > 0:
                 grade = Textbox(entry = None)
         except:
             pass
@@ -190,7 +167,7 @@ def post_process(results):
     if found_type != '':
         diff = 99
         type_idx = -1
-        for idx, exp_type in enumerate(CHART_TYPES):
+        for idx, exp_type in enumerate(c.CHART_TYPES):
             d = editdistance.eval(exp_type, found_type.text)
             if d < diff:
                 type_idx = idx
@@ -198,7 +175,7 @@ def post_process(results):
 
     template[c.TYPE] = found_type.copy()
     if found_type.text != '':
-        template[c.TYPE].value = CHART_TYPES[type_idx]
+        template[c.TYPE].value = c.CHART_TYPES[type_idx]
     
     # get username
     # finds closest word to expected distance directly above perfect score value
@@ -229,7 +206,7 @@ def post_process(results):
     print(f'GRADE: {template[c.GRADE].value}')
 
     print("======================")
-    for word in SCORE_WORDS:
+    for word in c.SCORE_WORDS:
         try:
             print(f'{word}: {template[word].value.text}')
         except:
