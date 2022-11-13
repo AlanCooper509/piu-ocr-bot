@@ -95,9 +95,11 @@ def main(fname):
 
 if __name__ == "__main__":
     args = sys.argv[1:]
-    if len(args) > 0:
+    if len(args) == 1:
         dir = os.path.dirname(os.path.dirname(__file__))
         fname = os.path.join(dir, "input_images", args[0])
         main(fname)
+    elif len(args) > 1:
+        print(f"{os.path.basename(__file__)}: Too many input args")
     else:
-        print("Need to include filename")
+        print(f"{os.path.basename(__file__)}: Need to include filename")
