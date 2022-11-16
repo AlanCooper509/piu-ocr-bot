@@ -13,7 +13,7 @@ from resources import constants as c
 from resources import params
 from resources.textbox import Textbox
 
-def post_process(results):
+def post_process(results, debug=False):
     # defining the template to fill out during this function
     template = {key: Textbox(entry=None) for key in c.ALL_WORDS}
 
@@ -24,7 +24,7 @@ def post_process(results):
     (template, digits, remaining_results) = categorizer.categorize_results(confident_results, template)
     
     # filter outliers using 1D projections
-    (score_numbers, remaining_digits) = categorizer.assign_digits(digits)
+    (score_numbers, remaining_digits) = categorizer.assign_digits(digits, debug)
     
     # match scores with their template word's values
     for idx, word in enumerate(c.SCORE_WORDS):
@@ -49,7 +49,7 @@ def post_process(results):
         template[c.DIFFICULTY].value = int(chart_diff.text)
     
     # get single or double
-    found_type = categorizer.guess_chart_type(remaining_results, template)
+    (found_type, type_idx) = categorizer.guess_chart_type(remaining_results, template)
     template[c.TYPE] = found_type.copy()
     if found_type.text != '':
         template[c.TYPE].value = c.CHART_TYPES[type_idx]
@@ -59,9 +59,9 @@ def post_process(results):
     template[c.USER] = username
     template[c.USER].value = username.text.upper()
     
-    return template
+    return (template, digits, remaining_results)
 
-def print_findings(template):
+def print_findings(template, digits, remaining_results):
     print(f'PLAYER: {template[c.USER].value}')
     print(f'CHART: {template[c.CHART].value} | {template[c.TYPE].value} {template[c.DIFFICULTY].value}')
     print(f'GRADE: {template[c.GRADE].value}')
@@ -73,6 +73,9 @@ def print_findings(template):
         except:
             print(f'{word}: NOT FOUND')
     print("======================")
+    print([r.text for r in digits])
+    print("======================")
+    print([r.text for r in remaining_results])
 
 def main(fname):
     # load the input image from disk
@@ -90,8 +93,10 @@ def main(fname):
     results = reader.readtext(filtered)
     
     # postprocess the text results
-    template = post_process(results)
-    print_findings(template)
+    (template, digits, remaining_results) = post_process(results, debug=True)
+    
+    # debugging purposes (for now)
+    print_findings(template, digits, remaining_results)
 
 if __name__ == "__main__":
     args = sys.argv[1:]

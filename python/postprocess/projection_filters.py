@@ -3,6 +3,7 @@ import numpy as np
 def filter_outliers(digits, axis, tol=0.75):
     """
     *********************************************************
+    digits input is treated as a list of Textbox objects
     axis=0 for x-axis, axis=1 for y-axis
     *********************************************************
     returns with:
@@ -38,6 +39,7 @@ def filter_outliers(digits, axis, tol=0.75):
 def find_displacement_outliers(digits, axis, tol=1.5):
     """
     *********************************************************
+    digits input is treated as a list of Textbox objects
     axis=0 for x-axis, axis=1 for y-axis
     *********************************************************
     returns with a filtered output of the input 'digits' list
@@ -53,13 +55,14 @@ def find_displacement_outliers(digits, axis, tol=1.5):
     outliers = list(map(lambda p: p > tol*center, centers))
     outlier_idxs = [idx for idx, bool_val in enumerate(outliers) if bool_val]
 
-    # using displacements shifts deletion index; shift it back before next step
+    # using displacements shifts indices by one; shift it back before returning
     outlier_idxs = [x + 1 for x in outlier_idxs]
     return outlier_idxs
 
 def filter_displacement_outliers(digits, axis, tol=3):
     """
     *********************************************************
+    digits input is treated as a list of Textbox objects
     axis=0 for x-axis, axis=1 for y-axis
     *********************************************************
     returns with:
@@ -80,4 +83,4 @@ def filter_displacement_outliers(digits, axis, tol=3):
         else:
             filtered_list.append(entry)
     
-    return (filtered_list, excluded_list, len(outlier_idxs) > 0)
+    return (filtered_list, excluded_list)

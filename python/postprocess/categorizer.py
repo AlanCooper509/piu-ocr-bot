@@ -2,6 +2,7 @@
 
 import editdistance
 import numpy as np
+import os
 
 # local imports
 from postprocess import projection_filters
@@ -30,7 +31,7 @@ def categorize_results(confident_results, template):
         elif template_entry.isdigit():
             # other numbers text
             digits.append(Textbox(result))
-        elif template_entry == c.FREE_PLAY or c.CREDITS in template_entry:
+        elif template_entry == c.FREE_PLAY or template_entry == c.EVENT or c.CREDITS in template_entry:
             # nothing of interest below the footer text on-screen
             template[c.FOOTER] = Textbox(result)
             break
@@ -40,36 +41,109 @@ def categorize_results(confident_results, template):
     
     return (template, digits, other)
 
-def assign_digits(digits):
+def assign_digits(digits, debug=False):
+    """
+    *********************************************************
+    determine the seven entries from the input param 'digits'
+        that represent score_numbers by using the textbox
+        center (x,y) locations from each entry in 'digits'
+        and utilizing that they will have roughly the same
+        x-position and similar y-displacements from each
+        adjacent, sequential value (if OCR'd successfully)
+    stuff the rest from the input into remaining_digits
+    
+    The seven entries of interest are grouped together as:
+    - PERFECT number value
+    - GREAT number value
+    - GOOD number value
+    - BAD number value
+    - MISS number value
+    - COMBO number value
+    - TOTAL SCORE number value
+    
+    note, kcal value is not included since it is assumed
+        to be parsed as a string, not as an integer (digit)
+        this is due to the ',' or '.' interpreted char in
+        the format of the screen's capture value xxx.xxx
+    *********************************************************
+    'digits' input is treated as a list of Textbox objects
+        where each Textbox.text value was parseable as int
+    *********************************************************
+    """
+    frame = f'{os.path.basename(__file__)}:{assign_digits.__name__}()'
+    if debug:
+        print("=====================================")
+        print(f'Start: {frame}')
+        print("-------------------------------------")
+        
+        comment = "input digits (text field)"
+        print(frame)
+        print(f'- {comment}')
+        print(f'\t- digits: {[n.text for n in digits]}\n')
+    
+    score_numbers = []
+    remaining_digits = []
+    
+    # score numbers should have string length 3+
+    for d in digits:
+        if len(d.text) >= 3:
+            score_numbers.append(d)
+        else:
+            remaining_digits.append(d)
+    
     # filter outliers using x-axis projections
-    (filtered_numbers, remaining_digits) = projection_filters.filter_outliers(digits, axis=0, tol=params.X_TOL)
+    (score_numbers, outliers) = projection_filters.filter_outliers(score_numbers, axis=0, tol=params.X_TOL)
+    remaining_digits += outliers
+    
+    if debug:
+        comment = "after x-axis projection"
+        print(frame)
+        print(f'- {comment}')
+        print(f'\t- score_numbers: {[n.text for n in score_numbers]}')
+        print(f'\t- remaining_digits: {[n.text for n in remaining_digits]}\n')
     
     # filter outliers using y-axis displacements
     loop = True
-    score_numbers = filtered_numbers.copy()
     while loop:
-        rval = projection_filters.filter_displacement_outliers(score_numbers, axis=1, tol=params.Y_TOL)
-        score_numbers = rval[0]
-        remaining_digits += rval[1]
-        loop = rval[2]
+        (score_numbers, more_outliers) = projection_filters.filter_displacement_outliers(score_numbers, axis=1, tol=params.Y_TOL)
+        remaining_digits += more_outliers
+        loop = len(more_outliers) > 0
+    
+    if debug:
+        comment = "after y-axis projection"
+        print(frame)
+        print(f'- {comment}')
+        print(f'\t- score_numbers: {[n.text for n in score_numbers]}')
+        print(f'\t- remaining_digits: {[n.text for n in remaining_digits]}\n')
     
     # find any missing (inbetween) entries
-    outliers = projection_filters.find_displacement_outliers(score_numbers, axis=1, tol=params.GAP_TOL)
+    gapIndices = projection_filters.find_displacement_outliers(score_numbers, axis=1, tol=params.GAP_TOL)
     
     # check last entry (TOTAL SCORE), hacky since assumes player scores > 10000
-    if len(score_numbers) + len(outliers) < 7:
+    if len(score_numbers) + len(gapIndices) < 7:
         if int(score_numbers[-1].text) < params.SCORE_MIN:
-            outliers.append(6)
+            gapIndices.append(6)
     
     # if still gaps, assuming missing scores from top to bottom
     iterator = 0
-    while len(score_numbers) + len(outliers) < 7:
-        if iterator not in outliers:
-            outliers.append(iterator)
+    while len(score_numbers) + len(gapIndices) < 7:
+        if iterator not in gapIndices:
+            gapIndices.append(iterator)
         iterator += 1
     
-    for idx in outliers:
+    for idx in gapIndices:
         score_numbers.insert(idx, Textbox(entry=None))
+    
+    if debug:
+        comment = "after identifying gaps"
+        print(frame)
+        print(f'- {comment}')
+        print(f'\t- score_numbers: {[n.text for n in score_numbers]}')
+        print(f'\t- remaining_digits: {[n.text for n in remaining_digits]}')
+        
+        print("-------------------------------------")
+        print(f'End: {frame}')
+        print("=====================================")
     
     return (score_numbers, remaining_digits)
 
@@ -168,16 +242,16 @@ def guess_chart_type(remaining_results, template):
 
     # match the found word to most likely candidate of chart types
     found_type.text = found_type.text.upper()
+    type_idx = -1
     if found_type.text != '':
         diff = 99
-        type_idx = -1
         for idx, exp_type in enumerate(c.CHART_TYPES):
             d = editdistance.eval(exp_type, found_type.text)
             if d < diff:
                 type_idx = idx
                 diff = d
     
-    return found_type
+    return (found_type, type_idx)
 
 def guess_username(remaining_results, template):
     # finds closest word to expected distance directly above perfect score value
