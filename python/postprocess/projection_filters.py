@@ -1,4 +1,7 @@
 import numpy as np
+import os
+
+from resources.debugger import Debugger
 
 def find_outliers(textboxes, axis, tol=0.75, reference=None):
     """
@@ -55,7 +58,7 @@ def filter_outliers(textboxes, axis, tol=0.75):
     
     return (filtered_list, excluded_list)
 
-def find_displacement_outliers(digits, axis, tol=1.5):
+def find_displacement_outliers(digits, axis, tol=1.5, debug=False):
     """
     *********************************************************
     digits input is treated as a list of Textbox objects
@@ -64,6 +67,10 @@ def find_displacement_outliers(digits, axis, tol=1.5):
     returns with a filtered output of the input 'digits' list
     *********************************************************
     """
+    frame = f'{os.path.basename(__file__)}:{find_displacement_outliers.__name__}()'
+
+    if debug:
+        Debugger.start_frame(frame)
 
     # retrieve box mean displacements
     centers = [entry.center[axis] for entry in digits]
@@ -76,9 +83,13 @@ def find_displacement_outliers(digits, axis, tol=1.5):
 
     # using displacements shifts indices by one; shift it back before returning
     outlier_idxs = [x + 1 for x in outlier_idxs]
+
+    if debug:
+        Debugger.end_frame(frame)
+
     return outlier_idxs
 
-def filter_displacement_outliers(digits, axis, tol=3):
+def filter_displacement_outliers(digits, axis, tol=3, debug=False):
     """
     *********************************************************
     digits input is treated as a list of Textbox objects
@@ -90,8 +101,12 @@ def filter_displacement_outliers(digits, axis, tol=3):
     - whether or not any outliers were found
     *********************************************************
     """
+    frame = f'{os.path.basename(__file__)}:{filter_displacement_outliers.__name__}()'
 
-    outlier_idxs = find_displacement_outliers(digits, axis, tol)
+    if debug:
+        Debugger.start_frame(frame)
+
+    outlier_idxs = find_displacement_outliers(digits, axis, tol, debug)
 
     # create the filtered list
     filtered_list = []
@@ -101,5 +116,8 @@ def filter_displacement_outliers(digits, axis, tol=3):
             excluded_list.append(entry)
         else:
             filtered_list.append(entry)
-    
+
+    if debug:
+        Debugger.end_frame(frame)
+
     return (filtered_list, excluded_list)

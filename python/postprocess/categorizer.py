@@ -8,6 +8,7 @@ import os
 from postprocess import projection_filters
 from resources import constants as c
 from resources import params
+from resources.debugger import Debugger
 from resources.textbox import Textbox
 
 def categorize_results(confident_results, template):
@@ -72,10 +73,7 @@ def assign_digits(digits, debug=False):
     """
     frame = f'{os.path.basename(__file__)}:{assign_digits.__name__}()'
     if debug:
-        print("=============================================")
-        print(f'[DEBUG] Start: {frame}')
-        print("---------------------------------------------")
-        
+        Debugger.start_frame(frame)
         comment = "input digits (text field)"
         print(f'[DEBUG] {frame}')
         print(f'[DEBUG] - {comment}')
@@ -107,7 +105,7 @@ def assign_digits(digits, debug=False):
     # filter outliers using y-axis displacements
     loop = True
     while loop:
-        (score_numbers, more_outliers) = projection_filters.filter_displacement_outliers(score_numbers, axis=1, tol=params.Y_TOL)
+        (score_numbers, more_outliers) = projection_filters.filter_displacement_outliers(score_numbers, axis=1, tol=params.Y_TOL, debug=debug)
         remaining_digits += more_outliers
         loop = len(more_outliers) > 0
     
@@ -143,10 +141,7 @@ def assign_digits(digits, debug=False):
         print(f'[DEBUG] - {comment}')
         print(f'[DEBUG] \t- score_numbers: {[n.text for n in score_numbers]}')
         print(f'[DEBUG] \t- remaining_digits: {[n.text for n in remaining_digits]}')
-        
-        print("---------------------------------------------")
-        print(f'[DEBUG] End: {frame}')
-        print("=============================================")
+        Debugger.end_frame(frame)
     
     return (score_numbers, remaining_digits)
 
@@ -267,16 +262,13 @@ def guess_username(remaining_results, template, debug=False):
     """
     frame = f'{os.path.basename(__file__)}:{guess_username.__name__}()'
     if debug:
-        print("==============================================")
-        print(f'[DEBUG] Start: {frame}')
-        print("----------------------------------------------")
-
+        Debugger.start_frame(frame)
         comment = "remaining results (text field)"
         print(f'[DEBUG] {frame}')
         print(f'[DEBUG] - {comment}')
         print(f'[DEBUG] \t- remaining_results: {[r.text for r in remaining_results]}')
         print(f'[DEBUG]')
-
+    
     username = Textbox(entry = None)
     
     # assumes score values have been assigned to the template already
@@ -347,8 +339,6 @@ def guess_username(remaining_results, template, debug=False):
             print(f'[DEBUG] \t- username: {username.text}')
     
     if debug:
-        print("----------------------------------------------")
-        print(f'[DEBUG] End: {frame}')
-        print("==============================================")
+        Debugger.end_frame(frame)
     
     return username
