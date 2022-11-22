@@ -23,19 +23,21 @@ def post_process(results, debug=False):
     # categorize remaining text results
     (template, digits, remaining_results) = categorizer.categorize_results(confident_results, template)
     
-    # filter outliers using 1D projections
+    # filter digits for score values using 1D projections of positions
     (score_numbers, remaining_digits) = categorizer.assign_digits(digits, debug)
     
     # match scores with their template word's values
-    for idx, word in enumerate(c.SCORE_WORDS):
-        template[word].value = score_numbers[idx]
+    if len(c.SCORE_WORDS) == len(score_numbers):
+        for idx, word in enumerate(c.SCORE_WORDS):
+            template[word].value = score_numbers[idx]
     
-    # get song name using PERFECT text as a reference
-    if template[c.PERFECT].area > 0:
-        chart_name = categorizer.guess_chartname(template[c.PERFECT].center, remaining_results, remaining_digits)
-        template[c.CHART] = chart_name
-        template[c.CHART].text = chart_name.text.upper()
-        template[c.CHART].value = chart_name.text.upper()
+    # get chart name
+    chart_name = categorizer.guess_chartname(remaining_results, remaining_digits, template)
+    template[c.CHART] = chart_name
+    template[c.CHART].text = chart_name.text.upper()
+    template[c.CHART].value = chart_name.text.upper()
+    if chart_name.text != '':
+        remaining_results = [r for r in remaining_results if r.text != chart_name.text]
     
     # get grade
     grade = categorizer.guess_grade(remaining_results, template)
@@ -55,27 +57,29 @@ def post_process(results, debug=False):
         template[c.TYPE].value = c.CHART_TYPES[type_idx]
     
     # get username
-    username = categorizer.guess_username(remaining_results, template)
+    username = categorizer.guess_username(remaining_results, template, debug)
     template[c.USER] = username
     template[c.USER].value = username.text.upper()
+    if username.text != '':
+        remaining_results = [r for r in remaining_results if r.text != username.text]
     
-    return (template, digits, remaining_results)
+    return (template, remaining_results)
 
-def print_findings(template, digits, remaining_results):
+def print_findings(template, remaining_results):
+    print("======================")
     print(f'PLAYER: {template[c.USER].value}')
     print(f'CHART: {template[c.CHART].value} | {template[c.TYPE].value} {template[c.DIFFICULTY].value}')
     print(f'GRADE: {template[c.GRADE].value}')
     
-    print("======================")
+    print("----------------------")
     for word in c.SCORE_WORDS:
         try:
             print(f'{word}: {template[word].value.text}')
         except:
             print(f'{word}: NOT FOUND')
-    print("======================")
-    print([r.text for r in digits])
-    print("======================")
+    print("----------------------")
     print([r.text for r in remaining_results])
+    print("======================")
 
 def main(fname):
     # load the input image from disk
@@ -93,10 +97,10 @@ def main(fname):
     results = reader.readtext(filtered)
     
     # postprocess the text results
-    (template, digits, remaining_results) = post_process(results, debug=True)
+    (template, remaining_results) = post_process(results, debug=True)
     
     # debugging purposes (for now)
-    print_findings(template, digits, remaining_results)
+    print_findings(template, remaining_results)
 
 if __name__ == "__main__":
     args = sys.argv[1:]

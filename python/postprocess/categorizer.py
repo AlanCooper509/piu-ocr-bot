@@ -72,14 +72,15 @@ def assign_digits(digits, debug=False):
     """
     frame = f'{os.path.basename(__file__)}:{assign_digits.__name__}()'
     if debug:
-        print("=====================================")
-        print(f'Start: {frame}')
-        print("-------------------------------------")
+        print("=============================================")
+        print(f'[DEBUG] Start: {frame}')
+        print("---------------------------------------------")
         
         comment = "input digits (text field)"
-        print(frame)
-        print(f'- {comment}')
-        print(f'\t- digits: {[n.text for n in digits]}\n')
+        print(f'[DEBUG] {frame}')
+        print(f'[DEBUG] - {comment}')
+        print(f'[DEBUG] \t- digits: {[n.text for n in digits]}')
+        print(f'[DEBUG]')
     
     score_numbers = []
     remaining_digits = []
@@ -97,10 +98,11 @@ def assign_digits(digits, debug=False):
     
     if debug:
         comment = "after x-axis projection"
-        print(frame)
-        print(f'- {comment}')
-        print(f'\t- score_numbers: {[n.text for n in score_numbers]}')
-        print(f'\t- remaining_digits: {[n.text for n in remaining_digits]}\n')
+        print(f'[DEBUG] {frame}')
+        print(f'[DEBUG] - {comment}')
+        print(f'[DEBUG] \t- score_numbers: {[n.text for n in score_numbers]}')
+        print(f'[DEBUG] \t- remaining_digits: {[n.text for n in remaining_digits]}')
+        print(f'[DEBUG]')
     
     # filter outliers using y-axis displacements
     loop = True
@@ -111,10 +113,11 @@ def assign_digits(digits, debug=False):
     
     if debug:
         comment = "after y-axis projection"
-        print(frame)
-        print(f'- {comment}')
-        print(f'\t- score_numbers: {[n.text for n in score_numbers]}')
-        print(f'\t- remaining_digits: {[n.text for n in remaining_digits]}\n')
+        print(f'[DEBUG] {frame}')
+        print(f'[DEBUG] - {comment}')
+        print(f'[DEBUG] \t- score_numbers: {[n.text for n in score_numbers]}')
+        print(f'[DEBUG] \t- remaining_digits: {[n.text for n in remaining_digits]}')
+        print(f'[DEBUG]')
     
     # find any missing (inbetween) entries
     gapIndices = projection_filters.find_displacement_outliers(score_numbers, axis=1, tol=params.GAP_TOL)
@@ -136,20 +139,25 @@ def assign_digits(digits, debug=False):
     
     if debug:
         comment = "after identifying gaps"
-        print(frame)
-        print(f'- {comment}')
-        print(f'\t- score_numbers: {[n.text for n in score_numbers]}')
-        print(f'\t- remaining_digits: {[n.text for n in remaining_digits]}')
+        print(f'[DEBUG] {frame}')
+        print(f'[DEBUG] - {comment}')
+        print(f'[DEBUG] \t- score_numbers: {[n.text for n in score_numbers]}')
+        print(f'[DEBUG] \t- remaining_digits: {[n.text for n in remaining_digits]}')
         
-        print("-------------------------------------")
-        print(f'End: {frame}')
-        print("=====================================")
+        print("---------------------------------------------")
+        print(f'[DEBUG] End: {frame}')
+        print("=============================================")
     
     return (score_numbers, remaining_digits)
 
-def guess_chartname(reference, remaining_results, remaining_digits):
+def guess_chartname(remaining_results, remaining_digits, template):
+    chart_name = Textbox(entry = None)
+    
+    if template[c.PERFECT].area == 0:
+        return chart_name
+
+    reference = template[c.PERFECT].center
     # find closest Textbox to the "PERFECT" template text
-    chart_name = Textbox(entry=None)
     min = float("inf")
     for entry in remaining_results:
         if entry.center[1] < reference[1]:
@@ -253,25 +261,94 @@ def guess_chart_type(remaining_results, template):
     
     return (found_type, type_idx)
 
-def guess_username(remaining_results, template):
-    # finds closest word to expected distance directly above perfect score value
-    # specified with a magnitude of perfect score value - miss score value
-    username = Textbox(entry = None)
+def guess_username(remaining_results, template, debug=False):
+    """
+    Guess the username by utilizing the fact its x-axis proximity should be close to the score values.
+    """
+    frame = f'{os.path.basename(__file__)}:{guess_username.__name__}()'
+    if debug:
+        print("==============================================")
+        print(f'[DEBUG] Start: {frame}')
+        print("----------------------------------------------")
 
+        comment = "remaining results (text field)"
+        print(f'[DEBUG] {frame}')
+        print(f'[DEBUG] - {comment}')
+        print(f'[DEBUG] \t- remaining_results: {[r.text for r in remaining_results]}')
+        print(f'[DEBUG]')
+
+    username = Textbox(entry = None)
+    
+    # assumes score values have been assigned to the template already
     p = template[c.PERFECT].value
     m = template[c.MISS].value
-    if p and m:
-        if p.text != '' and m.text != '':
-            disp = np.subtract(m.center, p.center)
-            expected = np.subtract(p.center, disp)
-            min = float("inf")
-            for entry in remaining_results:
-                # avoid unnecessary sqrt operation
-                vectors = np.subtract(expected, entry.center)
-                dist2 = np.square(vectors)
-                euclidean2 = np.sum(dist2)
-                if euclidean2 < min:
-                    username = entry
-                    min = euclidean2
+    if p.text != '' and m.text != '':
+        # method 1:
+            # finds closest word to expected distance directly above score values
+            # specified with a magnitude of (PERFECT score value) - (MISS score value)
+        disp = np.subtract(m.center, p.center)
+        expected = np.subtract(p.center, disp)
+        min = float("inf")
+        for entry in remaining_results:
+            # avoid unnecessary sqrt operation
+            vectors = np.subtract(expected, entry.center)
+            dist2 = np.square(vectors)
+            euclidean2 = np.sum(dist2)
+            if euclidean2 < min:
+                username = entry
+                min = euclidean2
+        if debug:
+            comment = "first method: chosen result (text field)"
+            print(f'[DEBUG] {frame}')
+            print(f'[DEBUG] - {comment}')
+            print(f'[DEBUG] \t- username: {username.text}')
+    else:
+        # method 2:
+            # just find closest text directly above the highest available score words or score values
+            # using a x-axis filtering with a certain tolerance and y-axis comparisons
+        score_values = [template[entry].value for entry in c.SCORE_WORDS]
+        centers = [entry.center[0] for entry in score_values if entry.center[0] > 0]
+        center = 0.5*np.mean(centers) + 0.5*np.median(centers)
+        stdev = np.std(centers)
+        
+        # x-axis filtering
+        outliers = projection_filters.find_outliers(remaining_results, axis=0, tol=params.NAME_X_TOL, reference=(center, stdev))
+        contenders = [entry for idx, entry in enumerate(remaining_results) if idx not in outliers]
+        
+        if debug:
+            comment = "second method: x-axis filtered results (text field)"
+            print(f'[DEBUG] {frame}')
+            print(f'[DEBUG] - {comment}')
+            print(f'[DEBUG] \t- contenders: {[contender.text for contender in contenders]}')
+            print(f'[DEBUG]')
+        
+        # set the y boundary for further filtering
+        y_bound = float("inf")
+        for possible_reference in c.SCORE_WORDS:
+            # username y-pos should be above all score words' y-pos
+            if template[possible_reference].center[1] > 0:
+                y_bound = template[possible_reference].center[1]
+                break
+            # same for the score words' numeric values' y-pos
+            if template[possible_reference].value.center[1] > 0:
+                y_bound = template[possible_reference].value.center[1]
+                break
+        
+        # choose the word closest to the y_bound that's not below it
+        min = float("inf")
+        for entry in contenders:
+            if entry.center[1] < y_bound and (y_bound - entry.center[0]) < min:
+                username = entry
+                min = y_bound - entry.center[0]
+        if debug:
+            comment = "second method: chosen result (text field)"
+            print(f'[DEBUG] {frame}')
+            print(f'[DEBUG] - {comment}')
+            print(f'[DEBUG] \t- username: {username.text}')
+    
+    if debug:
+        print("----------------------------------------------")
+        print(f'[DEBUG] End: {frame}')
+        print("==============================================")
     
     return username

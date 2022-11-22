@@ -1,34 +1,53 @@
 import numpy as np
 
-def filter_outliers(digits, axis, tol=0.75):
+def find_outliers(textboxes, axis, tol=0.75, reference=None):
     """
     *********************************************************
-    digits input is treated as a list of Textbox objects
-    axis=0 for x-axis, axis=1 for y-axis
+    reference should be tuple
+        representing (1D center, 1D stdev)
     *********************************************************
-    returns with:
-    - a filtered output of the input 'digits' list
-    - the remaining entries of the input 'digits' list
+    returns indices
     *********************************************************
     """
-
+    
     # retrieve box means
-    centers = [entry.center[axis] for entry in digits]
+    centers = [entry.center[axis] for entry in textboxes]
     
     # get statistics for preservation boundaries
-    center = 0.5*np.mean(centers) + 0.5*np.median(centers)
-    stdev = np.std(centers)
+    if reference is None:
+        center = 0.5*np.mean(centers) + 0.5*np.median(centers)
+        stdev = np.std(centers)
+    else:
+        center = reference[0]
+        stdev = reference[1]
+    
     upper = center + tol*stdev
     lower = center - tol*stdev
-
+    
     # identify outlier indices
     outliers = list(map(lambda p: p < lower or p > upper, centers))
     outlier_idxs = [idx for idx, bool_val in enumerate(outliers) if bool_val]
+    
+    return outlier_idxs
 
+def filter_outliers(textboxes, axis, tol=0.75):
+    """
+    *********************************************************
+    textboxes input is treated as a list of Textbox objects
+    axis=0 for x-axis, axis=1 for y-axis
+    *********************************************************
+    returns with:
+    - a filtered output of the input 'textboxes' list
+    - the remaining entries of the input 'textboxes' list
+    *********************************************************
+    """
+    
+    outlier_idxs = find_outliers(textboxes, axis, tol)
+    
     # create the filtered list
     filtered_list = []
     excluded_list = []
-    for idx, entry in enumerate(digits):
+    for idx, entry in enumerate(textboxes):
         if idx in outlier_idxs:
             excluded_list.append(entry)
         else:
