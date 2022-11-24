@@ -121,7 +121,7 @@ def find_displacement_outliers(digits, axis, tol=1.5, debug=False):
 
     return outlier_idxs
 
-def filter_displacement_outliers(digits, axis, tol=3, debug=False):
+def filter_displacement_outliers(digits, axis, tol=2, debug=False):
     """
     *********************************************************
     digits input is treated as a list of Textbox objects
