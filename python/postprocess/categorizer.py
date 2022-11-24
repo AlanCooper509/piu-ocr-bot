@@ -71,36 +71,36 @@ def assign_digits(digits, debug=False):
         where each Textbox.text value was parseable as int
     *********************************************************
     """
-    frame = f'{os.path.basename(__file__)}:{assign_digits.__name__}()'
     if debug:
-        Debugger.start_frame(frame)
-        comment = "input digits (text field)"
-        print(f'[DEBUG] {frame}')
-        print(f'[DEBUG] - {comment}')
+        frame = f'{os.path.basename(__file__)}:{assign_digits.__name__}()'
+        debugger = Debugger(frame)
+        debugger.start_frame()
+        debugger.write_comment("input digits (text field)")
         print(f'[DEBUG] \t- digits: {[n.text for n in digits]}')
-        print(f'[DEBUG]')
+        debugger.blank_line()
     
     score_numbers = []
     remaining_digits = []
     
-    # score numbers should have string length 3+
+    # score numbers should have string length 3+ (using 2 for some flexibility)
     for d in digits:
-        if len(d.text) >= 3:
+        if len(d.text) >= 2:
             score_numbers.append(d)
         else:
             remaining_digits.append(d)
     
     # filter outliers using x-axis projections
-    (score_numbers, outliers) = projection_filters.filter_outliers(score_numbers, axis=0, tol=params.X_TOL)
+    print([d.text for d in score_numbers])
+    (score_numbers, outliers) = projection_filters.filter_outliers(score_numbers, axis=0, tol=params.X_TOL, debug=debug)
     remaining_digits += outliers
     
     if debug:
-        comment = "after x-axis projection"
-        print(f'[DEBUG] {frame}')
-        print(f'[DEBUG] - {comment}')
-        print(f'[DEBUG] \t- score_numbers: {[n.text for n in score_numbers]}')
-        print(f'[DEBUG] \t- remaining_digits: {[n.text for n in remaining_digits]}')
-        print(f'[DEBUG]')
+        debugger.write_comment("after x-axis projection")
+        print(f'[DEBUG] \t- score_numbers (text): {[n.text for n in score_numbers]}')
+        print(f'[DEBUG] \t- score_numbers (x-pos): {[n.center[0] for n in score_numbers]}')
+        print(f'[DEBUG] \t- remaining_digits (text): {[n.text for n in remaining_digits]}')
+        print(f'[DEBUG] \t- remaining_digits (x-pos): {[n.center[0] for n in remaining_digits]}')
+        debugger.blank_line()
     
     # filter outliers using y-axis displacements
     loop = True
@@ -110,12 +110,10 @@ def assign_digits(digits, debug=False):
         loop = len(more_outliers) > 0
     
     if debug:
-        comment = "after y-axis projection"
-        print(f'[DEBUG] {frame}')
-        print(f'[DEBUG] - {comment}')
+        debugger.write_comment("after y-axis projection")
         print(f'[DEBUG] \t- score_numbers: {[n.text for n in score_numbers]}')
         print(f'[DEBUG] \t- remaining_digits: {[n.text for n in remaining_digits]}')
-        print(f'[DEBUG]')
+        debugger.blank_line()
     
     # find any missing (inbetween) entries
     gapIndices = projection_filters.find_displacement_outliers(score_numbers, axis=1, tol=params.GAP_TOL)
@@ -136,12 +134,10 @@ def assign_digits(digits, debug=False):
         score_numbers.insert(idx, Textbox(entry=None))
     
     if debug:
-        comment = "after identifying gaps"
-        print(f'[DEBUG] {frame}')
-        print(f'[DEBUG] - {comment}')
+        debugger.write_comment("after identifying gaps")
         print(f'[DEBUG] \t- score_numbers: {[n.text for n in score_numbers]}')
         print(f'[DEBUG] \t- remaining_digits: {[n.text for n in remaining_digits]}')
-        Debugger.end_frame(frame)
+        debugger.end_frame()
     
     return (score_numbers, remaining_digits)
 
@@ -256,32 +252,31 @@ def guess_chart_type(remaining_results, template):
     
     return (found_type, type_idx)
 
-def guess_username(remaining_results, template, debug=False):
+def guess_username(textboxes, template, debug=False):
     """
     Guess the username by utilizing the fact its x-axis proximity should be close to the score values.
     """
-    frame = f'{os.path.basename(__file__)}:{guess_username.__name__}()'
     if debug:
-        Debugger.start_frame(frame)
-        comment = "remaining results (text field)"
-        print(f'[DEBUG] {frame}')
-        print(f'[DEBUG] - {comment}')
-        print(f'[DEBUG] \t- remaining_results: {[r.text for r in remaining_results]}')
-        print(f'[DEBUG]')
+        frame = f'{os.path.basename(__file__)}:{guess_username.__name__}()'
+        debugger = Debugger(frame)
+        debugger.start_frame()
+        debugger.write_comment("input guesses (text field)")
+        print(f'[DEBUG] \t- textboxes: {[r.text for r in textboxes]}')
+        debugger.blank_line()
     
     username = Textbox(entry = None)
     
     # assumes score values have been assigned to the template already
     p = template[c.PERFECT].value
     m = template[c.MISS].value
-    if p.text != '' and m.text != '':
+    if p and p.text != '' and m and m.text != '':
         # method 1:
             # finds closest word to expected distance directly above score values
             # specified with a magnitude of (PERFECT score value) - (MISS score value)
         disp = np.subtract(m.center, p.center)
         expected = np.subtract(p.center, disp)
         min = float("inf")
-        for entry in remaining_results:
+        for entry in textboxes:
             # avoid unnecessary sqrt operation
             vectors = np.subtract(expected, entry.center)
             dist2 = np.square(vectors)
@@ -290,9 +285,7 @@ def guess_username(remaining_results, template, debug=False):
                 username = entry
                 min = euclidean2
         if debug:
-            comment = "first method: chosen result (text field)"
-            print(f'[DEBUG] {frame}')
-            print(f'[DEBUG] - {comment}')
+            debugger.write_comment("first method: chosen result (text field)")
             print(f'[DEBUG] \t- username: {username.text}')
     else:
         # method 2:
@@ -304,15 +297,13 @@ def guess_username(remaining_results, template, debug=False):
         stdev = np.std(centers)
         
         # x-axis filtering
-        outliers = projection_filters.find_outliers(remaining_results, axis=0, tol=params.NAME_X_TOL, reference=(center, stdev))
-        contenders = [entry for idx, entry in enumerate(remaining_results) if idx not in outliers]
+        outliers = projection_filters.find_outliers(textboxes, axis=0, tol=params.NAME_X_TOL, reference=(center, stdev))
+        contenders = [entry for idx, entry in enumerate(textboxes) if idx not in outliers]
         
         if debug:
-            comment = "second method: x-axis filtered results (text field)"
-            print(f'[DEBUG] {frame}')
-            print(f'[DEBUG] - {comment}')
+            debugger.write_comment("second method: x-axis filtered results (text field)")
             print(f'[DEBUG] \t- contenders: {[contender.text for contender in contenders]}')
-            print(f'[DEBUG]')
+            debugger.blank_line()
         
         # set the y boundary for further filtering
         y_bound = float("inf")
@@ -333,12 +324,10 @@ def guess_username(remaining_results, template, debug=False):
                 username = entry
                 min = y_bound - entry.center[0]
         if debug:
-            comment = "second method: chosen result (text field)"
-            print(f'[DEBUG] {frame}')
-            print(f'[DEBUG] - {comment}')
+            debugger.write_comment("second method: chosen result (text field)")
             print(f'[DEBUG] \t- username: {username.text}')
     
     if debug:
-        Debugger.end_frame(frame)
+        debugger.end_frame()
     
     return username

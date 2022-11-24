@@ -9,7 +9,7 @@ CONFIDENCE = 0.1
 
 # for stdev tolerance in postprocess.projection_filters.*
 X_TOL = 0.75
-Y_TOL = 3
+Y_TOL = 2
 NAME_X_TOL = 5
 GAP_TOL = 1.3
 

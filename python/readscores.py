@@ -27,7 +27,7 @@ def post_process(results, debug=False):
     (score_numbers, remaining_digits) = categorizer.assign_digits(digits, debug)
     
     # match scores with their template word's values
-    if len(c.SCORE_WORDS) == len(score_numbers):
+    if len(c.SCORE_WORDS) <= len(score_numbers):
         for idx, word in enumerate(c.SCORE_WORDS):
             template[word].value = score_numbers[idx]
     
