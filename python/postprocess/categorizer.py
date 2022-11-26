@@ -225,6 +225,7 @@ def guess_chart_diff(remaining_digits, template):
 
 def guess_chart_type(remaining_results, template):
     found_type = Textbox(entry = None)
+    type_idx = -1
 
     if template[c.DIFFICULTY].area > 0:
         # find closest remaining Textbox to the "difficulty" text
@@ -239,17 +240,26 @@ def guess_chart_type(remaining_results, template):
                 found_type = entry
                 min = euclidean2
 
-    # match the found word to most likely candidate of chart types
-    found_type.text = found_type.text.upper()
-    type_idx = -1
-    if found_type.text != '':
+        # match the found word to most likely candidate of chart types
+        found_type.text = found_type.text.upper()
+        if found_type.text != '':
+            diff = 99
+            for idx, exp_type in enumerate(c.CHART_TYPES):
+                d = editdistance.eval(exp_type, found_type.text.upper())
+                if d < diff:
+                    type_idx = idx
+                    diff = d
+    else:
+        # no proximity shortcuts, just iterate through all remaining results to find the best text match
         diff = 99
-        for idx, exp_type in enumerate(c.CHART_TYPES):
-            d = editdistance.eval(exp_type, found_type.text)
-            if d < diff:
-                type_idx = idx
-                diff = d
-    
+        for result in remaining_results:
+            for idx, exp_type in enumerate(c.CHART_TYPES):
+                d = editdistance.eval(exp_type, result.text.upper())
+                if d < diff:
+                    type_idx = idx
+                    diff = d
+                    found_type = result
+
     return (found_type, type_idx)
 
 def guess_username(textboxes, template, debug=False):

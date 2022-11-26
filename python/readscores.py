@@ -55,6 +55,7 @@ def post_process(results, debug=False):
     template[c.TYPE] = found_type.copy()
     if found_type.text != '':
         template[c.TYPE].value = c.CHART_TYPES[type_idx]
+        remaining_results = [r for r in remaining_results if r.text != found_type.text]
     
     # get username
     username = categorizer.guess_username(remaining_results, template, debug)
@@ -81,7 +82,7 @@ def print_findings(template, remaining_results):
     print([r.text for r in remaining_results])
     print("======================")
 
-def main(fname):
+def main(fname, debug=False):
     # load the input image from disk
     image = cv2.imread(fname)
     if image is None:
@@ -97,7 +98,7 @@ def main(fname):
     results = reader.readtext(filtered)
     
     # postprocess the text results
-    (template, remaining_results) = post_process(results, debug=True)
+    (template, remaining_results) = post_process(results, debug=debug)
     
     # debugging purposes (for now)
     print_findings(template, remaining_results)
@@ -108,7 +109,14 @@ if __name__ == "__main__":
         dir = os.path.dirname(os.path.dirname(__file__))
         fname = os.path.join(dir, "input_images", args[0])
         main(fname)
-    elif len(args) > 1:
+    elif len(args) == 2:
+        if args[1].upper() == "DEBUG":
+            dir = os.path.dirname(os.path.dirname(__file__))
+            fname = os.path.join(dir, "input_images", args[0])
+            main(fname, debug=True)
+        else:
+            print(f"{os.path.basename(__file__)}: Second arg must be 'DEBUG' if included.")
+    elif len(args) > 2:
         print(f"{os.path.basename(__file__)}: Too many input args")
     else:
         print(f"{os.path.basename(__file__)}: Need to include filename")
