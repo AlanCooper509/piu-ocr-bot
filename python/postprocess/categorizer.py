@@ -144,10 +144,13 @@ def assign_digits(digits, debug=False):
 def guess_chartname(remaining_results, remaining_digits, template):
     chart_name = Textbox(entry = None)
     
-    if template[c.PERFECT].area == 0:
+    if template[c.PERFECT].area != 0:
+        reference = template[c.PERFECT].center
+    elif template[c.GREAT].area != 0:
+        reference = template[c.GREAT].center
+    else:
         return chart_name
 
-    reference = template[c.PERFECT].center
     # find closest Textbox to the "PERFECT" template text
     min = float("inf")
     for entry in remaining_results:
