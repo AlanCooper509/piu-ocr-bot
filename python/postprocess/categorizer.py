@@ -90,7 +90,6 @@ def assign_digits(digits, debug=False):
             remaining_digits.append(d)
     
     # filter outliers using x-axis projections
-    print([d.text for d in score_numbers])
     (score_numbers, outliers) = projection_filters.filter_outliers(score_numbers, axis=0, tol=params.X_TOL, debug=debug)
     remaining_digits += outliers
     
