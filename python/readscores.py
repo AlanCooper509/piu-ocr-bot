@@ -91,6 +91,7 @@ def main(fname, local=False, debug=False):
         image = cv2.imread(fname)
         if image is None:
             print(f'unable to find {fname}')
+            sys.stdout.flush()
             return
     else:
         # load the input image from URL
@@ -100,18 +101,20 @@ def main(fname, local=False, debug=False):
 
     if image is None:
         print(f'unable to find {fname}')
+        sys.stdout.flush()
         return
 
     # preprocess the image
     filtered = filter.filter_image(image, params.ALPHA, params.BETA)
     
     # OCR the input image using EasyOCR
-    print("[INFO] OCR'ing input image...")
+    print("[INFO] OCR'ing input image...\n", end='', flush=debug)
     reader = easyocr.Reader(['en'], gpu=True)
     results = reader.readtext(filtered)
     
     if len(results) == 0:
         print(f'OCR did not find any text {fname}')
+        sys.stdout.flush()
         return
 
     # postprocess the text results
@@ -119,6 +122,8 @@ def main(fname, local=False, debug=False):
     
     # debugging purposes (for now)
     print_findings(template, remaining_results)
+    
+    sys.stdout.flush()
 
 if __name__ == "__main__":
     args = sys.argv[1:]

@@ -1,4 +1,5 @@
 const Discord = require("discord.js");
+const spawn = require("child_process").spawn;
 
 // define listener(s)
 module.exports = (client, message) => {
@@ -19,8 +20,14 @@ module.exports = (client, message) => {
             { name: 'Inline field title', value: 'Some value here', inline: true },
             { name: 'Inline field title', value: 'Some value here', inline: true },
         );
-        message.channel.send({ embeds: [embed] });
-        message.delete();
+        console.log(`processing ${messageAttachment}`);
+        const pythonProcess = spawn('python', ["../python/readscores.py", messageAttachment]);
+        pythonProcess.stdout.on('data', (data) => {
+            console.log(`success ${messageAttachment}:`);
+            embed.addFields({ name: 'readscores.py', value: data.toString() });
+            message.channel.send({ embeds: [embed] });
+            message.delete();
+        });
     } else {
         const prefix = '!'
 
