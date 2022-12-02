@@ -1,9 +1,11 @@
 # pip install easyocr (1.6.2)
 
-from easyocr import Reader
+import easyocr
 import cv2
+import numpy as np
 import os
 import sys
+import urllib
 
 # local imports
 from preprocess import filter
@@ -81,21 +83,37 @@ def print_findings(template, remaining_results):
     print([r.text for r in remaining_results])
     print("======================")
 
-def main(fname, debug=False):
-    # load the input image from disk
-    image = cv2.imread(fname)
+def main(fname, local=False, debug=False):
+    if local:
+        # load the input image from 'input_images' directory
+        dir = os.path.dirname(os.path.dirname(__file__))
+        fname = os.path.join(dir, "input_images", args[0])
+        image = cv2.imread(fname)
+        if image is None:
+            print(f'unable to find {fname}')
+            return
+    else:
+        # load the input image from URL
+        with urllib.request.urlopen(urllib.request.Request(fname, headers={'User-Agent': 'Mozilla'})) as url:
+            arr = np.asarray(bytearray(url.read()), dtype=np.uint8)
+            image = cv2.imdecode(arr, -1) # 'Load it as it is'
+
     if image is None:
         print(f'unable to find {fname}')
         return
-    
+
     # preprocess the image
     filtered = filter.filter_image(image, params.ALPHA, params.BETA)
     
     # OCR the input image using EasyOCR
     print("[INFO] OCR'ing input image...")
-    reader = Reader(['en'], gpu=True)
+    reader = easyocr.Reader(['en'], gpu=True)
     results = reader.readtext(filtered)
     
+    if len(results) == 0:
+        print(f'OCR did not find any text {fname}')
+        return
+
     # postprocess the text results
     (template, remaining_results) = post_process(results, debug=debug)
     
@@ -105,17 +123,21 @@ def main(fname, debug=False):
 if __name__ == "__main__":
     args = sys.argv[1:]
     if len(args) == 1:
-        dir = os.path.dirname(os.path.dirname(__file__))
-        fname = os.path.join(dir, "input_images", args[0])
-        main(fname)
+        main(args[0], local=False, debug=False)
     elif len(args) == 2:
-        if args[1].upper() == "DEBUG":
-            dir = os.path.dirname(os.path.dirname(__file__))
-            fname = os.path.join(dir, "input_images", args[0])
-            main(fname, debug=True)
+        if args[1].upper() == "LOCAL":
+            main(args[0], local=True, debug=False)
+        elif args[1].upper() == "DEBUG":
+            main(args[0], local=False, debug=True)
         else:
-            print(f"{os.path.basename(__file__)}: Second arg must be 'DEBUG' if included.")
-    elif len(args) > 2:
+            print(f"{os.path.basename(__file__)}: Second arg must be 'LOCAL' or 'DEBUG' if included.")
+    elif len(args) == 3:
+        input_flags = [args[1].upper(), args[2].upper()]
+        if "LOCAL" in input_flags and "DEBUG" in input_flags:
+            main(args[0], local=True, debug=True)
+        else:
+            print(f"{os.path.basename(__file__)}: Additional args must be 'LOCAL' and 'DEBUG' if included.")
+    elif len(args) > 3:
         print(f"{os.path.basename(__file__)}: Too many input args")
     else:
         print(f"{os.path.basename(__file__)}: Need to include filename")
