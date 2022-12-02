@@ -26,7 +26,7 @@ TYPE = "TYPE"
 USER = "USER"
 
 # lists of interest
-CHART_TYPES = ["SINGLE", "DOUBLE", "CO-OP", "SINGLE P.", "DOUBLE P."]
+CHART_TYPES = ["SINGLE", "DOUBLE", "CO-OP", "SINGLE P.", "DOUBLE P.", "UNKNOWN"]
 GRADE_LIST = ["SSS", "SS", "S", "A", "B", "C", "D", "F"]
 NO_MISS = ["SSS", "SS", "S"]
 SCORE_WORDS = [PERFECT, GREAT, GOOD, BAD, MISS, MAX_COMBO, TOTAL_SCORE]

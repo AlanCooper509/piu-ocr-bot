@@ -262,6 +262,11 @@ def guess_chart_type(remaining_results, template):
                     diff = d
                     found_type = result
 
+    if diff >= 5:
+        # last index of c.CHART_TYPES should be the custom error text
+        not_found = Textbox()
+        not_found.text = "UNKNOWN"
+        return (not_found, -1)
     return (found_type, type_idx)
 
 def guess_username(textboxes, template, debug=False):
