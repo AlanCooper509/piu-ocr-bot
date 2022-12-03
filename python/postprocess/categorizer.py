@@ -1,4 +1,5 @@
-# pip install editdistance
+# pip install editdistance==0.6.0
+# pip install numpy==1.23.3
 
 import editdistance
 import numpy as np

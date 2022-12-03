@@ -1,3 +1,5 @@
+# pip install numpy==1.23.3
+
 import numpy as np
 import os
 

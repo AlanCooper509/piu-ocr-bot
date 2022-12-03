@@ -1,4 +1,5 @@
-# pip install easyocr (1.6.2)
+# pip install easyocr==1.6.2
+# pip install numpy==1.23.3
 
 import easyocr
 import cv2
