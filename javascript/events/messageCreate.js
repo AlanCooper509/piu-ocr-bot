@@ -16,7 +16,7 @@ module.exports = (client, message) => {
     let command = message.content.split(' ')[0];
     switch(command) {
         case c.COMMAND_ANALYZE:
-            console.log(`${COMMAND FOUND: c.COMMAND_ANALYZE}`);
+            console.log(`COMMAND FOUND: ${c.COMMAND_ANALYZE}`);
             if (message.attachments.size > 0) {
                 let messageAttachment = message.attachments.first().url;
                 let embed = new Discord.EmbedBuilder();
