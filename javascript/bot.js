@@ -1,4 +1,6 @@
-// import modules
+// npm install discord.js@14.6.0
+// npm install dotenv@16.0.3
+
 const Discord = require("discord.js");
 const fs = require("fs");
 require("dotenv").config();
