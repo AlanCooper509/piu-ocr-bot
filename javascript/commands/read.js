@@ -3,6 +3,9 @@
 const Discord = require("discord.js");
 const spawn = require("child_process").spawn;
 
+// local imports
+const c = require("../resources/constants.js");
+
 // define listener(s)
 module.exports = (message) => {
     if (message.attachments.size == 0) {
