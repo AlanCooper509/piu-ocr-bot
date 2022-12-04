@@ -119,7 +119,7 @@ def assign_digits(digits, debug=False):
     gapIndices = projection_filters.find_displacement_outliers(score_numbers, axis=1, tol=params.GAP_TOL)
     
     # check last entry (TOTAL SCORE), hacky since assumes player scores > 10000
-    if len(score_numbers) + len(gapIndices) < 7:
+    if len(score_numbers) + len(gapIndices) < 7 and len(score_numbers) > 0:
         if int(score_numbers[-1].text) < params.SCORE_MIN:
             gapIndices.append(6)
     
