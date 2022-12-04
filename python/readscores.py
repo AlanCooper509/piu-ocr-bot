@@ -109,7 +109,8 @@ def main(fname, local=False, debug=False):
     filtered = filter.filter_image(image, params.ALPHA, params.BETA)
     
     # OCR the input image using EasyOCR
-    print("[INFO] OCR'ing input image...\n", end='', flush=debug)
+    if debug:
+        print("[DEBUG] OCR'ing input image...")
     reader = easyocr.Reader(['en'], gpu=True)
     results = reader.readtext(filtered)
     
