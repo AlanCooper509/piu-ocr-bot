@@ -9,7 +9,11 @@ const command_read = require("../commands/read.js");
 // define listener(s)
 module.exports = (client, message) => {
     if(message.content == '' || message.author.bot) {
-        // empty message(?) or Discord.GatewayIntentBits.MessageContent intent not set
+        /* Conditions:
+         * - empty channel message?
+         * - Discord.GatewayIntentBits.MessageContent intent not set
+         * - some bot messaged the channel
+         */
         return;
     }
 
