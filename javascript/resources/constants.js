@@ -1,1 +1,1 @@
-exports.COMMAND_ANALYZE = "score";
+exports.COMMAND_READ = "score";
