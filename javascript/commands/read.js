@@ -5,6 +5,11 @@ const spawn = require("child_process").spawn;
 
 // define listener(s)
 module.exports = (message) => {
+    if (message.attachments.size == 0) {
+        console.log(`${c.COMMAND_READ}: IMAGE NOT FOUND`);
+        return;
+    }
+
     let messageAttachment = message.attachments.first().url;
     let embed = new Discord.EmbedBuilder();
     embed.setAuthor({

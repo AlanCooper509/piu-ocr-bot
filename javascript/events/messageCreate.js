@@ -21,11 +21,7 @@ module.exports = (client, message) => {
     switch(command) {
         case c.COMMAND_READ:
             console.log(`COMMAND FOUND: ${c.COMMAND_READ}`);
-            if (message.attachments.size > 0) {
-                command_read(message);
-            } else {
-                console.log(`${c.COMMAND_READ}: IMAGE NOT FOUND`);
-            }
+            command_read(message);
             break;
         default:
             console.log(`COMMAND not recognized: ${command}`);
