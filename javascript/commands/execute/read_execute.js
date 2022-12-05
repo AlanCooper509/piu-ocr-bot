@@ -7,58 +7,82 @@ const spawn = require("child_process").spawn;
 const c = require("../../resources/constants.js");
 
 // define listener(s)
-module.exports = (message) => {
-    if (message.attachments.size == 0) {
-        console.log(`${c.COMMAND_READ}: IMAGE NOT FOUND`);
+module.exports = (input) => {
+    // support for registered Discord slash command and also basic user message command
+    const slashObject = "ChatInputCommandInteraction";
+    const messageObject = "Message";
+
+    if (![slashObject, messageObject].includes(input.constructor.name)) {
+        console.log(`${input.constructor.name}: Object input type not recognized`);
         return;
     }
 
-    let messageAttachment = message.attachments.first().url;
-    console.log(`OCR processing: ${messageAttachment}`);
-    const pythonProcess = spawn('python', ["../python/readscores.py", messageAttachment]);
-    pythonProcess.stdout.on('data', (data) => {
-        console.log(`OCR success: ${messageAttachment}`);
+    let attachmentURL = '';
+    switch (input.constructor.name) {
+        case slashObject:
+            input.deferReply();
+            attachmentURL = input.options.getAttachment(c.COMMAND_READ_SCORE_ATTACHMENT_OPTION_NAME).url;
+            break;
+        case messageObject:
+            if (input.attachments.size == 0) {
+                console.log(`${c.COMMAND_READ}: IMAGE NOT FOUND`);
+                return;
+            }
+            attachmentURL = input.attachments.first().url;
+            break;
+    }
 
+    console.log(`OCR processing: ${attachmentURL}`);
+    const pythonProcess = spawn('python', ["../python/readscores.py", attachmentURL]);
+    pythonProcess.stdout.on('data', (data) => {
+        console.log(`OCR success: ${attachmentURL}`);
+
+        // Embed for displaying the reply
         let embed = new Discord.EmbedBuilder();
-        embed.setAuthor({
-            name: message.author.tag,
-            iconURL: message.author.avatarURL()
-        });
-        embed.setImage(messageAttachment);
+        switch (input.constructor.name) {
+            case slashObject:
+                embed.setAuthor({
+                    name: input.user.username,
+                    iconURL: input.user.avatarURL()
+                });
+                break;
+            case messageObject:
+                embed.setAuthor({
+                    name: input.author.username,
+                    iconURL: input.author.avatarURL()
+                });
+                break;
+        }
+        embed.setImage(attachmentURL);
         embed.setColor(14680086);
         embed.setDescription('Some description here');
-        /*
-        embed.addFields(
-            { name: 'Regular field title', value: 'Some value here' },
-            { name: '\u200B', value: '\u200B' },
-            { name: 'Inline field title', value: 'Some value here', inline: true },
-            { name: 'Inline field title', value: 'Some value here', inline: true },
-        );
-        */
         embed.addFields(
             { name: 'readscores.py', value: data.toString() }
         );
 
-        // Button for triggering edits
+        // Buttons below the embed for triggering edit actions
         const row = new Discord.ActionRowBuilder()
             .addComponents(
                 new Discord.ButtonBuilder()
-                    .setCustomId(c.DEV_MODAL_EDIT_SCORES_BUTTON)
+                    .setCustomId(c.DEV_MODAL_EDIT_SCORES_BUTTON_ID)
                     .setLabel('⚖️ SCORES')
                     .setStyle(Discord.ButtonStyle.Success),
-                // TODO: not yet implemented in interactionCreate.js
                 new Discord.ButtonBuilder()
-                    .setCustomId("NOT YET IMPLEMENTED1")
+                    .setCustomId(c.DEV_MODAL_EDIT_COMBO_BUTTON_ID)
                     .setLabel('🔗 COMBO')
                     .setStyle(Discord.ButtonStyle.Secondary),
-                // TODO: not yet implemented in interactionCreate.js
                 new Discord.ButtonBuilder()
-                    .setCustomId("NOT YET IMPLEMENTED2")
+                    .setCustomId(c.DEV_MODAL_EDIT_TOTAL_BUTTON_ID)
                     .setLabel('💯 TOTAL')
                     .setStyle(Discord.ButtonStyle.Primary)
             );
 
-        message.channel.send({ embeds: [embed], components: [row] });
-        message.delete();
+        switch (input.constructor.name) {
+            case slashObject:
+                input.editReply({ embeds: [embed], components: [row] });
+                break;
+            case messageObject:
+                input.reply({ embeds: [embed], components: [row] });
+        }
     });
 };
