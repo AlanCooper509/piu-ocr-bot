@@ -9,7 +9,7 @@ module.exports = {
         .setDescription(c.COMMAND_READ_DESC)
         .addAttachmentOption(option =>
             option.setName(c.COMMAND_READ_SCORE_ATTACHMENT_OPTION_NAME)
-                .setDescription(COMMAND_READ_SCORE_ATTACHMENT_OPTION_DESC)
+                .setDescription(c.COMMAND_READ_SCORE_ATTACHMENT_OPTION_DESC)
                 .setRequired(true)
         )
 };
