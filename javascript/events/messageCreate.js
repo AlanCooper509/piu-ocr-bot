@@ -4,7 +4,7 @@ const Discord = require("discord.js");
 
 // local imports
 const c = require("../resources/constants.js");
-const command_read = require("../commands/read.js");
+const command_read = require("../commands/execute/read_execute.js");
 
 // define listener(s)
 module.exports = (client, message) => {

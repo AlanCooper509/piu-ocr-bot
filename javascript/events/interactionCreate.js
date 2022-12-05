@@ -6,7 +6,15 @@ const Discord = require("discord.js");
 const c = require("../resources/constants.js");
 
 module.exports = (client, interaction) => {
-    switch(interaction.customId) {
+    if (interaction.isChatInputCommand()) {
+        // TODO: only registered command so far (template code)
+        if (interaction.commandName === "ping") {
+            interaction.reply("pong");
+        }
+        return;
+    }
+    
+    switch (interaction.customId) {
         case c.DEV_MODAL_EDIT_SCORES_BUTTON:
             // TODO: move to separate helper
             const modal = new Discord.ModalBuilder()

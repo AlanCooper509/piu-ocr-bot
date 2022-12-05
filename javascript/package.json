@@ -5,6 +5,7 @@
   },
   "scripts": {
     "start": "node bot.js",
-    "dev": "nodemon bot.js"
+    "dev": "nodemon bot.js",
+    "register": "node deploy-commands.js"
   }
 }
