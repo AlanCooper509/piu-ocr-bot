@@ -8,6 +8,7 @@ const read_execute = require("../commands/execute/read_execute.js");
 const edit_scores_modal = require("../commands/execute/edit_scores_modal.js");
 const edit_combo_modal = require("../commands/execute/edit_combo_modal.js");
 const edit_total_modal = require("../commands/execute/edit_total_modal.js");
+const edit_info_modal = require("../commands/execute/edit_info_modal.js");
 
 module.exports = (client, interaction) => {
     if (interaction.isChatInputCommand()) {
@@ -33,6 +34,9 @@ module.exports = (client, interaction) => {
         case c.DEV_MODAL_EDIT_TOTAL_BUTTON_ID:
             edit_total_modal(interaction);
             break;
+        case c.DEV_MODAL_EDIT_INFO_BUTTON_ID:
+            edit_info_modal(interaction);
+            break;
         case c.DEV_MODAL_EDIT_SCORES_ID:
             // TODO: https://discordjs.guide/interactions/modals.html#input-properties
             console.log("DiscordJS: modal submission not yet implemented");
@@ -42,6 +46,10 @@ module.exports = (client, interaction) => {
             console.log("DiscordJS: modal submission not yet implemented");
             break;
         case c.DEV_MODAL_EDIT_TOTAL_ID:
+            // TODO: https://discordjs.guide/interactions/modals.html#input-properties
+            console.log("DiscordJS: modal submission not yet implemented");
+            break;
+        case c.DEV_MODAL_EDIT_INFO_ID:
             // TODO: https://discordjs.guide/interactions/modals.html#input-properties
             console.log("DiscordJS: modal submission not yet implemented");
             break;

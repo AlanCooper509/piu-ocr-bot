@@ -24,6 +24,7 @@ module.exports = (input) => {
             attachmentURL = input.options.getAttachment(c.COMMAND_READ_SCORE_ATTACHMENT_OPTION_NAME).url;
             break;
         case messageObject:
+            input.react('🔎');
             if (input.attachments.size == 0) {
                 console.log(`${c.COMMAND_READ}: IMAGE NOT FOUND`);
                 return;
@@ -74,8 +75,11 @@ module.exports = (input) => {
                 new Discord.ButtonBuilder()
                     .setCustomId(c.DEV_MODAL_EDIT_TOTAL_BUTTON_ID)
                     .setLabel('💯 TOTAL')
-                    .setStyle(Discord.ButtonStyle.Primary)
-            );
+                    .setStyle(Discord.ButtonStyle.Primary),
+                new Discord.ButtonBuilder()
+                    .setCustomId(c.DEV_MODAL_EDIT_INFO_BUTTON_ID)
+                    .setLabel('📝 CHART/USER')
+                    .setStyle(Discord.ButtonStyle.Danger));
 
         switch (input.constructor.name) {
             case slashObject:
