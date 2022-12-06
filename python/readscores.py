@@ -2,14 +2,16 @@
 # pip install numpy==1.23.3
 
 import easyocr
-import cv2
 import numpy as np
 import os
+import PIL
+import requests
 import sys
 import urllib
 
 # local imports
 from preprocess import filter
+from preprocess import rotation
 from postprocess import categorizer
 from resources import constants as c
 from resources import params
@@ -89,16 +91,10 @@ def main(fname, local=False, debug=False):
         # load the input image from 'input_images' directory
         dir = os.path.dirname(os.path.dirname(__file__))
         fname = os.path.join(dir, "input_images", args[0])
-        image = cv2.imread(fname)
-        if image is None:
-            print(f'unable to find {fname}')
-            sys.stdout.flush()
-            return
+        image = PIL.Image.open(fname)
     else:
         # load the input image from URL
-        with urllib.request.urlopen(urllib.request.Request(fname, headers={'User-Agent': 'Mozilla'})) as url:
-            arr = np.asarray(bytearray(url.read()), dtype=np.uint8)
-            image = cv2.imdecode(arr, -1) # 'Load it as it is'
+        image = PIL.Image.open(requests.get(fname, stream=True).raw)
 
     if image is None:
         print(f'unable to find {fname}')
@@ -106,6 +102,8 @@ def main(fname, local=False, debug=False):
         return
 
     # preprocess the image
+    image = rotation.fix_rotation(image)
+    image = np.array(image)
     filtered = filter.filter_image(image, params.ALPHA, params.BETA)
     
     # OCR the input image using EasyOCR
