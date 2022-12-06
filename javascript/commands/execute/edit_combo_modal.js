@@ -9,7 +9,7 @@ const c = require("../../resources/constants.js");
 module.exports = (interaction) => {
     const modal = new Discord.ModalBuilder()
         .setCustomId(c.DEV_MODAL_EDIT_COMBO_ID)
-        .setTitle("Edit Combo");
+        .setTitle("Edit Max Combo");
 
     // Create the action rows which are 1:1 containers of the text input components
     let actionRow = new Discord.ActionRowBuilder().addComponents(
