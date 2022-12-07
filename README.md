@@ -3,7 +3,7 @@
 > "write a real readme"<br> 
 > \- *EpikWaffle*
 
-## Python (v3.10.7)
+## Python (v3.10.7) with EasyOCR (v1.6.2)
 Driver Code: `readscores.py`
 
 #### Required Input Arg:
