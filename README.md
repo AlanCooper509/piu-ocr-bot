@@ -15,7 +15,7 @@ Driver Code: `readscores.py`
 
 `LOCAL` treats the `arg[0]` as a filename rather than a URL, and `DEBUG` puts a bunch of print statements to console for debugging purposes.
 
-## NodeJS with DiscordJS (v14.6.0)
+## NodeJS (v16.17.1) with DiscordJS (v14.6.0)
 #### Update Slash Commands:
 `deploy-commands.js` to quickly register updates to slash commands if needed
 
