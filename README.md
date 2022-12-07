@@ -13,7 +13,7 @@ Driver Code: `readscores.py`
 - `arg[1]`: `LOCAL` or `DEBUG`
 - `arg[2]`: `LOCAL` or `DEBUG`
 
-`LOCAL` treats the `arg[0]` as a filename rather than a URL, and `DEBUG` puts a bunch of print statements to console for debugging purposes.
+`LOCAL` treats the `arg[0]` as a file name rather than a URL, and `DEBUG` puts a bunch of print statements to console for debugging purposes.
 
 ## NodeJS (v16.17.1) with DiscordJS (v14.6.0)
 #### Update Slash Commands:
