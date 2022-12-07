@@ -13,13 +13,12 @@ module.exports = (interaction) => {
 
     // Create the action rows which are 1:1 containers of the text input components
     let actionRows = [];
-    let idList = ["perfectInput", "greatInput", "goodInput", "badInput", "missInput"];
     let labelList = ["PERFECT:", "GREAT:", "GOOD:", "BAD:", "MISS:"];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < c.DEV_MODAL_EDIT_SCORES_TEXT_IDS.length; i++) {
         actionRows.push(
             new Discord.ActionRowBuilder().addComponents(
                 new Discord.TextInputBuilder()
-                    .setCustomId(idList[i])
+                    .setCustomId(c.DEV_MODAL_EDIT_SCORES_TEXT_IDS[i])
                     .setLabel(labelList[i])
                     .setValue("TODO")
                     .setStyle(Discord.TextInputStyle.Short)
