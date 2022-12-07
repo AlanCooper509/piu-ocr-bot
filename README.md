@@ -4,7 +4,8 @@
 > \- *EpikWaffle*
 
 ## Python (v3.10.7) with EasyOCR (v1.6.2)
-Driver Code: `readscores.py`
+#### Driver Code:
+`readscores.py` with input args
 
 #### Required Input Arg:
 - `arg[0]`: URL path to an image, or the file name (with extension) found in the `input_images` directory if `LOCAL` is passed in
