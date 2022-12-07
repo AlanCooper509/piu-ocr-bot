@@ -17,7 +17,7 @@ Driver Code: `readscores.py`
 
 ## NodeJS (v16.17.1) with DiscordJS (v14.6.0)
 #### Update Slash Commands:
-`deploy-commands.js` to quickly register updates to slash commands if needed
+`node deploy-commands.js` to quickly register updates to slash commands if needed
 
 #### Driver Codes:
 `node bot.js` to startup the bot and setup the listeners
