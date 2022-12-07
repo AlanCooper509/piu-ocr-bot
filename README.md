@@ -7,7 +7,7 @@
 Driver Code: `readscores.py`
 
 #### Required Input Arg:
-- `arg[0]`: URL path to image, or the file name (with extension) found in the `input_images` directory if LOCAL is passed in
+- `arg[0]`: URL path to an image, or the file name (with extension) found in the `input_images` directory if LOCAL is passed in
 
 #### Optional Input Args:
 - `arg[1]`: `LOCAL` or `DEBUG`
