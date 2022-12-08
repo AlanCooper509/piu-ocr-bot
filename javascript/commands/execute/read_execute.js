@@ -5,6 +5,7 @@ const spawn = require("child_process").spawn;
 
 // local imports
 const c = require("../../resources/constants.js");
+const format_scores = require("../../utilities/embedJudgementFormatter.js");
 
 // define listener(s)
 module.exports = (input) => {
@@ -85,23 +86,14 @@ module.exports = (input) => {
         // EMBED: add fields to display user info and capture date
         embed.addFields(
             {
-                name: "PLAY DETAILS",
+                name: c.EMBED_FIELD_PLAY_DETAILS,
                 value: `\`\`\`GAME ID: ${user}\nGRADE: ${grade}\n\nUPLOADED:\n\t${uploadDate}, ${uploadTime}\`\`\``
             }
         );
 
         // EMBED: add fields to display judgements, combo, and total score
-        let padding = 25;
-        let perfectRow = `PERFECT ${'-'.repeat(padding - perfects.toString().length)} ${perfects.toString()}`;
-        let greatRow =   `GREAT ${'-'.repeat(padding + 2 - greats.toString().length)} ${greats.toString()}`;
-        let goodRow =    `GOOD ${'-'.repeat(padding + 3 - goods.toString().length)} ${goods.toString()}`;
-        let badRow =     `BAD ${'-'.repeat(padding + 4 - bads.toString().length)} ${bads.toString()}`;
-        let missRow =    `MISS ${'-'.repeat(padding + 3 - misses.toString().length)} ${misses.toString()}`;
+        format_scores(embed, perfects, greats, goods, bads, misses);
         embed.addFields(
-            {
-                name: "SCORES",
-                value: `\`\`\`${perfectRow}\n${greatRow}\n${goodRow}\n${badRow}\n${missRow}\`\`\``
-            },
             {
                 name: "MAX COMBO",
                 value: `\`\`\`${combo.toString()}\`\`\``

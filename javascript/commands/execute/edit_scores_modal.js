@@ -11,8 +11,22 @@ module.exports = (interaction) => {
         .setCustomId(c.DEV_MODAL_EDIT_SCORES_ID)
         .setTitle("Edit Scores");
 
+    const messageEmbed = interaction.message.embeds[0];
+    const scoresFieldIndex = messageEmbed.fields.map(e => e.name).indexOf(c.EMBED_FIELD_SCORES);
+    const scoresField = messageEmbed.fields[scoresFieldIndex];
+
+    // reliant on embedJudgementFormatter formatting (or formatting of equivilent embed field displayed to user, if that file is moved/edited)
+    let scoresSimple = scoresField.value.replaceAll(/-|`| /g, '').split('\n');
+    let perfects = scoresSimple[0].substring(scoresSimple[0].indexOf(c.EMBED_SUBFIELD_PERFECT) + c.EMBED_SUBFIELD_PERFECT.length);
+    let greats   = scoresSimple[1].substring(scoresSimple[1].indexOf(c.EMBED_SUBFIELD_GREAT)   + c.EMBED_SUBFIELD_GREAT.length);
+    let goods    = scoresSimple[2].substring(scoresSimple[2].indexOf(c.EMBED_SUBFIELD_GOOD)    + c.EMBED_SUBFIELD_GOOD.length);
+    let bads     = scoresSimple[3].substring(scoresSimple[3].indexOf(c.EMBED_SUBFIELD_BAD)     + c.EMBED_SUBFIELD_BAD.length);
+    let misses   = scoresSimple[4].substring(scoresSimple[4].indexOf(c.EMBED_SUBFIELD_MISS)    + c.EMBED_SUBFIELD_MISS.length);
+
     // Create the action rows which are 1:1 containers of the text input components
     let actionRows = [];
+    let judgements = [perfects, greats, goods, bads, misses];
+    console.log(judgements);
     let labelList = ["PERFECT:", "GREAT:", "GOOD:", "BAD:", "MISS:"];
     for (let i = 0; i < c.DEV_MODAL_EDIT_SCORES_TEXT_IDS.length; i++) {
         actionRows.push(
@@ -20,7 +34,7 @@ module.exports = (interaction) => {
                 new Discord.TextInputBuilder()
                     .setCustomId(c.DEV_MODAL_EDIT_SCORES_TEXT_IDS[i])
                     .setLabel(labelList[i])
-                    .setValue("TODO")
+                    .setValue(judgements[i])
                     .setStyle(Discord.TextInputStyle.Short)
                     .setMaxLength(9)
                     .setPlaceholder(`Number of ${labelList[i].slice(0, -1)}`)
@@ -28,6 +42,5 @@ module.exports = (interaction) => {
         );
     }
     modal.addComponents(actionRows[0], actionRows[1], actionRows[2], actionRows[3], actionRows[4]);
-
     interaction.showModal(modal);
 };

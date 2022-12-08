@@ -4,6 +4,8 @@ const Discord = require("discord.js");
 
 // local imports
 const c = require("../../resources/constants.js");
+const format_scores = require("../../utilities/embedJudgementFormatter.js");
+const update_timestamp = require("../../utilities/embedUpdateTimestamp.js");
 
 // define listener(s)
 module.exports = (interaction) => {
@@ -21,19 +23,30 @@ module.exports = (interaction) => {
         }
     }
 
-    // update the original embed (Discord requires it to be copied and replaced rather than edited)
+    // copy over the original embed (Discord requires it to be retrieved, copied, and replaced rather than edited)
     console.log(formInputValues);
     const originalEmbed = interaction.message.embeds[0];
-    const originalFields = originalEmbed.fields;
-    console.log(originalFields);
-    let newEmbed = Discord.EmbedBuilder.from(originalEmbed)
-        .setTitle('New scores');
-    /* .addFields(
-		{ name: 'Regular field title', value: 'Some value here' },
-		{ name: '\u200B', value: '\u200B' },
-		{ name: 'Inline field title', value: 'Some value here', inline: true },
-		{ name: 'Inline field title', value: 'Some value here', inline: true },
-	)*/
-    interaction.message.edit({ embeds: [newEmbed] });
-    interaction.reply({ content: 'Your scores are updated!', ephemeral: true });
+    let embed = new Discord.EmbedBuilder();
+    embed.setAuthor({name: originalEmbed.author.name, iconURL: originalEmbed.author.iconURL});
+    embed.setImage(originalEmbed.image.url);
+    embed.setColor(originalEmbed.color);
+    embed.setDescription(originalEmbed.description);
+    
+    for (let i = 0; i < originalEmbed.fields.length; i++) {
+        if(originalEmbed.fields[i].name == c.EMBED_FIELD_SCORES) {
+            // this is the edited part
+            format_scores(embed, formInputValues[0], formInputValues[1], formInputValues[2], formInputValues[3], formInputValues[4]);
+        } else if (originalEmbed.fields[i].name == c.EMBED_FIELD_PLAY_DETAILS){
+            // add or update the last modified date
+            update_timestamp(embed, originalEmbed.fields[i]);
+        } else {
+            embed.addFields({
+                name: originalEmbed.fields[i].name,
+                value: originalEmbed.fields[i].value
+            });
+        }
+    }
+
+    interaction.message.edit({ embeds: [embed] });
+    interaction.reply({ content: 'Your scores are updated!' });
 }
