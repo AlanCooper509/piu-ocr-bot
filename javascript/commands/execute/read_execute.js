@@ -37,8 +37,30 @@ module.exports = (input) => {
     const pythonProcess = spawn('python', ["../python/readscores.py", attachmentURL]);
     pythonProcess.stdout.on('data', (data) => {
         console.log(`OCR success: ${attachmentURL}`);
+        let timestamp = new Date();
+        let uploadDate = timestamp.toLocaleDateString();
+        let uploadTime = timestamp.toLocaleTimeString();
 
-        // Embed for displaying the reply
+        // output retrieval from OCR script
+        let outputs = JSON.parse(data.toString());
+
+        // user/chart information
+        let user     = outputs[c.JSON_TEXT_USER]    != '' ? outputs[c.JSON_TEXT_USER]  : c.JSON_NO_VALUE;
+        let chart    = outputs[c.JSON_TEXT_CHART]   != '' ? outputs[c.JSON_TEXT_CHART] : c.JSON_NO_VALUE;
+        let type     = outputs[c.JSON_TEXT_TYPE]    != '' ? outputs[c.JSON_TEXT_TYPE]  : c.JSON_NO_VALUE;
+        let diff     = outputs[c.JSON_TEXT_DIFF]    != '' ? outputs[c.JSON_TEXT_DIFF]  : c.JSON_NO_VALUE;
+        let grade    = outputs[c.JSON_TEXT_GRADE]   != '' ? outputs[c.JSON_TEXT_GRADE] : c.JSON_NO_VALUE;
+
+        // score/judgement information
+        let perfects = outputs[c.JSON_TEXT_PERFECT] != '' ? parseInt(outputs[c.JSON_TEXT_PERFECT]) : c.JSON_NO_VALUE;
+        let greats   = outputs[c.JSON_TEXT_GREAT]   != '' ? parseInt(outputs[c.JSON_TEXT_GREAT])   : c.JSON_NO_VALUE;
+        let goods    = outputs[c.JSON_TEXT_GOOD]    != '' ? parseInt(outputs[c.JSON_TEXT_GOOD])    : c.JSON_NO_VALUE;
+        let bads     = outputs[c.JSON_TEXT_BAD]     != '' ? parseInt(outputs[c.JSON_TEXT_BAD])     : c.JSON_NO_VALUE;
+        let misses   = outputs[c.JSON_TEXT_MISS]    != '' ? parseInt(outputs[c.JSON_TEXT_MISS])    : c.JSON_NO_VALUE;
+        let combo    = outputs[c.JSON_TEXT_COMBO]   != '' ? parseInt(outputs[c.JSON_TEXT_COMBO])   : c.JSON_NO_VALUE;
+        let score    = outputs[c.JSON_TEXT_SCORE]   != '' ? parseInt(outputs[c.JSON_TEXT_SCORE])   : c.JSON_NO_VALUE;
+
+        // EMBED: for displaying the reply
         let embed = new Discord.EmbedBuilder();
         switch (input.constructor.name) {
             case slashObject:
@@ -56,9 +78,38 @@ module.exports = (input) => {
         }
         embed.setImage(attachmentURL);
         embed.setColor(14680086);
-        embed.setDescription('Some description here');
+
+        // EMBED: use description to display chart information
+        embed.setDescription(`**${chart}**\n*${type} ${diff}*`);
+
+        // EMBED: add fields to display user info and capture date
         embed.addFields(
-            { name: 'readscores.py', value: data.toString() }
+            {
+                name: "PLAY DETAILS",
+                value: `\`\`\`GAME ID: ${user}\nGRADE: ${grade}\n\nUPLOADED:\n\t${uploadDate}, ${uploadTime}\`\`\``
+            }
+        );
+
+        // EMBED: add fields to display judgements, combo, and total score
+        let padding = 25;
+        let perfectRow = `PERFECT ${'-'.repeat(padding - perfects.toString().length)} ${perfects.toString()}`;
+        let greatRow =   `GREAT ${'-'.repeat(padding + 2 - greats.toString().length)} ${greats.toString()}`;
+        let goodRow =    `GOOD ${'-'.repeat(padding + 3 - goods.toString().length)} ${goods.toString()}`;
+        let badRow =     `BAD ${'-'.repeat(padding + 4 - bads.toString().length)} ${bads.toString()}`;
+        let missRow =    `MISS ${'-'.repeat(padding + 3 - misses.toString().length)} ${misses.toString()}`;
+        embed.addFields(
+            {
+                name: "SCORES",
+                value: `\`\`\`${perfectRow}\n${greatRow}\n${goodRow}\n${badRow}\n${missRow}\`\`\``
+            },
+            {
+                name: "MAX COMBO",
+                value: `\`\`\`${combo.toString()}\`\`\``
+            },
+            {
+                name: "TOTAL SCORE",
+                value: `\`\`\`${score.toLocaleString()}\`\`\``
+            }
         );
 
         // Buttons below the embed for triggering edit actions
