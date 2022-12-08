@@ -2,6 +2,7 @@
 # pip install numpy==1.23.3
 
 import easyocr
+import json
 import numpy as np
 import os
 import PIL
@@ -70,21 +71,41 @@ def post_process(results, debug=False):
     
     return (template, remaining_results)
 
-def print_findings(template, remaining_results):
-    print("======================")
-    print(f'PLAYER: {template[c.USER].value}')
-    print(f'CHART: {template[c.CHART].value} | {template[c.TYPE].value} {template[c.DIFFICULTY].value}')
-    print(f'GRADE: {template[c.GRADE].value}')
+def print_findings(template, remaining_results, debug=False):
+    outputs = {
+        c.USER.lower(): template[c.USER].value,
+        c.CHART.lower(): template[c.CHART].value,
+        c.TYPE.lower(): template[c.TYPE].value,
+        c.DIFFICULTY.lower(): template[c.DIFFICULTY].value,
+        c.GRADE.lower(): template[c.GRADE].value,
+        c.PERFECT.lower(): template[c.PERFECT].value.text,
+        c.GREAT.lower(): template[c.GREAT].value.text,
+        c.GOOD.lower(): template[c.GOOD].value.text,
+        c.BAD.lower(): template[c.BAD].value.text,
+        c.MISS.lower(): template[c.MISS].value.text,
+        c.MAX_COMBO.lower(): template[c.MAX_COMBO].value.text,
+        c.TOTAL_SCORE.lower(): template[c.TOTAL_SCORE].value.text,
+        "unclassified": [r.text for r in remaining_results]
+    }
     
-    print("----------------------")
-    for word in c.SCORE_WORDS:
-        try:
-            print(f'{word}: {template[word].value.text}')
-        except:
-            print(f'{word}: NOT FOUND')
-    print("----------------------")
-    print([r.text for r in remaining_results])
-    print("======================")
+    if debug:
+        print("======================")
+        print(f'PLAYER: {template[c.USER].value}')
+        print(f'CHART: {template[c.CHART].value} | {template[c.TYPE].value} {template[c.DIFFICULTY].value}')
+        print(f'GRADE: {template[c.GRADE].value}')
+    
+        print("----------------------")
+        for word in c.SCORE_WORDS:
+            try:
+                print(f'{word}: {template[word].value.text}')
+            except:
+                print(f'{word}: NOT FOUND')
+        print("----------------------")
+        print([r.text for r in remaining_results])
+        print("======================")
+    else:
+        json_object = json.dumps(outputs, indent = 4).replace('null', '""')
+        print(json_object)
 
 def main(fname, local=False, debug=False):
     if local:
@@ -120,8 +141,8 @@ def main(fname, local=False, debug=False):
     # postprocess the text results
     (template, remaining_results) = post_process(results, debug=debug)
     
-    # debugging purposes (for now)
-    print_findings(template, remaining_results)
+    # writes as JSON string and prints using basic print() statements
+    print_findings(template, remaining_results, debug)
     
     sys.stdout.flush()
 
