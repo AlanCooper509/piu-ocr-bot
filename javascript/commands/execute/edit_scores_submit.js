@@ -12,8 +12,10 @@ module.exports = (interaction) => {
     let formInputValues = [];
     for (i = 0; i < c.DEV_MODAL_EDIT_SCORES_TEXT_IDS.length; i++) {
         let nextFormEntry = interaction.fields.getTextInputValue(c.DEV_MODAL_EDIT_SCORES_TEXT_IDS[i]);
-        if(/^\d+$/.test(nextFormEntry)) {
+        if (/^\d+$/.test(nextFormEntry)) {
             formInputValues.push(parseInt(nextFormEntry));
+        } else if(nextFormEntry == c.JSON_NO_VALUE){
+            formInputValues.push(nextFormEntry);
         } else {
             interaction.reply({
                 content: `An invalid score value of \`${nextFormEntry}\` was found in your SCORES submission!\nPlease try again.`, 
