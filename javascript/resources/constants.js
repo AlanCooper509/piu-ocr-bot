@@ -30,11 +30,6 @@ modalTextGreatId   = "greatInput";
 modalTextGoodId    = "goodInput";
 modalTextBadId     = "badInput";
 modalTextMissId    = "missInput";
-exports.DEV_MODAL_EDIT_SCORES_PERFECT_ID = modalTextPerfectId
-exports.DEV_MODAL_EDIT_SCORES_GREAT_ID   = modalTextGreatId
-exports.DEV_MODAL_EDIT_SCORES_GOOD_ID    = modalTextGoodId
-exports.DEV_MODAL_EDIT_SCORES_BAD_ID     = modalTextBadId
-exports.DEV_MODAL_EDIT_SCORES_MISS_ID    = modalTextMissId
 exports.DEV_MODAL_EDIT_SCORES_TEXT_IDS   = [modalTextPerfectId,
                                             modalTextGreatId,
                                             modalTextGoodId,
