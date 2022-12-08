@@ -26,7 +26,6 @@ module.exports = (interaction) => {
     // Create the action rows which are 1:1 containers of the text input components
     let actionRows = [];
     let judgements = [perfects, greats, goods, bads, misses];
-    console.log(judgements);
     let labelList = ["PERFECT:", "GREAT:", "GOOD:", "BAD:", "MISS:"];
     for (let i = 0; i < c.DEV_MODAL_EDIT_SCORES_TEXT_IDS.length; i++) {
         actionRows.push(
