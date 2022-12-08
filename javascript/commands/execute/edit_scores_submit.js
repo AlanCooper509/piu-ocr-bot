@@ -12,8 +12,8 @@ module.exports = (interaction) => {
     let formInputValues = [];
     for (i = 0; i < c.DEV_MODAL_EDIT_SCORES_TEXT_IDS.length; i++) {
         let nextFormEntry = interaction.fields.getTextInputValue(c.DEV_MODAL_EDIT_SCORES_TEXT_IDS[i]);
-        if(/[0-9]+/.test(nextFormEntry)) {
-            formInputValues.push(nextFormEntry);
+        if(/^\d+$/.test(nextFormEntry)) {
+            formInputValues.push(parseInt(nextFormEntry));
         } else {
             interaction.reply({
                 content: `An invalid score value of \`${nextFormEntry}\` was found in your SCORES submission!\nPlease try again.`, 
@@ -24,7 +24,6 @@ module.exports = (interaction) => {
     }
 
     // copy over the original embed (Discord requires it to be retrieved, copied, and replaced rather than edited)
-    console.log(formInputValues);
     const originalEmbed = interaction.message.embeds[0];
     let embed = new Discord.EmbedBuilder();
     embed.setAuthor({name: originalEmbed.author.name, iconURL: originalEmbed.author.iconURL});
@@ -48,5 +47,5 @@ module.exports = (interaction) => {
     }
 
     interaction.message.edit({ embeds: [embed] });
-    interaction.reply({ content: 'Your scores are updated!' });
+    interaction.reply({ content: 'Scores were updated on this submission!', ephemeral: true });
 }
