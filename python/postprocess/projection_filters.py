@@ -110,6 +110,7 @@ def find_displacement_outliers(digits, axis, tol=1.5, debug=False):
         print(f'[DEBUG] \t- centers: {centers}')
         print(f'[DEBUG] \t- center: {center}')
         print(f'[DEBUG] \t- tol: {tol}')
+        debugger.blank_line()
 
     # identify outlier indices
     outliers = list(map(lambda p: p > tol*center, centers))
@@ -119,6 +120,8 @@ def find_displacement_outliers(digits, axis, tol=1.5, debug=False):
     outlier_idxs = [x + 1 for x in outlier_idxs]
 
     if debug:
+        debugger.write_comment("outliers found")
+        print(f'[DEBUG] \t- outlier_idxs: {outlier_idxs}')
         debugger.end_frame()
 
     return outlier_idxs
