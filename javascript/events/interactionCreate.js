@@ -8,7 +8,9 @@ const read_execute = require("../commands/execute/read_execute.js");
 const edit_scores_modal = require("../commands/execute/edit_scores_modal.js");
 const edit_scores_submit = require("../commands/execute/edit_scores_submit.js");
 const edit_combo_modal = require("../commands/execute/edit_combo_modal.js");
+const edit_combo_submit = require("../commands/execute/edit_combo_submit.js");
 const edit_total_modal = require("../commands/execute/edit_total_modal.js");
+const edit_total_submit = require("../commands/execute/edit_total_submit.js");
 const edit_info_modal = require("../commands/execute/edit_info_modal.js");
 
 module.exports = (client, interaction) => {
@@ -51,12 +53,10 @@ module.exports = (client, interaction) => {
                 edit_scores_submit(interaction);
                 break;
             case c.DEV_MODAL_EDIT_COMBO_ID:
-                // TODO: https://discordjs.guide/interactions/modals.html#input-properties
-                console.log("DiscordJS: modal submission not yet implemented");
+                edit_combo_submit(interaction);
                 break;
             case c.DEV_MODAL_EDIT_TOTAL_ID:
-                // TODO: https://discordjs.guide/interactions/modals.html#input-properties
-                console.log("DiscordJS: modal submission not yet implemented");
+                edit_total_submit(interaction);
                 break;
             case c.DEV_MODAL_EDIT_INFO_ID:
                 // TODO: https://discordjs.guide/interactions/modals.html#input-properties

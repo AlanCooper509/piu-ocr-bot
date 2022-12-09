@@ -4,8 +4,10 @@ exports.COMMAND_READ_SCORE_ATTACHMENT_OPTION_NAME = "score";
 exports.COMMAND_READ_SCORE_ATTACHMENT_OPTION_DESC = "upload your results screen here";
 
 // Embed field names or keyword strings created using Discord.EmbedBuilder() and accessed whenever updating or reading the embed
-exports.EMBED_FIELD_SCORES       = "SCORES"
 exports.EMBED_FIELD_PLAY_DETAILS = "PLAY DETAILS"
+exports.EMBED_FIELD_MAX_COMBO    = "MAX COMBO"
+exports.EMBED_FIELD_TOTAL_SCORE  = "TOTAL SCORE"
+exports.EMBED_FIELD_SCORES       = "SCORES"
 exports.EMBED_SUBFIELD_PERFECT   = "PERFECT"
 exports.EMBED_SUBFIELD_GREAT     = "GREAT"
 exports.EMBED_SUBFIELD_GOOD      = "GOOD"
@@ -30,6 +32,8 @@ modalTextGreatId   = "greatInput";
 modalTextGoodId    = "goodInput";
 modalTextBadId     = "badInput";
 modalTextMissId    = "missInput";
+exports.DEV_MODAL_EDIT_TOTAL_TEXT_ID = "totalInput";
+exports.DEV_MODAL_EDIT_COMBO_TEXT_ID = "comboInput";
 exports.DEV_MODAL_EDIT_SCORES_TEXT_IDS   = [modalTextPerfectId,
                                             modalTextGreatId,
                                             modalTextGoodId,

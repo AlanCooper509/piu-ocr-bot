@@ -11,14 +11,18 @@ module.exports = (interaction) => {
         .setCustomId(c.DEV_MODAL_EDIT_TOTAL_ID)
         .setTitle("Edit Total Score");
 
+    const messageEmbed = interaction.message.embeds[0];
+    const totalFieldIndex = messageEmbed.fields.map(e => e.name).indexOf(c.EMBED_FIELD_TOTAL_SCORE);
+    const totalField = messageEmbed.fields[totalFieldIndex];
+
     // Create the action rows which are 1:1 containers of the text input components
     let actionRow = new Discord.ActionRowBuilder().addComponents(
         new Discord.TextInputBuilder()
-            .setCustomId("totalInput")
+            .setCustomId(c.DEV_MODAL_EDIT_TOTAL_TEXT_ID)
             .setLabel("TOTAL SCORE")
-            .setValue("TODO")
+            .setValue(totalField.value.replaceAll(/`/g, ''))
             .setStyle(Discord.TextInputStyle.Short)
-            .setMaxLength(9)
+            .setMaxLength(20)
             .setPlaceholder(`Total Score Value`)
     );
     modal.addComponents(actionRow);

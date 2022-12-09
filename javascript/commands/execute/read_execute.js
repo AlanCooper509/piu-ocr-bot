@@ -92,14 +92,18 @@ module.exports = (input) => {
         );
 
         // EMBED: add fields to display judgements, combo, and total score
-        format_scores(embed, perfects, greats, goods, bads, misses);
+        let judgements = format_scores(perfects, greats, goods, bads, misses);
         embed.addFields(
             {
-                name: "MAX COMBO",
+                name: c.EMBED_FIELD_SCORES,
+                value: `\`\`\`${judgements}\`\`\``
+            },
+            {
+                name: c.EMBED_FIELD_MAX_COMBO,
                 value: `\`\`\`${combo.toString()}\`\`\``
             },
             {
-                name: "TOTAL SCORE",
+                name: c.EMBED_FIELD_TOTAL_SCORE,
                 value: `\`\`\`${score.toLocaleString()}\`\`\``
             }
         );
