@@ -148,6 +148,16 @@ def assign_digits(digits, remaining_results, debug=False):
     
     # find any missing (inbetween) entries
     (gap_indices, gap_sizes) = projection_filters.find_displacement_outliers(score_numbers, axis=1, tol=params.GAP_TOL)
+    
+    if debug:
+        debugger.write_comment("after y-axis projection")
+        print(f'[DEBUG] \t- score_numbers: {[n.text for n in score_numbers]}')
+        print(f'[DEBUG] \t- remaining_digits: {[n.text for n in remaining_digits]}')
+        print(f'[DEBUG] \t- gap_indices: {[n for n in gap_indices]}')
+        print(f'[DEBUG] \t- gap_sizes: {[n for n in gap_sizes]}')
+        debugger.blank_line()
+    
+    # adjust gap indices based on gap sizes
     gap_indices_adjusted = []
     offset = 0
     for idx, gap in enumerate(gap_indices):
@@ -158,14 +168,6 @@ def assign_digits(digits, remaining_results, debug=False):
             gapsize -= 1
         gap_indices_adjusted.append(gap + offset)
     gap_indices = gap_indices_adjusted
-    
-    if debug:
-        debugger.write_comment("after y-axis projection")
-        print(f'[DEBUG] \t- score_numbers: {[n.text for n in score_numbers]}')
-        print(f'[DEBUG] \t- remaining_digits: {[n.text for n in remaining_digits]}')
-        print(f'[DEBUG] \t- gap_indices: {[n for n in gap_indices]}')
-        print(f'[DEBUG] \t- gap_sizes: {[n for n in gap_sizes]}')
-        debugger.blank_line()
     
     # check last entry (TOTAL SCORE), hacky since assumes player scores > 10000
     if len(score_numbers) + len(gap_indices) < 7 and len(score_numbers) > 0:
