@@ -23,7 +23,6 @@ module.exports = (interaction) => {
         if (embedDesc[1].split(' ')[0] == "CO-OP") {
             // CO-OP
             chartType = embedDesc[1].split(' ')[0];
-            chartDiff = c.JSON_NO_VALUE;
         } else {
             // SINGLE or DOUBLE --> S or D
             chartType = embedDesc[1].split(' ')[0][0];
@@ -59,13 +58,21 @@ module.exports = (interaction) => {
             .setStyle(Discord.TextInputStyle.Short)
             .setMaxLength(20)
             .setPlaceholder("PIU profile username"));
+    let gradeField = new Discord.ActionRowBuilder().addComponents(
+        new Discord.TextInputBuilder()
+            .setCustomId(c.DEV_MODAL_EDIT_GRADE_TEXT_ID)
+            .setLabel("GRADE:")
+            .setValue(grade)
+            .setStyle(Discord.TextInputStyle.Short)
+            .setMaxLength(3)
+            .setPlaceholder("Letter grade on the chart, regardless of break on/off"));
     let chartNameField = new Discord.ActionRowBuilder().addComponents(
         new Discord.TextInputBuilder()
             .setCustomId(c.DEV_MODAL_EDIT_CHART_NAME_TEXT_ID)
             .setLabel("CHART NAME:")
             .setValue(chartName)
             .setStyle(Discord.TextInputStyle.Short)
-            .setMaxLength(20)
+            .setMaxLength(50)
             .setPlaceholder("Chart Name/Title"));
     // Regex: (S|D|SP|DP)\d+|CO-OP
     let chartDiffField = new Discord.ActionRowBuilder().addComponents(
@@ -77,6 +84,6 @@ module.exports = (interaction) => {
             .setMaxLength(5)
             .setPlaceholder("Examples: 'S20' or 'DP18' or 'CO-OP'"));
 
-    modal.addComponents(usernameField, chartNameField, chartDiffField);
+    modal.addComponents(usernameField, gradeField, chartNameField, chartDiffField);
     interaction.showModal(modal);
 };

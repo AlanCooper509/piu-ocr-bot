@@ -16,13 +16,13 @@ module.exports = (originalEmbed, fieldName, fieldValue) => {
     embed.setDescription(originalEmbed.description);
     
     for (let i = 0; i < originalEmbed.fields.length; i++) {
-        if(originalEmbed.fields[i].name == fieldName) {
+        if (originalEmbed.fields[i].name == fieldName) {
             // this is the edited part
             embed.addFields({
                 name: fieldName,
                 value: fieldValue
             });
-        } else if (originalEmbed.fields[i].name == c.EMBED_FIELD_PLAY_DETAILS){
+        } else if (originalEmbed.fields[i].name == c.EMBED_FIELD_PLAY_DETAILS && fieldName != c.EMBED_FIELD_PLAY_DETAILS) {
             // add or update the last modified date
             update_timestamp(embed, originalEmbed.fields[i]);
         } else {

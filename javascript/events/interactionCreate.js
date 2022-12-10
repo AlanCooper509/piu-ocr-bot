@@ -12,6 +12,7 @@ const edit_combo_submit = require("../commands/execute/edit_combo_submit.js");
 const edit_total_modal = require("../commands/execute/edit_total_modal.js");
 const edit_total_submit = require("../commands/execute/edit_total_submit.js");
 const edit_info_modal = require("../commands/execute/edit_info_modal.js");
+const edit_info_submit = require("../commands/execute/edit_info_submit.js");
 
 module.exports = (client, interaction) => {
     if (interaction.isChatInputCommand()) {
@@ -59,8 +60,7 @@ module.exports = (client, interaction) => {
                 edit_total_submit(interaction);
                 break;
             case c.DEV_MODAL_EDIT_INFO_ID:
-                // TODO: https://discordjs.guide/interactions/modals.html#input-properties
-                console.log("DiscordJS: modal submission not yet implemented");
+                edit_info_submit(interaction);
                 break;
             default:
                 console.log(`Modal ID not recognized: ${interaction.customId}`)
