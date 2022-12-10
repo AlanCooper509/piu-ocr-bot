@@ -87,7 +87,7 @@ module.exports = (input) => {
         embed.addFields(
             {
                 name: c.EMBED_FIELD_PLAY_DETAILS,
-                value: `\`\`\`GAME ID: ${user}\nGRADE: ${grade}\n\nUPLOADED:\n\t${uploadDate}, ${uploadTime}\`\`\``
+                value: `\`\`\`${c.EMBED_SUBFIELD_GAME_ID}: ${user}\n${c.EMBED_SUBFIELD_GRADE}: ${grade}\n\nUPLOADED:\n\t${uploadDate}, ${uploadTime}\`\`\``
             }
         );
 
