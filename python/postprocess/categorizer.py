@@ -43,7 +43,7 @@ def categorize_results(confident_results, template):
     
     return (template, digits, other)
 
-def assign_digits(digits, debug=False):
+def assign_digits(digits, remaining_results, debug=False):
     """
     *********************************************************
     determine the seven entries from the input param 'digits'
@@ -90,6 +90,43 @@ def assign_digits(digits, debug=False):
         else:
             remaining_digits.append(d)
     
+    # score numbers should all be above the "CALORIE" textbox if it was found
+    calorie_results = [result for result in remaining_results if "calorie" in result.text.lower()]
+    if len(calorie_results) > 0:
+        # get the y threshold using the bottom left corner
+        calorie_bottom_bound = calorie_results[-1].box[3][1]
+        
+        # find entries to filter out by comparing y-values
+        new_score_numbers = []
+        for d in score_numbers:
+            if d.center[1] < calorie_bottom_bound:
+                new_score_numbers.append(d)
+            else:
+                remaining_digits.append(d)
+        score_numbers = new_score_numbers
+    
+    # try to filter out stuff below the (TOTAL SCORE) entry, hacky since assumes player scores > 10000
+    if len(score_numbers) > 0:
+        # these are sorted from top to bottom already by easyOCR
+        total_score = None
+        skip_start_entries = 4 # padding in case username or BGA above scores has some numbers
+        for d in score_numbers:
+            if int(d.text) > params.SCORE_MIN and skip_start_entries <= 0:
+                # using first "total score" contender for filtering threshold
+                total_score = d
+                break;
+            skip_start_entries -= 1
+        
+        if total_score is not None:
+            # filter out the stuff below the "total score" contender
+            new_score_numbers = []
+            for d in score_numbers:
+                if d.center[1] < total_score.center[1]:
+                    new_score_numbers.append(d)
+                else:
+                    remaining_digits.append(d)
+            score_numbers = new_score_numbers
+    
     # filter outliers using x-axis projections
     (score_numbers, outliers) = projection_filters.filter_outliers(score_numbers, axis=0, tol=params.X_TOL, debug=debug)
     remaining_digits += outliers
@@ -102,35 +139,47 @@ def assign_digits(digits, debug=False):
         print(f'[DEBUG] \t- remaining_digits (x-pos): {[n.center[0] for n in remaining_digits]}')
         debugger.blank_line()
     
-    # filter outliers using y-axis displacements
-    loop = True
+    # filter outliers using y-axis displacements (note starting condition of loop differs from repeat iterations
+    loop = len(score_numbers) > 7
     while loop:
         (score_numbers, more_outliers) = projection_filters.filter_displacement_outliers(score_numbers, axis=1, tol=params.Y_TOL, debug=debug)
         remaining_digits += more_outliers
         loop = len(more_outliers) > 0
     
+    # find any missing (inbetween) entries
+    (gap_indices, gap_sizes) = projection_filters.find_displacement_outliers(score_numbers, axis=1, tol=params.GAP_TOL)
+    gap_indices_adjusted = []
+    offset = 0
+    for idx, gap in enumerate(gap_indices):
+        gapsize = gap_sizes[idx]
+        while (gapsize > 1):
+            gap_indices_adjusted.append(gap + offset)
+            offset += 1
+            gapsize -= 1
+        gap_indices_adjusted.append(gap + offset)
+    gap_indices = gap_indices_adjusted
+    
     if debug:
         debugger.write_comment("after y-axis projection")
         print(f'[DEBUG] \t- score_numbers: {[n.text for n in score_numbers]}')
         print(f'[DEBUG] \t- remaining_digits: {[n.text for n in remaining_digits]}')
+        print(f'[DEBUG] \t- gap_indices: {[n for n in gap_indices]}')
+        print(f'[DEBUG] \t- gap_sizes: {[n for n in gap_sizes]}')
         debugger.blank_line()
     
-    # find any missing (inbetween) entries
-    gapIndices = projection_filters.find_displacement_outliers(score_numbers, axis=1, tol=params.GAP_TOL)
-    
     # check last entry (TOTAL SCORE), hacky since assumes player scores > 10000
-    if len(score_numbers) + len(gapIndices) < 7 and len(score_numbers) > 0:
+    if len(score_numbers) + len(gap_indices) < 7 and len(score_numbers) > 0:
         if int(score_numbers[-1].text) < params.SCORE_MIN:
-            gapIndices.append(6)
+            gap_indices.append(6)
     
     # if still gaps, assuming missing scores from top to bottom
     iterator = 0
-    while len(score_numbers) + len(gapIndices) < 7:
-        if iterator not in gapIndices:
-            gapIndices.append(iterator)
+    while len(score_numbers) + len(gap_indices) < 7:
+        if iterator not in gap_indices:
+            gap_indices.append(iterator)
         iterator += 1
     
-    for idx in gapIndices:
+    for idx in gap_indices:
         score_numbers.insert(idx, Textbox(entry=None))
     
     if debug:

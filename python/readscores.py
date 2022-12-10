@@ -29,7 +29,7 @@ def post_process(results, debug=False):
     (template, digits, remaining_results) = categorizer.categorize_results(confident_results, template)
     
     # filter digits for score values using 1D projections of positions
-    (score_numbers, remaining_digits) = categorizer.assign_digits(digits, debug)
+    (score_numbers, remaining_digits) = categorizer.assign_digits(digits, remaining_results, debug)
     
     # match scores with their template word's values
     if len(c.SCORE_WORDS) <= len(score_numbers):

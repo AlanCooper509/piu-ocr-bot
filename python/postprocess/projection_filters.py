@@ -113,8 +113,15 @@ def find_displacement_outliers(digits, axis, tol=1.5, debug=False):
         debugger.blank_line()
 
     # identify outlier indices
+    gap_sizes = []
     outliers = list(map(lambda p: p > tol*center, centers))
     outlier_idxs = [idx for idx, bool_val in enumerate(outliers) if bool_val]
+
+    # calculate gap sizes using non-gap centers indices
+    remaining = [centers[i] for i in range(len(centers)) if i not in outlier_idxs]
+    center = 0.5*np.mean(remaining) + 0.5*np.median(remaining)
+    for idx in outlier_idxs:
+        gap_sizes.append(round(centers[idx]/center) - 1)
 
     # using displacements shifts indices by one; shift it back before returning
     outlier_idxs = [x + 1 for x in outlier_idxs]
@@ -124,7 +131,7 @@ def find_displacement_outliers(digits, axis, tol=1.5, debug=False):
         print(f'[DEBUG] \t- outlier_idxs: {outlier_idxs}')
         debugger.end_frame()
 
-    return outlier_idxs
+    return (outlier_idxs, gap_sizes)
 
 def filter_displacement_outliers(digits, axis, tol=2, debug=False):
     """
@@ -143,7 +150,7 @@ def filter_displacement_outliers(digits, axis, tol=2, debug=False):
         debugger = Debugger(frame)
         debugger.start_frame()
 
-    outlier_idxs = find_displacement_outliers(digits, axis, tol, debug)
+    (outlier_idxs, gap_sizes) = find_displacement_outliers(digits, axis, tol, debug)
 
     # create the filtered list
     filtered_list = []
