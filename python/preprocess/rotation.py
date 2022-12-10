@@ -10,7 +10,7 @@ def fix_rotation(img):
             break
     
     exif = img._getexif()
-    if orientation in exif:
+    if exif is not None and orientation in exif:
         if exif[orientation] == 3:
             img=img.rotate(180, expand=True)
         elif exif[orientation] == 6:
