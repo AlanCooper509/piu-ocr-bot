@@ -121,7 +121,7 @@ def assign_digits(digits, remaining_results, debug=False):
             # filter out the stuff below the "total score" contender
             new_score_numbers = []
             for d in score_numbers:
-                if d.center[1] < total_score.center[1]:
+                if d.center[1] <= total_score.center[1]:
                     new_score_numbers.append(d)
                 else:
                     remaining_digits.append(d)
@@ -180,7 +180,9 @@ def assign_digits(digits, remaining_results, debug=False):
         iterator += 1
     
     for idx in gap_indices:
-        score_numbers.insert(idx, Textbox(entry=None))
+        artificial_entry = Textbox(entry=None)
+        artificial_entry.text = "000"
+        score_numbers.insert(idx, artificial_entry)
     
     if debug:
         debugger.write_comment("after identifying gaps")
@@ -336,7 +338,7 @@ def guess_username(textboxes, template, debug=False):
     # assumes score values have been assigned to the template already
     p = template[c.PERFECT].value
     m = template[c.MISS].value
-    if p and p.text != '' and m and m.text != '':
+    if p and p.area != 0 and m and m.area != 0:
         # method 1:
             # finds closest word to expected distance directly above score values
             # specified with a magnitude of (PERFECT score value) - (MISS score value)
@@ -353,7 +355,10 @@ def guess_username(textboxes, template, debug=False):
                 min = euclidean2
         if debug:
             debugger.write_comment("first method: chosen result (text field)")
+            print(f'[DEBUG] \t- disp: {m.center} - {p.center} = {disp}')
+            print(f'[DEBUG] \t- expected: {p.center} - {disp} = {expected}')
             print(f'[DEBUG] \t- username: {username.text}')
+            print(f'[DEBUG] \t- coordinates: {username.center}')
     else:
         # method 2:
             # just find closest text directly above the highest available score words or score values
@@ -393,6 +398,7 @@ def guess_username(textboxes, template, debug=False):
         if debug:
             debugger.write_comment("second method: chosen result (text field)")
             print(f'[DEBUG] \t- username: {username.text}')
+            print(f'[DEBUG] \t- coordinates: {username.center}')
     
     if debug:
         debugger.end_frame()
