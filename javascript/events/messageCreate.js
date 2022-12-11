@@ -4,7 +4,7 @@ const Discord = require("discord.js");
 
 // local imports
 const c = require("../resources/constants.js");
-const command_read = require("../commands/execute/read_execute.js");
+const read_execute = require("../commands/execute/read_execute.js");
 
 // define listener(s)
 module.exports = (client, message) => {
@@ -21,7 +21,7 @@ module.exports = (client, message) => {
     switch(command.toLowerCase()) {
         case c.COMMAND_READ:
             console.log(`COMMAND FOUND: ${c.COMMAND_READ}`);
-            command_read(message);
+            read_execute(message);
             break;
         case c.COMMAND_HEY:
             message.reply(c.HEY);
