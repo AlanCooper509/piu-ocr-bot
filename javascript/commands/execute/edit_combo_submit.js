@@ -2,7 +2,6 @@
 const c = require("../../resources/constants.js");
 const update_embed_field = require("../../utilities/embedCopier.js");
 
-// define listener(s)
 module.exports = (interaction) => {
     let formValue = interaction.fields.getTextInputValue(c.DEV_MODAL_EDIT_COMBO_TEXT_ID);
     if (/^\d+$/.test(formValue)) {

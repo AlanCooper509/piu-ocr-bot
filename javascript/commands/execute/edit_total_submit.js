@@ -2,7 +2,6 @@
 const c = require("../../resources/constants.js");
 const update_embed = require("../../utilities/embedCopier.js");
 
-// define listener(s)
 module.exports = (interaction) => {
     let formValue = interaction.fields.getTextInputValue(c.DEV_MODAL_EDIT_TOTAL_TEXT_ID);
     // thanks for the regex https://stackoverflow.com/questions/5917082/

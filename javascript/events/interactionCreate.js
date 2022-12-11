@@ -14,6 +14,7 @@ const edit_total_submit = require("../commands/execute/edit_total_submit.js");
 const edit_info_modal = require("../commands/execute/edit_info_modal.js");
 const edit_info_submit = require("../commands/execute/edit_info_submit.js");
 
+// define listener(s)
 module.exports = (client, interaction) => {
     if (interaction.isChatInputCommand()) {
         switch(interaction.commandName) {

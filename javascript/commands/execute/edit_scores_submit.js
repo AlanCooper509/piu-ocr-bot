@@ -3,7 +3,6 @@ const c = require("../../resources/constants.js");
 const format_scores = require("../../utilities/embedJudgementFormatter.js");
 const update_embed_field = require("../../utilities/embedCopier.js");
 
-// define listener(s)
 module.exports = (interaction) => {
     let formInputValues = [];
     for (i = 0; i < c.DEV_MODAL_EDIT_SCORES_TEXT_IDS.length; i++) {

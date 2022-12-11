@@ -2,7 +2,6 @@
 const c = require("../../resources/constants.js");
 const update_embed = require("../../utilities/embedCopier.js");
 
-// define listener(s)
 module.exports = (interaction) => {
     let formValueGameID = interaction.fields.getTextInputValue(c.DEV_MODAL_EDIT_GAMEID_TEXT_ID);
     let formValueGrade = interaction.fields.getTextInputValue(c.DEV_MODAL_EDIT_GRADE_TEXT_ID);

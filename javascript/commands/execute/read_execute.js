@@ -7,7 +7,6 @@ const spawn = require("child_process").spawn;
 const c = require("../../resources/constants.js");
 const format_scores = require("../../utilities/embedJudgementFormatter.js");
 
-// define listener(s)
 module.exports = (input) => {
     // support for registered Discord slash command and also basic user message command
     const slashObject = "ChatInputCommandInteraction";

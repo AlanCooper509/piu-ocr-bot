@@ -5,7 +5,6 @@ const Discord = require("discord.js");
 // local imports
 const c = require("../../resources/constants.js");
 
-// define listener(s)
 module.exports = (interaction) => {
     const modal = new Discord.ModalBuilder()
         .setCustomId(c.DEV_MODAL_EDIT_COMBO_ID)
