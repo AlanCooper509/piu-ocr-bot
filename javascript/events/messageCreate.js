@@ -18,10 +18,13 @@ module.exports = (client, message) => {
     }
 
     let command = message.content.split(' ')[0];
-    switch(command) {
+    switch(command.toLowerCase()) {
         case c.COMMAND_READ:
             console.log(`COMMAND FOUND: ${c.COMMAND_READ}`);
             command_read(message);
+            break;
+        case c.COMMAND_HEY:
+            message.reply(c.HEY);
             break;
         default:
             console.log(`COMMAND not recognized: ${command}`);

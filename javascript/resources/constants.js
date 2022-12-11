@@ -64,3 +64,6 @@ exports.JSON_TEXT_MISS    = "miss";
 exports.JSON_TEXT_COMBO   = "max combo";
 exports.JSON_TEXT_SCORE   = "total score";
 exports.JSON_NO_VALUE     = "!!";
+
+// HEY!!
+exports.HEY = { content: '**HEY!!**', files: ['https://i.ytimg.com/vi/YknOygHNv1U/maxresdefault.jpg'] };
