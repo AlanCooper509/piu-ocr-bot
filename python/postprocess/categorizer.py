@@ -105,6 +105,26 @@ def assign_digits(digits, remaining_results, debug=False):
                 remaining_digits.append(d)
         score_numbers = new_score_numbers
     
+    if debug:
+        debugger.write_comment("after CALORIE filtering")
+        print(f'[DEBUG] \t- score_numbers (text): {[n.text for n in score_numbers]}')
+        print(f'[DEBUG] \t- score_numbers (x-pos): {[n.center[0] for n in score_numbers]}')
+        print(f'[DEBUG] \t- remaining_digits (text): {[n.text for n in remaining_digits]}')
+        print(f'[DEBUG] \t- remaining_digits (x-pos): {[n.center[0] for n in remaining_digits]}')
+        debugger.blank_line()
+    
+    # filter outliers using x-axis projections
+    (score_numbers, outliers) = projection_filters.filter_outliers(score_numbers, axis=0, tol=params.X_TOL, debug=debug)
+    remaining_digits += outliers
+    
+    if debug:
+        debugger.write_comment("after x-axis projection")
+        print(f'[DEBUG] \t- score_numbers (text): {[n.text for n in score_numbers]}')
+        print(f'[DEBUG] \t- score_numbers (x-pos): {[n.center[0] for n in score_numbers]}')
+        print(f'[DEBUG] \t- remaining_digits (text): {[n.text for n in remaining_digits]}')
+        print(f'[DEBUG] \t- remaining_digits (x-pos): {[n.center[0] for n in remaining_digits]}')
+        debugger.blank_line()
+    
     # try to filter out stuff below the (TOTAL SCORE) entry, hacky since assumes player scores > 10000
     if len(score_numbers) > 0:
         # these are sorted from top to bottom already by easyOCR
@@ -127,12 +147,8 @@ def assign_digits(digits, remaining_results, debug=False):
                     remaining_digits.append(d)
             score_numbers = new_score_numbers
     
-    # filter outliers using x-axis projections
-    (score_numbers, outliers) = projection_filters.filter_outliers(score_numbers, axis=0, tol=params.X_TOL, debug=debug)
-    remaining_digits += outliers
-    
     if debug:
-        debugger.write_comment("after x-axis projection")
+        debugger.write_comment("after params.SCORE_MIN filtering")
         print(f'[DEBUG] \t- score_numbers (text): {[n.text for n in score_numbers]}')
         print(f'[DEBUG] \t- score_numbers (x-pos): {[n.center[0] for n in score_numbers]}')
         print(f'[DEBUG] \t- remaining_digits (text): {[n.text for n in remaining_digits]}')
