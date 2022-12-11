@@ -1,3 +1,6 @@
+exports.COMMAND_HEY = "hey";
+exports.COMMAND_HEY_DESC = "HEY!!";
+
 exports.COMMAND_READ = "read";
 exports.COMMAND_READ_DESC = "Upload your PIU XX score!";
 exports.COMMAND_READ_SCORE_ATTACHMENT_OPTION_NAME = "score";

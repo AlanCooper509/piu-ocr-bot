@@ -20,6 +20,9 @@ module.exports = (client, interaction) => {
             case c.COMMAND_READ:
                 read_execute(interaction);
                 break;
+            case c.COMMAND_HEY:
+                interaction.reply({ content: '**HEY!!**', files: ['https://i.ytimg.com/vi/YknOygHNv1U/maxresdefault.jpg'] });
+                break;
             default:
                 console.log(`COMMAND not recognized: ${interaction.commandName}`)
                 break;
