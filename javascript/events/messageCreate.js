@@ -20,7 +20,6 @@ module.exports = (client, message) => {
     let command = message.content.split(' ')[0];
     switch(command.toLowerCase()) {
         case c.COMMAND_READ:
-            console.log(`COMMAND FOUND: ${c.COMMAND_READ}`);
             read_execute(message);
             break;
         case c.COMMAND_HEY:
