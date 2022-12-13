@@ -55,8 +55,14 @@ module.exports = (input, results, timestamp, attachmentURL) => {
     // EMBED: add fields to display user info and capture date
     embed.addFields(
         {
+            name: c.EMBED_FIELD_RECORD_ID,
+            value: input.id,
+            inline: false
+        },
+        {
             name: c.EMBED_FIELD_PLAY_DETAILS,
-            value: `\`\`\`${c.EMBED_SUBFIELD_PLAY_ID}: ${input.id}\n${c.EMBED_SUBFIELD_GAME_ID}: ${user}\n${c.EMBED_SUBFIELD_GRADE}: ${grade}\n\n${c.EMBED_SUBFIELD_UPLOADED}:\n\t${uploadDate}, ${uploadTime}\`\`\``
+            value: `\`\`\`${c.EMBED_SUBFIELD_GAME_ID}: ${user}\n${c.EMBED_SUBFIELD_GRADE}: ${grade}\n\n${c.EMBED_SUBFIELD_UPLOADED}:\n\t${uploadDate}, ${uploadTime}\`\`\``,
+            inline: false
         }
     );
 
@@ -65,15 +71,18 @@ module.exports = (input, results, timestamp, attachmentURL) => {
     embed.addFields(
         {
             name: c.EMBED_FIELD_SCORES,
-            value: `\`\`\`${judgements}\`\`\``
+            value: `\`\`\`${judgements}\`\`\``,
+            inline: false
         },
         {
             name: c.EMBED_FIELD_MAX_COMBO,
-            value: `\`\`\`${combo.toString()}\`\`\``
+            value: `\`\`\`${combo.toString()}\`\`\``,
+            inline: true
         },
         {
             name: c.EMBED_FIELD_TOTAL_SCORE,
-            value: `\`\`\`${score.toLocaleString()}\`\`\``
+            value: `\`\`\`${score.toLocaleString()}\`\`\``,
+            inline: true
         }
     );
 

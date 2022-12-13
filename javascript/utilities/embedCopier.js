@@ -21,13 +21,15 @@ module.exports = (originalEmbed, fieldName, fieldValue) => {
             if (fieldName == c.EMBED_FIELD_PLAY_DETAILS) {
                 let playField = {
                     name: fieldName,
-                    value: fieldValue
+                    value: fieldValue,
+                    inline: originalEmbed.fields[i].inline
                 }
                 update_timestamp(embed, playField);
             } else {
                 embed.addFields({
                     name: fieldName,
-                    value: fieldValue
+                    value: fieldValue,
+                    inline: originalEmbed.fields[i].inline
                 });
             }
         } else if (originalEmbed.fields[i].name == c.EMBED_FIELD_PLAY_DETAILS) {
@@ -36,7 +38,8 @@ module.exports = (originalEmbed, fieldName, fieldValue) => {
         } else {
             embed.addFields({
                 name: originalEmbed.fields[i].name,
-                value: originalEmbed.fields[i].value
+                value: originalEmbed.fields[i].value,
+                inline: originalEmbed.fields[i].inline
             });
         }
     }

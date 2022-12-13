@@ -13,6 +13,7 @@ module.exports = (interaction) => {
             content: `An invalid game ID of \`${formValueGameID}\` was found in your CHART/USER submission!\nPlease try again.`, 
             ephemeral: true
         });
+        return;
     }
     
     if (!/^[A-DFS]$|^SS$|^SSS$/.test(formValueGrade)) {
@@ -20,6 +21,7 @@ module.exports = (interaction) => {
             content: `An invalid grade of \`${formValueGrade}\` was found in your CHART/USER submission!\nPlease try again.`, 
             ephemeral: true
         });
+        return;
     }
     
     if (!/^[S|D][P]?[0-9][0-9]?$|^CO-OP$/.test(formValueDiff)) {

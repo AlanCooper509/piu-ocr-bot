@@ -22,7 +22,8 @@ module.exports = (embed, referenceEmbedField) => {
         embed.addFields(
             {
                 name: referenceEmbedField.name,
-                value: update
+                value: update,
+                inline: referenceEmbedField.inline
             }
         );
 }

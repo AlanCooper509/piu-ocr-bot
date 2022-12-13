@@ -24,12 +24,13 @@ module.exports = (input) => {
             attachmentURL = input.options.getAttachment(c.COMMAND_READ_SCORE_ATTACHMENT_OPTION_NAME).url;
             break;
         case messageObject:
-            input.react('🔎');
             if (input.attachments.size == 0) {
+                input.react('❌');
                 console.log(`${c.COMMAND_READ}: IMAGE NOT FOUND`);
                 return;
             }
             attachmentURL = input.attachments.first().url;
+            input.react('🔎').then(replyMessage => setTimeout(() => input.react('🤔'), 5000));
             break;
     }
 
