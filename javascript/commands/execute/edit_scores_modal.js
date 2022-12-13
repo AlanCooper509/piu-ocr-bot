@@ -11,8 +11,7 @@ module.exports = (interaction) => {
         .setTitle("Edit Scores");
 
     const messageEmbed = interaction.message.embeds[0];
-    const scoresFieldIndex = messageEmbed.fields.map(e => e.name).indexOf(c.EMBED_FIELD_SCORES);
-    const scoresField = messageEmbed.fields[scoresFieldIndex];
+    const scoresField = messageEmbed.fields.find(e => e.name.includes(c.EMBED_FIELD_SCORES));
 
     // reliant on embedJudgementFormatter formatting (or formatting of equivilent embed field displayed to user, if that file is moved/edited)
     let scoresSimple = scoresField.value.replaceAll(/-|`| /g, '').split('\n');

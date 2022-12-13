@@ -37,8 +37,7 @@ module.exports = (interaction) => {
     // retrieve gameID and grade: relies on the formatting of the field section
     let gameID = c.JSON_NO_VALUE;
     let grade = c.JSON_NO_VALUE;
-    const playFieldIndex = messageEmbed.fields.map(e => e.name).indexOf(c.EMBED_FIELD_PLAY_DETAILS);
-    const playField = messageEmbed.fields[playFieldIndex].value;
+    const playField = messageEmbed.fields.find(e => e.name.includes(c.EMBED_FIELD_PLAY_DETAILS)).value;
     const fieldLines = playField.replace(/`/g, '').split(/\r?\n/);
     for (let i = 0; i < fieldLines.length; i++) {
         if (fieldLines[i].startsWith(c.EMBED_SUBFIELD_GAME_ID)) {

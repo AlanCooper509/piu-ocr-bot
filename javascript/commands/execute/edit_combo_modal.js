@@ -11,8 +11,7 @@ module.exports = (interaction) => {
         .setTitle("Edit Max Combo");
 
     const messageEmbed = interaction.message.embeds[0];
-    const comboFieldIndex = messageEmbed.fields.map(e => e.name).indexOf(c.EMBED_FIELD_MAX_COMBO);
-    const comboField = messageEmbed.fields[comboFieldIndex];
+    const comboField = messageEmbed.fields.find(e => e.name.includes(c.EMBED_FIELD_MAX_COMBO));
 
     // Create the action rows which are 1:1 containers of the text input components
     let actionRow = new Discord.ActionRowBuilder().addComponents(

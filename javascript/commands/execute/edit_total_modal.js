@@ -11,8 +11,7 @@ module.exports = (interaction) => {
         .setTitle("Edit Total Score");
 
     const messageEmbed = interaction.message.embeds[0];
-    const totalFieldIndex = messageEmbed.fields.map(e => e.name).indexOf(c.EMBED_FIELD_TOTAL_SCORE);
-    const totalField = messageEmbed.fields[totalFieldIndex];
+    const totalField = messageEmbed.fields.find(e => e.name.includes(c.EMBED_FIELD_TOTAL_SCORE));
 
     // Create the action rows which are 1:1 containers of the text input components
     let actionRow = new Discord.ActionRowBuilder().addComponents(
