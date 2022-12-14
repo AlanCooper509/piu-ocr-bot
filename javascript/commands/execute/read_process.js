@@ -36,7 +36,8 @@ module.exports = (input, results, timestamp, attachmentURL) => {
     runSQLpromise.then(
         discordReply(input, attachmentURL)
     ).catch((err) => {
-        input.reply("Error saving score results");
+        console.error(err);
+        input.reply({ content: "Error saving score results", ephemeral: true});
     });
 
     function init(input, results, timestamp) {
