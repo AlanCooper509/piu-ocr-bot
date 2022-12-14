@@ -6,6 +6,7 @@ const spawn = require("child_process").spawn;
 // local imports
 const c = require("../../resources/constants.js");
 const read_respond = require("./read_respond.js");
+const read_save_sql = require("./read_save_sql.js");
 
 module.exports = (input) => {
     // support for registered Discord slash command and also basic user message command
@@ -42,6 +43,11 @@ module.exports = (input) => {
 
         // output retrieval from OCR script
         let outputs = JSON.parse(data.toString());
-        read_respond(input, outputs, timestamp, attachmentURL);
+        let promise = read_save_sql(input, attachmentURL, timestamp, outputs);
+        promise.then(
+            read_respond(input, outputs, timestamp, attachmentURL)
+        ).catch((err) => {
+            input.reply("Error saving score results")
+        });
     });
 };

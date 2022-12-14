@@ -14,7 +14,7 @@ const db = new sqlite3.Database(process.env.DB_NAME, (err) => {
 db.serialize(() => {
     // first operation (run create table statement)
     let sql = 
-        `CREATE TABLE PlayerRecords (
+        `CREATE TABLE IF NOT EXISTS ${process.env.DB_SCORES_TABLE} (
         id            INTEGER PRIMARY KEY,
         discord_id    INTEGER NOT NULL,
         server_id     NUMERIC NOT NULL,
@@ -22,7 +22,7 @@ db.serialize(() => {
         image_url     TEXT,
         chart_name    TEXT,
         chart_type    TEXT,
-        chart_diff    INTEGER CHECK (chart_diff > 0),
+        chart_diff    INTEGER CHECK (chart_diff >= -1),
         grade         TEXT,
         break_on      INTEGER CHECK (break_on == 0 OR 
                                      break_on == 1) 
