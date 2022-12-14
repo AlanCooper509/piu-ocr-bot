@@ -90,7 +90,7 @@ module.exports = (input, imageURL, timestamp, results) => {
                 console.log(err);
                 reject(err);
             } else {
-                console.log("COMPLETE");
+                console.log("INSERT query was successful.");
             }
         });
 

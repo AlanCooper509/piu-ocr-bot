@@ -43,8 +43,8 @@ module.exports = (input) => {
 
         // output retrieval from OCR script
         let outputs = JSON.parse(data.toString());
-        let promise = read_save_sql(input, attachmentURL, timestamp, outputs);
-        promise.then(
+        let runSQLpromise = read_save_sql(input, attachmentURL, timestamp, outputs);
+        runSQLpromise.then(
             read_respond(input, outputs, timestamp, attachmentURL)
         ).catch((err) => {
             input.reply("Error saving score results")
