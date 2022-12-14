@@ -43,7 +43,7 @@ module.exports = (input) => {
 
         // output retrieval from OCR script
         let outputs = JSON.parse(data.toString());
-        let runSQLpromise = read_save_sql(input, attachmentURL, timestamp, outputs);
+        let runSQLpromise = read_save_sql(input, outputs, timestamp, attachmentURL);
         runSQLpromise.then(
             read_respond(input, outputs, timestamp, attachmentURL)
         ).catch((err) => {

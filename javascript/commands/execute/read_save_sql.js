@@ -7,7 +7,7 @@ require("dotenv").config();
 // local imports
 const c = require("../../resources/constants.js");
 
-module.exports = (input, imageURL, timestamp, results) => {
+module.exports = (input, results, timestamp, imageURL) => {
     // support for registered Discord slash command and also basic user message command
     const slashObject = "ChatInputCommandInteraction";
     const messageObject = "Message";
