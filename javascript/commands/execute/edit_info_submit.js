@@ -34,9 +34,8 @@ module.exports = (interaction) => {
     
     // grabbing the upload time to copy over as part of the new embed 'play details' field value
     let messageEmbed = interaction.message.embeds[0];
-    let playFieldIndex = messageEmbed.fields.map(e => e.name).indexOf(c.EMBED_FIELD_PLAY_DETAILS);
-    let playField = messageEmbed.fields[playFieldIndex].value;
-    let fieldLines = playField.replace(/`|\t/g, '').split(/\r?\n/);
+    const playField = messageEmbed.fields.find(e => e.name.includes(c.EMBED_FIELD_PLAY_DETAILS));
+    let fieldLines = playField.value.replace(/`|\t/g, '').split(/\r?\n/);
     let uploaded = '';
     for (let i = 0; i < fieldLines.length - 1; i++) {
         if (fieldLines[i].startsWith(c.EMBED_SUBFIELD_UPLOADED)) {

@@ -16,23 +16,23 @@ module.exports = (originalEmbed, fieldName, fieldValue) => {
     embed.setDescription(originalEmbed.description);
     
     for (let i = 0; i < originalEmbed.fields.length; i++) {
-        if (originalEmbed.fields[i].name == fieldName) {
+        if (originalEmbed.fields[i].name.includes(fieldName)) {
             // this is the edited part
-            if (fieldName == c.EMBED_FIELD_PLAY_DETAILS) {
+            if (fieldName.includes(c.EMBED_FIELD_PLAY_DETAILS)) {
                 let playField = {
-                    name: fieldName,
+                    name: fieldName.endsWith('*') ? fieldName : fieldName + '*',
                     value: fieldValue,
                     inline: originalEmbed.fields[i].inline
                 }
                 update_timestamp(embed, playField);
             } else {
                 embed.addFields({
-                    name: fieldName,
+                    name: fieldName.endsWith('*') ? fieldName : fieldName + '*',
                     value: fieldValue,
                     inline: originalEmbed.fields[i].inline
                 });
             }
-        } else if (originalEmbed.fields[i].name == c.EMBED_FIELD_PLAY_DETAILS) {
+        } else if (originalEmbed.fields[i].name.includes(c.EMBED_FIELD_PLAY_DETAILS)) {
             // add or update the last modified date
             update_timestamp(embed, originalEmbed.fields[i]);
         } else {
