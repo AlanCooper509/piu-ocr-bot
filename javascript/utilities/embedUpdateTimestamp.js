@@ -2,11 +2,10 @@
 const c = require("../resources/constants.js");
 
 // define listener(s)
-module.exports = (embed, referenceEmbedField) => {
+module.exports = (embed, referenceEmbedField, timestamp) => {
         let modText = "LAST MODIFIED:";
         let update = "";
 
-        let timestamp = new Date();
         let uploadDate = timestamp.toLocaleDateString();
         let uploadTime = timestamp.toLocaleTimeString();
         

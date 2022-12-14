@@ -7,7 +7,7 @@ const c = require("../resources/constants.js");
 const update_timestamp = require("./embedUpdateTimestamp.js");
 
 // define listener(s)
-module.exports = (originalEmbed, fieldName, fieldValue) => {
+module.exports = (originalEmbed, fieldName, fieldValue, timestamp = new Date()) => {
     // copy over the original embed (Discord requires it to be retrieved, copied, and replaced rather than edited)
     let embed = new Discord.EmbedBuilder();
     embed.setAuthor({name: originalEmbed.author.name, iconURL: originalEmbed.author.iconURL});
@@ -24,7 +24,7 @@ module.exports = (originalEmbed, fieldName, fieldValue) => {
                     value: fieldValue,
                     inline: originalEmbed.fields[i].inline
                 }
-                update_timestamp(embed, playField);
+                update_timestamp(embed, playField, timestamp);
             } else {
                 embed.addFields({
                     name: fieldName.endsWith('*') ? fieldName : fieldName + '*',
@@ -34,7 +34,7 @@ module.exports = (originalEmbed, fieldName, fieldValue) => {
             }
         } else if (originalEmbed.fields[i].name.includes(c.EMBED_FIELD_PLAY_DETAILS)) {
             // add or update the last modified date
-            update_timestamp(embed, originalEmbed.fields[i]);
+            update_timestamp(embed, originalEmbed.fields[i], timestamp);
         } else {
             embed.addFields({
                 name: originalEmbed.fields[i].name,

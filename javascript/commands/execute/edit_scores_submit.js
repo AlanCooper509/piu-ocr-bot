@@ -16,9 +16,10 @@ module.exports = (interaction) => {
         return;
     }
     let entryID = getEntryID(interaction);
-    let runSQLpromise = promiseSQL(formInputValues, entryID);
+    let timestamp = new Date();
+    let runSQLpromise = promiseSQL(formInputValues, timestamp, entryID);
     runSQLpromise.then(
-        discordReply(interaction, formInputValues)
+        discordReply(interaction, formInputValues, timestamp)
     ).catch((err) => {
         console.error(err);
         interaction.reply({ content: "Error updating score results", ephemeral: true});
@@ -49,7 +50,7 @@ module.exports = (interaction) => {
         return scoresField.value;
     }
 
-    function promiseSQL(formInputValues, entryID) {
+    function promiseSQL(formInputValues, timestamp, entryID) {
         return new Promise((resolve, reject) => {
             const db = new sqlite3.Database(process.env.DB_NAME, (err) => {
                 if (err) {
@@ -65,7 +66,8 @@ module.exports = (interaction) => {
                     goods = ${formInputValues[2]},
                     bads = ${formInputValues[3]},
                     misses = ${formInputValues[4]},
-                    scores_modified = 1
+                    scores_modified = 1,
+                    time_modified = "${timestamp.toISOString()}"
                 WHERE id = ?;`;
             db.run(sql, entryID, (err) => {
                 if (err) {
@@ -87,11 +89,11 @@ module.exports = (interaction) => {
         });
     }
 
-    function discordReply(interaction, formInputValues) {
+    function discordReply(interaction, formInputValues, timestamp) {
         const originalEmbed = interaction.message.embeds[0];
         let updateFieldName = c.EMBED_FIELD_SCORES;
         let updateFieldValue = `\`\`\`${format_scores(formInputValues[0], formInputValues[1], formInputValues[2], formInputValues[3], formInputValues[4])}\`\`\``;
-        let embed = update_embed_field(originalEmbed, updateFieldName, updateFieldValue);
+        let embed = update_embed_field(originalEmbed, updateFieldName, updateFieldValue, timestamp);
 
         interaction.message.edit({ embeds: [embed] });
         interaction.reply({ content: 'Scores were updated on this submission!', ephemeral: true });
