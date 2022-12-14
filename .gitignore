@@ -1,4 +1,5 @@
 .gitignore
+*.db
 
 # javascript folder
 .env
