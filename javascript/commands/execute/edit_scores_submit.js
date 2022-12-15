@@ -6,15 +6,14 @@ require("dotenv").config();
 
 // local imports
 const c = require("../../resources/constants.js");
-const format_scores = require("../../utilities/embedJudgementFormatter.js");
-const update_embed_field = require("../../utilities/embedCopier.js");
+const formatScores = require("../../utilities/embedJudgementFormatter.js");
+const getEntryID = require("../../utilities/getEntryID.js");
+const updateEmbedField = require("../../utilities/embedCopier.js");
 
 module.exports = (interaction) => {
     let formInputValues = parseSubmission(interaction);
+    if (formInputValues.length < c.DEV_MODAL_EDIT_SCORES_TEXT_IDS.length) { return; }
 
-    if (formInputValues.length < c.DEV_MODAL_EDIT_SCORES_TEXT_IDS.length) {
-        return;
-    }
     let entryID = getEntryID(interaction);
     let timestamp = new Date();
     let runSQLpromise = promiseSQL(formInputValues, timestamp, entryID);
@@ -44,12 +43,6 @@ module.exports = (interaction) => {
         return formInputValues;
     }
 
-    function getEntryID(interaction) {
-        const messageEmbed = interaction.message.embeds[0];
-        const scoresField = messageEmbed.fields.find(e => e.name.includes(c.EMBED_FIELD_RECORD_ID));
-        return scoresField.value;
-    }
-
     function promiseSQL(formInputValues, timestamp, entryID) {
         return new Promise((resolve, reject) => {
             const db = new sqlite3.Database(process.env.DB_NAME, (err) => {
@@ -59,6 +52,7 @@ module.exports = (interaction) => {
                 }
                 console.log('Connected to the database.');
             });
+
             let sql = 
                 `UPDATE ${process.env.DB_SCORES_TABLE} SET 
                     perfects = ${formInputValues[0]},
@@ -92,8 +86,8 @@ module.exports = (interaction) => {
     function discordReply(interaction, formInputValues, timestamp) {
         const originalEmbed = interaction.message.embeds[0];
         let updateFieldName = c.EMBED_FIELD_SCORES;
-        let updateFieldValue = `\`\`\`${format_scores(formInputValues[0], formInputValues[1], formInputValues[2], formInputValues[3], formInputValues[4])}\`\`\``;
-        let embed = update_embed_field(originalEmbed, updateFieldName, updateFieldValue, timestamp);
+        let updateFieldValue = `\`\`\`${formatScores(formInputValues[0], formInputValues[1], formInputValues[2], formInputValues[3], formInputValues[4])}\`\`\``;
+        let embed = updateEmbedField(originalEmbed, updateFieldName, updateFieldValue, timestamp);
 
         interaction.message.edit({ embeds: [embed] });
         interaction.reply({ content: 'Scores were updated on this submission!', ephemeral: true });
