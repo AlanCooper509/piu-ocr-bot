@@ -6,8 +6,8 @@ require("dotenv").config();
 
 // local imports
 const c = require("../../resources/constants.js");
-const formatScores = require("../../utilities/embedJudgementFormatter.js");
 const getEntryID = require("../../utilities/getEntryID.js");
+const formatScores = require("../../utilities/embedJudgementFormatter.js");
 const updateEmbedField = require("../../utilities/embedCopier.js");
 
 module.exports = (interaction) => {
@@ -16,6 +16,7 @@ module.exports = (interaction) => {
 
     let entryID = getEntryID(interaction);
     let timestamp = new Date();
+
     let runSQLpromise = promiseSQL(formInputValues, timestamp, entryID);
     runSQLpromise.then(
         discordReply(interaction, formInputValues, timestamp)

@@ -15,6 +15,7 @@ module.exports = (interaction) => {
 
     let entryID = getEntryID(interaction);
     let timestamp = new Date();
+
     let runSQLpromise = promiseSQL(formValue, timestamp, entryID);
     runSQLpromise.then(
         discordReply(interaction, formValue, timestamp)
