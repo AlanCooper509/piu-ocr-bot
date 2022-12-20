@@ -124,20 +124,10 @@ module.exports = (input, results, timestamp, attachmentURL) => {
     function discordReply(input, attachmentURL) {
         // EMBED: for displaying the reply
         let embed = new Discord.EmbedBuilder();
-        switch (input.constructor.name) {
-            case c_slashObject:
-                embed.setAuthor({
-                    name: input.user.username,
-                    iconURL: input.user.avatarURL()
-                });
-                break;
-            case c_messageObject:
-                embed.setAuthor({
-                    name: input.author.username,
-                    iconURL: input.author.avatarURL()
-                });
-                break;
-        }
+        embed.setAuthor({
+            name: input.member.nickname ?? input.member.user.username,
+            iconURL: input.member.user.avatarURL()
+        });
         embed.setImage(attachmentURL);
         embed.setColor(14680086);
 
