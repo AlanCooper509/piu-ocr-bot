@@ -6,7 +6,6 @@ const Discord = require("discord.js");
 const c = require("../resources/constants.js");
 const update_timestamp = require("./embedUpdateTimestamp.js");
 
-// define listener(s)
 module.exports = (originalEmbed, fieldName, fieldValue, timestamp = new Date()) => {
     // copy over the original embed (Discord requires it to be retrieved, copied, and replaced rather than edited)
     let embed = new Discord.EmbedBuilder();
