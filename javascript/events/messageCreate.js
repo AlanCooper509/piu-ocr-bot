@@ -5,6 +5,7 @@ const Discord = require("discord.js");
 // local imports
 const c = require("../resources/constants.js");
 const read_execute = require("../commands/execute/read_execute.js");
+const hey_execute = require("../commands/execute/hey_execute.js");
 
 // define listener(s)
 module.exports = (client, message) => {
@@ -23,7 +24,7 @@ module.exports = (client, message) => {
             read_execute(message);
             break;
         case c.COMMAND_HEY:
-            message.reply(c.HEY);
+            hey_execute(message);
             break;
         default:
             console.log(`COMMAND not recognized: ${command}`);

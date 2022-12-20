@@ -5,6 +5,7 @@ const Discord = require("discord.js");
 // local imports
 const c = require("../resources/constants.js");
 const read_execute = require("../commands/execute/read_execute.js");
+const hey_execute = require("../commands/execute/hey_execute.js");
 const edit_scores_modal = require("../commands/execute/edit_scores_modal.js");
 const edit_scores_submit = require("../commands/execute/edit_scores_submit.js");
 const edit_combo_modal = require("../commands/execute/edit_combo_modal.js");
@@ -22,7 +23,7 @@ module.exports = (client, interaction) => {
                 read_execute(interaction);
                 break;
             case c.COMMAND_HEY:
-                interaction.reply(c.HEY);
+                hey_execute(interaction);
                 break;
             default:
                 console.log(`COMMAND not recognized: ${interaction.commandName}`)
