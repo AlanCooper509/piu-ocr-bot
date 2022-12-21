@@ -15,8 +15,6 @@ const c_slashObject = "ChatInputCommandInteraction";
 const c_messageObject = "Message";
 let f_discordID = '';
 let f_time = '';
-let f_uploadDate = '';
-let f_uploadTime = '';
 let f_user = '';
 let f_chart = '';
 let f_type = '';
@@ -44,8 +42,6 @@ module.exports = (input, results, timestamp, attachmentURL) => {
         f_discordID = input.constructor.name == c_slashObject ? input.user.id : 
             input.constructor.name == c_messageObject ? input.author.id : c.JSON_NO_VALUE;
         f_time = timestamp.toISOString();
-        f_uploadDate = timestamp.toLocaleDateString();
-        f_uploadTime = timestamp.toLocaleTimeString();
 
         // user/chart information
         f_user     = results[c.JSON_TEXT_USER]    != '' ? results[c.JSON_TEXT_USER]  : c.JSON_NO_VALUE;
@@ -144,7 +140,6 @@ module.exports = (input, results, timestamp, attachmentURL) => {
                     value: "```" +
                         `${c.EMBED_SUBFIELD_GAME_ID}: ${f_user}\n` + 
                         `${c.EMBED_SUBFIELD_GRADE}: ${f_grade}\n\n` + 
-                        `${c.EMBED_SUBFIELD_UPLOADED}:\n\t${f_uploadDate}, ${f_uploadTime}` + 
                         "```",
                     inline: false
                 },
@@ -165,7 +160,17 @@ module.exports = (input, results, timestamp, attachmentURL) => {
                     value: "```" + f_score.toLocaleString() + "```",
                     inline: true
                 }
-            );
+            ).setFooter({
+                text: 
+                    `${c.EMBED_SUBFIELD_UPLOADED}:\t\t` + 
+                            new Date(f_time).toLocaleTimeString([], {
+                                year: 'numeric',
+                                month: '2-digit',
+                                day: '2-digit',
+                                hour: 'numeric',
+                                minute: 'numeric'
+                            })
+            });
 
         // Buttons below the embed for triggering edit actions
         const row = new Discord.ActionRowBuilder()

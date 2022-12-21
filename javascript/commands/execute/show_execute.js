@@ -154,16 +154,6 @@ module.exports = (input) => {
     }
 
     function playDiscordReply(author, entry, input) {
-        let uploadDate = new Date(entry.time_uploaded).toLocaleDateString();
-        let uploadTime = new Date(entry.time_uploaded).toLocaleTimeString();
-        let isModified = entry.time_modified != null && entry.time_modified != '';
-        let modifiedDate = '';
-        let modifiedTime = '';
-        if (isModified) {
-            modifiedDate = new Date(entry.time_modified).toLocaleDateString();
-            modifiedTime = new Date(entry.time_modified).toLocaleTimeString();
-        }
-
         let embed = new Discord.EmbedBuilder()
             .setAuthor(author)
             
@@ -185,8 +175,6 @@ module.exports = (input) => {
                     value: "```" + 
                         `${c.EMBED_SUBFIELD_GAME_ID}: ${entry.game_id}\n` + 
                         `${c.EMBED_SUBFIELD_GRADE}: ${entry.grade}\n\n` + 
-                        `${c.EMBED_SUBFIELD_UPLOADED}:\n\t${uploadDate}, ${uploadTime}` +
-                        (isModified ? `\n\n${c.EMBED_SUBFIELD_MODIFIED}:\n\t${modifiedDate}, ${modifiedTime}` : '') +
                         "```",
                     inline: false
                 },
@@ -207,7 +195,27 @@ module.exports = (input) => {
                     value: "```" + entry.total_score.toLocaleString() + "```",
                     inline: true
                 }
-            );
+            ).setFooter({
+                text: 
+                    `${c.EMBED_SUBFIELD_UPLOADED}:\t\t` + 
+                            new Date(entry.time_uploaded).toLocaleTimeString([], {
+                                year: 'numeric',
+                                month: '2-digit',
+                                day: '2-digit',
+                                hour: 'numeric',
+                                minute: 'numeric'
+                            }) +
+                    ((entry.time_modified != null && entry.time_modified != '') ? 
+                        `\n${c.EMBED_SUBFIELD_MODIFIED}:\t ` + 
+                            new Date(entry.time_modified).toLocaleTimeString([], {
+                                year: 'numeric',
+                                month: '2-digit',
+                                day: '2-digit',
+                                hour: 'numeric',
+                                minute: 'numeric'
+                            })
+                    : '')
+            });
 
         // Buttons below the embed for triggering edit actions
         const row = new Discord.ActionRowBuilder()

@@ -4,24 +4,25 @@ const c = require("../resources/constants.js");
 // define listener(s)
 module.exports = (embed, referenceEmbedField, timestamp) => {
         let update = "";
+        let referenceFooter = referenceEmbedField.footer.text;
 
-        let uploadDate = timestamp.toLocaleDateString();
-        let uploadTime = timestamp.toLocaleTimeString();
-        
-        if (referenceEmbedField.value.includes(c.EMBED_SUBFIELD_MODIFIED + ':')) {
-            let strIndex = referenceEmbedField.value.indexOf(c.EMBED_SUBFIELD_MODIFIED + ':') + (c.EMBED_SUBFIELD_MODIFIED + ':').length;
-            update = referenceEmbedField.value.substring(0, strIndex);
-            update += `\n\t${uploadDate}, ${uploadTime}` + "```";
+        if (referenceFooter.includes(c.EMBED_SUBFIELD_MODIFIED)) {
+            let strIndex = referenceFooter.indexOf(c.EMBED_SUBFIELD_MODIFIED) + (c.EMBED_SUBFIELD_MODIFIED).length;
+            update = referenceFooter.substring(0, strIndex);
         } else {
-            // remove the backticks ending the codeblock and reapply them after the added part
-            update = referenceEmbedField.value.substring(0, referenceEmbedField.value.length - 3) + `\n\n${c.EMBED_SUBFIELD_MODIFIED}:\n\t${uploadDate}, ${uploadTime}` + "```";
+            update = referenceFooter + `\n${c.EMBED_SUBFIELD_MODIFIED}`;
         }
 
-        embed.addFields(
-            {
-                name: referenceEmbedField.name,
-                value: update,
-                inline: referenceEmbedField.inline
-            }
-        );
+        update += ":\t " + 
+            new Date(timestamp).toLocaleTimeString([], {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: 'numeric',
+                    minute: 'numeric'
+                });
+
+        embed.setFooter({text: update});
+        
+        return embed;
 }
