@@ -124,6 +124,7 @@ def main(fname, local=False, debug=False):
 
     # preprocess the image
     image = rotation.fix_rotation(image)
+    image.thumbnail(params.MAX_IMG_SIZE, PIL.Image.Resampling.NEAREST)
     image = np.array(image)
     filtered = filter.filter_image(image, params.ALPHA, params.BETA)
     
