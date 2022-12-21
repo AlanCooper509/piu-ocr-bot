@@ -6,6 +6,13 @@ exports.COMMAND_READ_DESC = "Upload your PIU XX score!";
 exports.COMMAND_READ_SCORE_ATTACHMENT_OPTION_NAME = "score";
 exports.COMMAND_READ_SCORE_ATTACHMENT_OPTION_DESC = "upload your results screen here";
 
+exports.COMMAND_SHOW = "show";
+exports.COMMAND_SHOW_DESC = "Show a specific play, user, or chart!";
+exports.COMMAND_SHOW_SUBCOMMAND_PLAY = "play";
+exports.COMMAND_SHOW_SUBCOMMAND_PLAY_DESC = "Show a specific play";
+exports.COMMAND_SHOW_SUBCOMMAND_PLAY_ID_NAME = "play_id";
+exports.COMMAND_SHOW_SUBCOMMAND_PLAY_ID_DESC = "the play id to show";
+
 // Embed field names or keyword strings created using Discord.EmbedBuilder() and accessed whenever updating or reading the embed
 exports.EMBED_FIELD_PLAY_DETAILS = "PLAY DETAILS";
 exports.EMBED_FIELD_MAX_COMBO    = "MAX COMBO";
@@ -15,6 +22,7 @@ exports.EMBED_FIELD_RECORD_ID    = "RECORD ID";
 exports.EMBED_SUBFIELD_GAME_ID   = "GAME ID";
 exports.EMBED_SUBFIELD_GRADE     = "GRADE";
 exports.EMBED_SUBFIELD_UPLOADED  = "UPLOADED";
+exports.EMBED_SUBFIELD_MODIFIED  = "LAST MODIFIED";
 exports.EMBED_SUBFIELD_PERFECT   = "PERFECT";
 exports.EMBED_SUBFIELD_GREAT     = "GREAT";
 exports.EMBED_SUBFIELD_GOOD      = "GOOD";

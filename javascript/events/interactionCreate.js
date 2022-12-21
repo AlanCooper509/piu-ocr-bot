@@ -5,6 +5,7 @@ const Discord = require("discord.js");
 // local imports
 const c = require("../resources/constants.js");
 const read_execute = require("../commands/execute/read_execute.js");
+const show_execute = require("../commands/execute/show_execute.js");
 const hey_execute = require("../commands/execute/hey_execute.js");
 const edit_scores_modal = require("../commands/execute/edit_scores_modal.js");
 const edit_scores_submit = require("../commands/execute/edit_scores_submit.js");
@@ -21,6 +22,9 @@ module.exports = (client, interaction) => {
         switch(interaction.commandName) {
             case c.COMMAND_READ:
                 read_execute(interaction);
+                break;
+            case c.COMMAND_SHOW:
+                show_execute(interaction);
                 break;
             case c.COMMAND_HEY:
                 hey_execute(interaction);

@@ -5,6 +5,7 @@ const Discord = require("discord.js");
 // local imports
 const c = require("../resources/constants.js");
 const read_execute = require("../commands/execute/read_execute.js");
+const show_execute = require("../commands/execute/show_execute.js");
 const hey_execute = require("../commands/execute/hey_execute.js");
 
 // define listener(s)
@@ -22,6 +23,9 @@ module.exports = (client, message) => {
     switch(command.toLowerCase()) {
         case c.COMMAND_READ:
             read_execute(message);
+            break;
+        case c.COMMAND_SHOW:
+            show_execute(message);
             break;
         case c.COMMAND_HEY:
             hey_execute(message);

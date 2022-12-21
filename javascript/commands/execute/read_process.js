@@ -122,50 +122,50 @@ module.exports = (input, results, timestamp, attachmentURL) => {
     }
     
     function discordReply(input, attachmentURL) {
-        // EMBED: for displaying the reply
-        let embed = new Discord.EmbedBuilder();
-        embed.setAuthor({
-            name: input.member.nickname ?? input.member.user.username,
-            iconURL: input.member.user.avatarURL()
-        });
-        embed.setImage(attachmentURL);
-        embed.setColor(14680086);
+        let embed = new Discord.EmbedBuilder()
+            .setAuthor({
+                name: (input.member.nickname ?? input.member.user.username),
+                iconURL: input.member.user.avatarURL()})
+            .setImage(attachmentURL)
+            .setColor(14680086)
+            
+            // EMBED: use description to display chart information
+            .setDescription(`**${f_chart}**\n*${f_type} ${f_diff}*`)
 
-        // EMBED: use description to display chart information
-        embed.setDescription(`**${f_chart}**\n*${f_type} ${f_diff}*`);
+            .addFields(
+                // EMBED: add fields to display user info and capture date
+                {
+                    name: c.EMBED_FIELD_RECORD_ID,
+                    value: input.id,
+                    inline: false
+                },
+                {
+                    name: c.EMBED_FIELD_PLAY_DETAILS,
+                    value: "```" +
+                        `${c.EMBED_SUBFIELD_GAME_ID}: ${f_user}\n` + 
+                        `${c.EMBED_SUBFIELD_GRADE}: ${f_grade}\n\n` + 
+                        `${c.EMBED_SUBFIELD_UPLOADED}:\n\t${f_uploadDate}, ${f_uploadTime}` + 
+                        "```",
+                    inline: false
+                },
 
-        // EMBED: add fields to display user info and capture date
-        embed.addFields(
-            {
-                name: c.EMBED_FIELD_RECORD_ID,
-                value: input.id,
-                inline: false
-            },
-            {
-                name: c.EMBED_FIELD_PLAY_DETAILS,
-                value: `\`\`\`${c.EMBED_SUBFIELD_GAME_ID}: ${f_user}\n${c.EMBED_SUBFIELD_GRADE}: ${f_grade}\n\n${c.EMBED_SUBFIELD_UPLOADED}:\n\t${f_uploadDate}, ${f_uploadTime}\`\`\``,
-                inline: false
-            }
-        );
-
-        // EMBED: add fields to display judgements, combo, and total score
-        embed.addFields(
-            {
-                name: c.EMBED_FIELD_SCORES,
-                value: `\`\`\`${format_scores(f_perfects, f_greats, f_goods, f_bads, f_misses)}\`\`\``,
-                inline: false
-            },
-            {
-                name: c.EMBED_FIELD_MAX_COMBO,
-                value: `\`\`\`${f_combo.toString()}\`\`\``,
-                inline: true
-            },
-            {
-                name: c.EMBED_FIELD_TOTAL_SCORE,
-                value: `\`\`\`${f_score.toLocaleString()}\`\`\``,
-                inline: true
-            }
-        );
+                // EMBED: add fields to display judgements, combo, and total score
+                {
+                    name: c.EMBED_FIELD_SCORES,
+                    value: "```" + format_scores(f_perfects, f_greats, f_goods, f_bads, f_misses) + "```",
+                    inline: false
+                },
+                {
+                    name: c.EMBED_FIELD_MAX_COMBO,
+                    value: "```" + f_combo.toString() + "```",
+                    inline: true
+                },
+                {
+                    name: c.EMBED_FIELD_TOTAL_SCORE,
+                    value: "```" + f_score.toLocaleString() + "```",
+                    inline: true
+                }
+            );
 
         // Buttons below the embed for triggering edit actions
         const row = new Discord.ActionRowBuilder()
