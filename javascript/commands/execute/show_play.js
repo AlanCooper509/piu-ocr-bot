@@ -51,12 +51,18 @@ module.exports = (input) => {
         }
         
         if (!/^\d+$/.test(playID)) {
-            input.reply("The Play ID should be numbers only!");
+            input.reply({
+                content: "The Play ID should be numbers only!",
+                ephemeral: true
+            });
             return;
         }
         
         if (playID.length < 17 || playID.length > 19) {
-            input.reply("The Play ID should be between 17 to 19 numbers!");
+            input.reply({
+                content: "The Play ID should be between 17 to 19 numbers!",
+                ephemeral: true
+            });
             return;
         }
         
