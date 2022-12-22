@@ -12,6 +12,10 @@ exports.COMMAND_SHOW_SUBCOMMAND_PLAY = "play";
 exports.COMMAND_SHOW_SUBCOMMAND_PLAY_DESC = "Show a specific play";
 exports.COMMAND_SHOW_SUBCOMMAND_PLAY_ID_NAME = "play_id";
 exports.COMMAND_SHOW_SUBCOMMAND_PLAY_ID_DESC = "the play id to show";
+exports.COMMAND_SHOW_SUBCOMMAND_USER = "user";
+exports.COMMAND_SHOW_SUBCOMMAND_USER_DESC = "Show a specific PIU user's plays";
+exports.COMMAND_SHOW_SUBCOMMAND_USER_ID_NAME = "game_id";
+exports.COMMAND_SHOW_SUBCOMMAND_USER_ID_DESC = "the IGN of the PIU player to show";
 
 // Embed field names or keyword strings created using Discord.EmbedBuilder() and accessed whenever updating or reading the embed
 exports.EMBED_FIELD_PLAY_DETAILS = "PLAY DETAILS";
@@ -19,6 +23,7 @@ exports.EMBED_FIELD_MAX_COMBO    = "MAX COMBO";
 exports.EMBED_FIELD_TOTAL_SCORE  = "TOTAL SCORE";
 exports.EMBED_FIELD_SCORES       = "SCORES";
 exports.EMBED_FIELD_RECORD_ID    = "RECORD ID";
+exports.EMBED_FIELD_RECENT       = "RECENT PLAYS";
 exports.EMBED_SUBFIELD_GAME_ID   = "GAME ID";
 exports.EMBED_SUBFIELD_GRADE     = "GRADE";
 exports.EMBED_SUBFIELD_UPLOADED  = "UPLOADED";
@@ -34,6 +39,9 @@ exports.DEV_MODAL_EDIT_SCORES_BUTTON_ID = "editScoresButton";
 exports.DEV_MODAL_EDIT_COMBO_BUTTON_ID = "editComboButton";
 exports.DEV_MODAL_EDIT_TOTAL_BUTTON_ID = "editTotalButton";
 exports.DEV_MODAL_EDIT_INFO_BUTTON_ID = "editInfoButton";
+exports.PAGE_PREV_BUTTON_ID = "paginateLeftButton";
+exports.PAGE_NEXT_BUTTON_ID = "paginateRightButton";
+exports.PAGE_SELECT_BUTTON_ID = "selectRowButton";
 
 // Modal ID's created using Discord.ModalBuilder() and accessed by interaction.customId
 exports.DEV_MODAL_EDIT_SCORES_ID = "editScoreModal";

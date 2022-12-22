@@ -9,7 +9,6 @@ require("dotenv").config();
 // local imports
 const c = require("../../resources/constants.js");
 const format_scores = require("../../utilities/embedJudgementFormatter.js");
-const makeEditButtons = require("../../utilities/buttonsToEditPlay.js");
 
 // file variables
 const c_slashObject = "ChatInputCommandInteraction";
