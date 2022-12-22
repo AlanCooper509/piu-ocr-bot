@@ -8,7 +8,8 @@ require("dotenv").config();
 
 // local imports
 const c = require("../../resources/constants.js");
-const format_scores = require("../../utilities/embedJudgementFormatter.js");
+const formatPlayDetails = require("../../utilities/embedPlayDetailsFormatter.js");
+const formatScores = require("../../utilities/embedJudgementFormatter.js");
 const makeEditButtons = require("../../utilities/buttonsToEditPlay.js");
 
 // file variables
@@ -138,17 +139,14 @@ module.exports = (input, results, timestamp, attachmentURL) => {
                 },
                 {
                     name: c.EMBED_FIELD_PLAY_DETAILS,
-                    value: "```" +
-                        `${c.EMBED_SUBFIELD_GAME_ID}: ${f_user}\n` + 
-                        `${c.EMBED_SUBFIELD_GRADE}: ${f_grade}\n` + 
-                        "```",
+                    value: "```" + formatPlayDetails(f_user, f_grade) + "```",
                     inline: false
                 },
 
                 // EMBED: add fields to display judgements, combo, and total score
                 {
                     name: c.EMBED_FIELD_SCORES,
-                    value: "```" + format_scores(f_perfects, f_greats, f_goods, f_bads, f_misses) + "```",
+                    value: "```" + formatScores(f_perfects, f_greats, f_goods, f_bads, f_misses) + "```",
                     inline: false
                 },
                 {

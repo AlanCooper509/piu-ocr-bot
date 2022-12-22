@@ -7,6 +7,7 @@ require("dotenv").config();
 // local imports
 const c = require("../../resources/constants.js");
 const getEntryID = require("../../utilities/getEntryID.js");
+const formatPlayDetails = require("../../utilities/embedPlayDetailsFormatter.js");
 const update_embed = require("../../utilities/embedCopier.js");
 
 module.exports = (interaction) => {
@@ -153,10 +154,7 @@ module.exports = (interaction) => {
 
         const originalEmbed = interaction.message.embeds[0];
         let updateFieldName = c.EMBED_FIELD_PLAY_DETAILS;
-        let updateFieldValue = "```" +
-            `${c.EMBED_SUBFIELD_GAME_ID}: ${formValueGameID}\n` + 
-            `${c.EMBED_SUBFIELD_GRADE}: ${formValueGrade}\n` + 
-            "```"
+        let updateFieldValue = "```" + formatPlayDetails(formValueGameID, formValueGrade) + "```";
         let embed = update_embed(originalEmbed, updateFieldName, updateFieldValue, modified);
 
         embed.setDescription(`**${formValueName}**\n*${chartType} ${chartDiff}*`);

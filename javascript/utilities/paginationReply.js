@@ -22,7 +22,6 @@ module.exports = (input, embeds) => {
                 if (interaction.user.id === input.user.id) {
                     console.log(`${interaction.user.id} clicked on the ${interaction.customId} button.`);
 
-                    console.log(buttons.components);
                     // buttons.components[0] should be prev page button, [2] should be next page button
                     switch (interaction.customId) {
                         case c.PAGE_PREV_BUTTON_ID:
