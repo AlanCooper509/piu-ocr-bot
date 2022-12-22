@@ -25,7 +25,8 @@ module.exports = (input) => {
         console.error(err);
         throw "Error during Game ID lookup request.";
     }).then(rows => {
-        if (rows.length == 0) { throw `${gameID} not found in records.`; }
+        if (rows.length == 0 && !chartName) { throw `User ${gameID} not found in records.`; }
+        if (rows.length == 0) { throw `No results for ${gameID} playing ${chartName}.`; }
         userDiscordReply(rows, gameID, input);
     }).catch(error => {
         console.error(error);
