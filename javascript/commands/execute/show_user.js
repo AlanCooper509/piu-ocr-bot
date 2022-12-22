@@ -18,8 +18,9 @@ const c_messageObject = "Message";
 module.exports = (input) => {
     let gameID = userParseInput(input);
     if (gameID == null) { return; }
+    let chartName = userParseOptions(input);
     
-    let runUserSQLpromise = userPromiseSQL(gameID);
+    let runUserSQLpromise = userPromiseSQL(gameID, chartName);
     runUserSQLpromise.catch((err) => {
         console.error(err);
         throw "Error during Game ID lookup request.";
@@ -61,7 +62,36 @@ module.exports = (input) => {
         return gameID;
     }
     
-    function userPromiseSQL(gameID) {
+    function userParseOptions(input) {
+        if (![c_slashObject, c_messageObject].includes(input.constructor.name)) {
+            console.log(`${input.constructor.name}: Object input type not recognized`);
+            return;
+        }
+        
+        let chartName = '';
+        switch (input.constructor.name) {
+            case c_slashObject:
+                chartName = input.options.getString(c.COMMAND_SHOW_SUBCOMMAND_CHART_TITLE_NAME);
+                if (!chartName) { return; }
+                break;
+            case c_messageObject:
+                if (input.content.split(' ').length < 3) { return; };
+                chartName = input.content.split(' ')[3];
+                break;
+        }
+        
+        if (!/^([A-Z|a-z|0-9|_|\s]+)$/.test(chartName)) {
+            input.reply({
+                content: `An invalid chart name of \`${chartName}\` was found in your CHART/USER submission!\nPlease try again.`, 
+                ephemeral: true
+            });
+            return;
+        }
+
+        return chartName;
+    }
+    
+    function userPromiseSQL(gameID, chartName) {
         return new Promise((resolve, reject) => {
             const db = new sqlite3.Database(process.env.DB_NAME, (err) => {
                 if (err) {
@@ -73,7 +103,9 @@ module.exports = (input) => {
 
             // CAST since retrieving as INT leads to big-int rounding errors
             let sql = `SELECT *, CAST(id as TEXT) as id, CAST(server_id as TEXT) as server_id, CAST(discord_id as TEXT) as discord_id 
-                       FROM ${process.env.DB_SCORES_TABLE} WHERE game_id = ? ORDER BY time_uploaded DESC LIMIT 10 OFFSET 0;`;
+                       FROM ${process.env.DB_SCORES_TABLE} WHERE game_id = ? ` + 
+                       (chartName ? `AND chart_name = "${chartName}" `: '') + 
+                       `ORDER BY time_uploaded DESC LIMIT 10 OFFSET 0;`;
             db.all(sql, gameID, (err, rows) => {
                 if (err) {
                     console.log(err);

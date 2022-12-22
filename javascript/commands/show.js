@@ -30,5 +30,12 @@ module.exports = {
                             .setDescription(c.COMMAND_SHOW_SUBCOMMAND_USER_ID_DESC)
                             .setMinLength(1)
                             .setMaxLength(20)
-                            .setRequired(true)))
+                            .setRequired(true))
+                    .addStringOption(option =>
+                        option
+                            .setName(c.COMMAND_SHOW_SUBCOMMAND_CHART_TITLE_NAME)
+                            .setDescription(c.COMMAND_SHOW_SUBCOMMAND_CHART_TITLE_DESC)
+                            .setMinLength(1)
+                            .setMaxLength(100)
+                            .setRequired(false)))
 };
