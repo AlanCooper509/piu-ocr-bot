@@ -16,7 +16,7 @@ exports.COMMAND_SHOW_SUBCOMMAND_USER = "user";
 exports.COMMAND_SHOW_SUBCOMMAND_USER_DESC = "Show a specific PIU user's plays";
 exports.COMMAND_SHOW_SUBCOMMAND_USER_ID_NAME = "game_id";
 exports.COMMAND_SHOW_SUBCOMMAND_USER_ID_DESC = "the IGN of the PIU player to show";
-exports.COMMAND_SHOW_SUBCOMMAND_CHART_TITLE_NAME = "player_chart_id";
+exports.COMMAND_SHOW_SUBCOMMAND_CHART_TITLE_NAME = "filtered_chart_name";
 exports.COMMAND_SHOW_SUBCOMMAND_CHART_TITLE_DESC = "filter for a specific chart";
 
 // Embed field names or keyword strings created using Discord.EmbedBuilder() and accessed whenever updating or reading the embed
