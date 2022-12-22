@@ -29,10 +29,14 @@ prints the player's Game ID, Chart Name, PERFECT/GREAT/GOOD/BAD/MISS count, MAX 
     - `node bot.js` to startup the bot and setup the listeners
 
 ### Currently Supported Commands/Features (as of 12/22/22):
+
+#### CRUD opterations
 One purpose of utilizing Discord is as an interface for performing CRUD (Create/Read/Update/Delete) operations.
 - `/save <image upload>`: write to a back-end DB and display the play details as a Discord Embed (CREATE)
     - Button Interactions: `SCORES` / `CHART/USER` / `COMBO` / `TOTAL` for editing a specific DB entry and the displayed Discord Embed (UPDATE)
 - `/show play <play_id>`: retrieve a play from back-end DB and display the play details as a Discord Embed (READ)
     - Button Interactions: `SCORES` / `CHART/USER` / `COMBO` / `TOTAL` for editing the specific DB entry and the displayed Discord Embed (UPDATE)
 - `/show user <user_id> ((optional) chart <filtered_chart_name>)`: retrieves all user plays (optionally of a specific chart) by most recent and displays them as paginated results in a Discord Embed (READ)
+
+#### Misc. Features:
 - `/hey` [hey!!](https://i.ytimg.com/vi/YknOygHNv1U/maxresdefault.jpg)
