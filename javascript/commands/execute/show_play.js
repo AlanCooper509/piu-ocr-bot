@@ -9,6 +9,7 @@ require("dotenv").config();
 // local imports
 const c = require("../../resources/constants.js");
 const format_scores = require("../../utilities/embedJudgementFormatter.js");
+const makeEditButtons = require("../../utilities/buttonsToEditPlay.js");
 
 // file variables
 const c_slashObject = "ChatInputCommandInteraction";
@@ -208,24 +209,7 @@ module.exports = (input) => {
             });
 
         // Buttons below the embed for triggering edit actions
-        const row = new Discord.ActionRowBuilder()
-            .addComponents(
-                new Discord.ButtonBuilder()
-                    .setCustomId(c.DEV_MODAL_EDIT_SCORES_BUTTON_ID)
-                    .setLabel('⚖️ SCORES')
-                    .setStyle(Discord.ButtonStyle.Success),
-                new Discord.ButtonBuilder()
-                    .setCustomId(c.DEV_MODAL_EDIT_INFO_BUTTON_ID)
-                    .setLabel('📝 CHART/USER')
-                    .setStyle(Discord.ButtonStyle.Secondary),
-                new Discord.ButtonBuilder()
-                    .setCustomId(c.DEV_MODAL_EDIT_COMBO_BUTTON_ID)
-                    .setLabel('🔗 COMBO')
-                    .setStyle(Discord.ButtonStyle.Secondary),
-                new Discord.ButtonBuilder()
-                    .setCustomId(c.DEV_MODAL_EDIT_TOTAL_BUTTON_ID)
-                    .setLabel('💯 TOTAL')
-                    .setStyle(Discord.ButtonStyle.Primary));
+        const row = makeEditButtons();
 
         input.reply({ embeds: [embed], components: [row] });
     }
