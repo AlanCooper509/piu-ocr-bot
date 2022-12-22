@@ -26,6 +26,6 @@ module.exports = (input) => {
             showUser(input);
             break;
         default:
-            input.reply(`The show subcommand "${subcommand}" is not recognized.\nTry \`/show\` to see the list of available subcommands.`);
+            break;
     }
 };
