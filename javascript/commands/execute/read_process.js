@@ -140,7 +140,7 @@ module.exports = (input, results, timestamp, attachmentURL) => {
                     name: c.EMBED_FIELD_PLAY_DETAILS,
                     value: "```" +
                         `${c.EMBED_SUBFIELD_GAME_ID}: ${f_user}\n` + 
-                        `${c.EMBED_SUBFIELD_GRADE}: ${f_grade}\n\n` + 
+                        `${c.EMBED_SUBFIELD_GRADE}: ${f_grade}\n` + 
                         "```",
                     inline: false
                 },

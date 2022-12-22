@@ -165,7 +165,7 @@ module.exports = (input) => {
                     name: (entry.details_modified == 1 ? c.EMBED_FIELD_PLAY_DETAILS + '*' : c.EMBED_FIELD_PLAY_DETAILS),
                     value: "```" + 
                         `${c.EMBED_SUBFIELD_GAME_ID}: ${entry.game_id}\n` + 
-                        `${c.EMBED_SUBFIELD_GRADE}: ${entry.grade}\n\n` + 
+                        `${c.EMBED_SUBFIELD_GRADE}: ${entry.grade}\n` + 
                         "```",
                     inline: false
                 },

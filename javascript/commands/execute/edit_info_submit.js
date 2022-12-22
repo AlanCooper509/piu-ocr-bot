@@ -153,7 +153,10 @@ module.exports = (interaction) => {
 
         const originalEmbed = interaction.message.embeds[0];
         let updateFieldName = c.EMBED_FIELD_PLAY_DETAILS;
-        let updateFieldValue = `\`\`\`${c.EMBED_SUBFIELD_GAME_ID}: ${formValueGameID}\n${c.EMBED_SUBFIELD_GRADE}: ${formValueGrade}\n\nUPLOADED:\n\t${uploadDate}, ${uploadTime}\`\`\``
+        let updateFieldValue = "```" +
+            `${c.EMBED_SUBFIELD_GAME_ID}: ${formValueGameID}\n` + 
+            `${c.EMBED_SUBFIELD_GRADE}: ${formValueGrade}\n` + 
+            "```"
         let embed = update_embed(originalEmbed, updateFieldName, updateFieldValue, modified);
 
         embed.setDescription(`**${formValueName}**\n*${chartType} ${chartDiff}*`);
