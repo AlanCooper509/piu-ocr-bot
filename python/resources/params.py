@@ -5,7 +5,7 @@ ALPHA = 2.0
 BETA = 150
 
 # compressing input image for speed considerations
-MAX_IMG_SIZE = (2000, 2000)
+MAX_IMG_SIZE = (2500, 2500)
 
 # for filtering out results from OCR Reader
 CONFIDENCE = 0.1

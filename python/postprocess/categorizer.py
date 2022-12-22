@@ -397,15 +397,25 @@ def guess_username(textboxes, template, debug=False):
         
         # set the y boundary for further filtering
         y_bound = float("inf")
+
+        # username y-pos should be above chart name's y-pos
+        if template[c.CHART].center[1] > 0:
+            y_bound = template[c.CHART].center[1]
+
         for possible_reference in c.SCORE_WORDS:
             # username y-pos should be above all score words' y-pos
-            if template[possible_reference].center[1] > 0:
+            if template[possible_reference].center[1] > 0 and template[possible_reference].center[1] < y_bound:
                 y_bound = template[possible_reference].center[1]
                 break
             # same for the score words' numeric values' y-pos
-            if template[possible_reference].value.center[1] > 0:
+            if template[possible_reference].value.center[1] > 0 and template[possible_reference].value.center[1] < y_bound:
                 y_bound = template[possible_reference].value.center[1]
                 break
+        
+        if debug:
+            debugger.write_comment("second method: using y-axis threshold:")
+            print(f'[DEBUG] \t- y_bound: {y_bound}')
+            debugger.blank_line()
         
         # choose the word closest to the y_bound that's not below it
         min = float("inf")
