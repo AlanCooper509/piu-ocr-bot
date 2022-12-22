@@ -75,8 +75,13 @@ module.exports = (input) => {
                 if (!chartName) { return; }
                 break;
             case c_messageObject:
-                if (input.content.split(' ').length < 3) { return; };
-                chartName = input.content.split(' ')[3];
+                if (input.content.split(' ').length < 4) { return; };
+                if (input.content.split(' ')[3].toLowerCase() == "chart") {
+                    if (input.content.split(' ').length < 5) { return; };
+                    chartName = input.content.split(' ').slice(4).join(' ');
+                } else {
+                    return;
+                }
                 break;
         }
         
