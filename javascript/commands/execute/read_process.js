@@ -13,8 +13,6 @@ const formatScores = require("../../utilities/embedJudgementFormatter.js");
 const makeEditButtons = require("../../utilities/buttonsToEditPlay.js");
 
 // file variables
-const c_slashObject = "ChatInputCommandInteraction";
-const c_messageObject = "Message";
 let f_discordID = '';
 let f_time = '';
 let f_user = '';
@@ -41,8 +39,8 @@ module.exports = (input, results, timestamp, attachmentURL) => {
     });
 
     function init(input, results, timestamp) {
-        f_discordID = input.constructor.name == c_slashObject ? input.user.id : 
-            input.constructor.name == c_messageObject ? input.author.id : c.JSON_NO_VALUE;
+        f_discordID = input.constructor.name == c.COMMAND ? input.user.id : 
+            input.constructor.name == c.MESSAGE ? input.author.id : c.JSON_NO_VALUE;
         f_time = timestamp.toISOString();
 
         // user/chart information
@@ -175,10 +173,10 @@ module.exports = (input, results, timestamp, attachmentURL) => {
         const row = makeEditButtons();
 
         switch (input.constructor.name) {
-            case c_slashObject:
+            case c.COMMAND:
                 input.editReply({ embeds: [embed], components: [row] });
                 break;
-            case c_messageObject:
+            case c.MESSAGE:
                 input.reply({ embeds: [embed], components: [row] });
         }
     }

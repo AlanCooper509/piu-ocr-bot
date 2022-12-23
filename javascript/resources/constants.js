@@ -86,3 +86,7 @@ exports.JSON_NO_VALUE     = "!!";
 
 // HEY!!
 exports.HEY = { content: '**HEY!!**', files: ['https://i.ytimg.com/vi/YknOygHNv1U/maxresdefault.jpg'] };
+
+// Discord Object Strings
+exports.COMMAND = "ChatInputCommandInteraction";
+exports.MESSAGE = "Message";

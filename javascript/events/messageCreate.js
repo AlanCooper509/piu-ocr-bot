@@ -31,7 +31,6 @@ module.exports = (client, message) => {
             hey_execute(message);
             break;
         default:
-            console.log(`COMMAND not recognized: ${command}`);
             break;
     }
 };

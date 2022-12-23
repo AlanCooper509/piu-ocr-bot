@@ -11,15 +11,25 @@ module.exports = (input, embeds) => {
         // Buttons below the embed for triggering edit actions
         let buttons = makePaginationButtons(embeds.length > 1);
 
-        let embedPromise = input.reply({ embeds: [embeds[0]], components: [buttons], fetchReply: true });
+        let embedPromise = null;
+        switch (input.constructor.name) {
+            case c.COMMAND:
+                embedPromise = input.editReply({ embeds: [embeds[0]], components: [buttons], fetchReply: true });
+                break;
+            case c.MESSAGE:
+                embedPromise = input.reply({ embeds: [embeds[0]], components: [buttons], fetchReply: true });
+                break;
+            default:
+                return;
+        }
+
         embedPromise.then((message) => {
-            
             let pageNumber = 0;
             const collector = message.createMessageComponentCollector({ componentType: Discord.ComponentType.Button, time: params.PAGE_TIMEOUT });
 
             collector.on("collect", interaction => {
-                interaction.deferUpdate();
                 if (interaction.user.id === input.user.id) {
+                    interaction.deferUpdate();
                     console.log(`${interaction.user.id} clicked on the ${interaction.customId} button.`);
 
                     // buttons.components[0] should be prev page button, [2] should be next page button
@@ -44,6 +54,10 @@ module.exports = (input, embeds) => {
                             break;
                         case c.PAGE_SELECT_BUTTON_ID:
                             console.log("SELECT ROW NOT YET IMPLEMENTED");
+                            interaction.reply({
+                                content: `These buttons aren't for you!`,
+                                ephemeral: true
+                            });
                             break;
                     }
                 } else {

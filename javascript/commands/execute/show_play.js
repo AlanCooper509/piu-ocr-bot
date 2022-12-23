@@ -209,6 +209,12 @@ module.exports = (input) => {
         // Buttons below the embed for triggering edit actions
         const row = makeEditButtons();
 
-        input.reply({ embeds: [embed], components: [row] });
+        switch (input.constructor.name) {
+            case c.COMMAND:
+                input.editReply({ embeds: [embed], components: [row] });
+            case c.MESSAGE:
+                input.reply({ embeds: [embed], components: [row] });
+            break;
+        }
     }
 }

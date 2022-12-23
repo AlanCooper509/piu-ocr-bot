@@ -12,10 +12,6 @@ const params = require("../../resources/params.js");
 const sendEmbeds = require("../../utilities/paginationReply.js");
 const condenseChartType = require("../../utilities/condenseChartType.js");
 
-// file variables
-const c_slashObject = "ChatInputCommandInteraction";
-const c_messageObject = "Message";
-
 module.exports = (input) => {
     let gameID = userParseInput(input);
     if (gameID == null) { return; }
@@ -35,17 +31,17 @@ module.exports = (input) => {
     });;
     
     function userParseInput(input) {
-        if (![c_slashObject, c_messageObject].includes(input.constructor.name)) {
+        if (![c.COMMAND, c.MESSAGE].includes(input.constructor.name)) {
             console.log(`${input.constructor.name}: Object input type not recognized`);
             return;
         }
         
         let gameID = '';
         switch (input.constructor.name) {
-            case c_slashObject:
+            case c.COMMAND:
                 gameID = input.options.getString(c.COMMAND_SHOW_SUBCOMMAND_USER_ID_NAME);
                 break;
-            case c_messageObject:
+            case c.MESSAGE:
                 if (input.content.split(' ').length < 2) {
                     return;
                 };
@@ -65,18 +61,18 @@ module.exports = (input) => {
     }
     
     function userParseOptions(input) {
-        if (![c_slashObject, c_messageObject].includes(input.constructor.name)) {
+        if (![c.COMMAND, c.MESSAGE].includes(input.constructor.name)) {
             console.log(`${input.constructor.name}: Object input type not recognized`);
             return;
         }
         
         let chartName = '';
         switch (input.constructor.name) {
-            case c_slashObject:
+            case c.COMMAND:
                 chartName = input.options.getString(c.COMMAND_SHOW_SUBCOMMAND_CHART_TITLE_NAME);
                 if (!chartName) { return; }
                 break;
-            case c_messageObject:
+            case c.MESSAGE:
                 if (input.content.split(' ').length < 4) { return; };
                 if (input.content.split(' ')[3].toLowerCase() == "chart") {
                     if (input.content.split(' ').length < 5) { return; };

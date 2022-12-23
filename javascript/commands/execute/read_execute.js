@@ -8,22 +8,18 @@ const c = require("../../resources/constants.js");
 const read_process = require("./read_process.js");
 
 module.exports = (input) => {
-    // support for registered Discord slash command and also basic user message command
-    const slashObject = "ChatInputCommandInteraction";
-    const messageObject = "Message";
-
-    if (![slashObject, messageObject].includes(input.constructor.name)) {
+    if (![c.COMMAND, c.MESSAGE].includes(input.constructor.name)) {
         console.log(`${input.constructor.name}: Object input type not recognized`);
         return;
     }
 
     let attachmentURL = '';
     switch (input.constructor.name) {
-        case slashObject:
+        case c.COMMAND:
             input.deferReply();
             attachmentURL = input.options.getAttachment(c.COMMAND_READ_SCORE_ATTACHMENT_OPTION_NAME).url;
             break;
-        case messageObject:
+        case c.MESSAGE:
             if (input.attachments.size == 0) {
                 input.react('❌');
                 console.log(`${c.COMMAND_READ}: IMAGE NOT FOUND`);

@@ -3,21 +3,17 @@ const c = require("../../resources/constants.js");
 const showPlay = require("./show_play.js");
 const showUser = require("./show_user.js");
 
-// file variables
-const c_slashObject = "ChatInputCommandInteraction";
-const c_messageObject = "Message";
-
-module.exports = (input) => {
+module.exports = async (input) => {
     let subcommand = '';
     switch (input.constructor.name) {
-        case c_slashObject:
+        case c.COMMAND:
+            await input.deferReply();
             subcommand = input.options.getSubcommand();
             break;
-        case c_messageObject:
+        case c.MESSAGE:
             subcommand = input.content.split(' ')[1];
             break;
     }
-
     switch (subcommand) {
         case c.COMMAND_SHOW_SUBCOMMAND_PLAY:
             showPlay(input);
