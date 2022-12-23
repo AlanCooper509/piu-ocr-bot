@@ -10,6 +10,7 @@ require("dotenv").config();
 const c = require("../../resources/constants.js");
 const params = require("../../resources/params.js");
 const sendEmbeds = require("../../utilities/paginationReply.js");
+const condenseChartType = require("../../utilities/condenseChartType.js");
 
 // file variables
 const c_slashObject = "ChatInputCommandInteraction";
@@ -137,23 +138,26 @@ module.exports = (input) => {
         // create embeds
         for (let i = 0; i < rows.length;) {
             // fill up a single embed (page) at a time with a max of params.PAGE_ROWS entries each
-            let content = '';
+            let fields = [];
             for (let j = 0; i < rows.length && j < params.PAGE_ROWS; j++) {
-                content += `${rows[i].id}: ${rows[i].chart_name}`;
-                if (i < rows.length - 1) { content += '\n'; }
+                let chartType = condenseChartType(rows[i].chart_type);
+                let chartDiff = rows[i].chart_diff > 0 ? rows[i].chart_diff : c.JSON_NO_VALUE;
+                fields.push({
+                    name: `> __${rows[i].chart_name}__\t${chartType}${chartDiff}`,
+                    value: "> `" + new Date(rows[i].time_uploaded).toLocaleDateString() + ' '.repeat(15) + rows[i].total_score.toString() + "`",
+                    inline: false
+                });
                 i++;
             }
-            embeds.push(new Discord.EmbedBuilder()
+            
+            let nextEmbed = new Discord.EmbedBuilder()
                 .setColor(14680086)
-                .setDescription(`**${gameID}**`)
-                .addFields(
-                    {
-                        name: c.EMBED_FIELD_RECENT,
-                        value: content,
-                        inline: false
-                    }
-                )
-            );
+                .setDescription(`**${gameID}**\n\n**[Recent Plays]**`);
+            
+            for(let j = 0; j < fields.length; j++) {
+                nextEmbed.addFields(fields[j]);
+            }
+            embeds.push(nextEmbed);
         }
         
         // reply to user and setup collector for handling pagination
