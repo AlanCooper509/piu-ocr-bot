@@ -27,9 +27,9 @@ module.exports = (input, embeds) => {
             let pageNumber = 0;
             const collector = message.createMessageComponentCollector({ componentType: Discord.ComponentType.Button, time: params.PAGE_TIMEOUT });
 
-            collector.on("collect", interaction => {
+            collector.on("collect", async interaction => {
                 if (interaction.user.id === input.user.id) {
-                    interaction.deferUpdate();
+                    await interaction.deferUpdate();
                     console.log(`${interaction.user.id} clicked on the ${interaction.customId} button.`);
 
                     // buttons.components[0] should be prev page button, [2] should be next page button
@@ -54,7 +54,7 @@ module.exports = (input, embeds) => {
                             break;
                         case c.PAGE_SELECT_BUTTON_ID:
                             console.log("SELECT ROW NOT YET IMPLEMENTED");
-                            interaction.reply({
+                            interaction.followUp({
                                 content: `These buttons aren't for you!`,
                                 ephemeral: true
                             });

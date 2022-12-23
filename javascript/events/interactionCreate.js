@@ -50,13 +50,13 @@ module.exports = (client, interaction) => {
             case c.DEV_MODAL_EDIT_INFO_BUTTON_ID:
                 edit_info_modal(interaction);
                 break;
-            case c.DEV_MODAL_PREV_PAGE_BUTTON_ID:
+            case c.PAGE_PREV_BUTTON_ID:
                 // handled as collector in another file
                 break;
-            case c.DEV_MODAL_NEXT_PAGE_BUTTON_ID:
+            case c.PAGE_NEXT_BUTTON_ID:
                 // handled as collector in another file
                 break;
-            case c.DEV_MODAL_SELECT_ROW_BUTTON_ID:
+            case c.PAGE_SELECT_BUTTON_ID:
                 // handled as collector in another file
                 break;
             default:
