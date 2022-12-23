@@ -15,16 +15,21 @@ const edit_total_modal = require("../commands/execute/edit_total_modal.js");
 const edit_total_submit = require("../commands/execute/edit_total_submit.js");
 const edit_info_modal = require("../commands/execute/edit_info_modal.js");
 const edit_info_submit = require("../commands/execute/edit_info_submit.js");
+const select_modal = require("../commands/execute/select_modal.js");
 
 // define listener(s)
 module.exports = (client, interaction) => {
     if (interaction.isChatInputCommand()) {
         switch(interaction.commandName) {
             case c.COMMAND_READ:
+                console.log(`user ${interaction.user.id} input a /${c.COMMAND_READ} COMMAND`)
                 read_execute(interaction);
                 break;
             case c.COMMAND_SHOW:
-                show_execute(interaction);
+                console.log(`user ${interaction.user.id} input a /${c.COMMAND_SHOW} COMMAND`)
+                interaction.deferReply().then(() => {
+                    show_execute(interaction);
+                });
                 break;
             case c.COMMAND_HEY:
                 hey_execute(interaction);
@@ -37,6 +42,7 @@ module.exports = (client, interaction) => {
     }
     
     if (interaction.isButton()) {
+        console.log(`${interaction.user.id} clicked on the ${interaction.customId} button.`);
         switch (interaction.customId) {
             case c.DEV_MODAL_EDIT_SCORES_BUTTON_ID:
                 edit_scores_modal(interaction);
@@ -57,7 +63,7 @@ module.exports = (client, interaction) => {
                 // handled as collector in another file
                 break;
             case c.PAGE_SELECT_BUTTON_ID:
-                // handled as collector in another file
+                select_modal(interaction);
                 break;
             default:
                 console.log("Button ID not recognized: ${interaction.customId}");
