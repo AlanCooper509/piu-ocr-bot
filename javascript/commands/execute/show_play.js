@@ -212,8 +212,10 @@ module.exports = (input) => {
         switch (input.constructor.name) {
             case c.COMMAND:
                 input.editReply({ embeds: [embed], components: [row] });
+                break;
             case c.MESSAGE:
                 input.reply({ embeds: [embed], components: [row] });
+                break;
             break;
         }
     }
