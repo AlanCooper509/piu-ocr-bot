@@ -26,12 +26,20 @@ module.exports = (input) => {
                 console.log(`${c.COMMAND_READ}: IMAGE NOT FOUND`);
                 return;
             }
+            if (input.attachments.size > 100) {
+                input.react('❌');
+                console.log(`${c.COMMAND_READ}: OVER 100 IMAGES`);
+                return;
+            }
+
             let promises = [];
-            let id = input.id;
+            id = input.id.slice(0, input.id.length - 3);
+            let iterator = 0;
             input.attachments.forEach(attachment => {
                 console.log(attachment.url);
-                promises.push(ingestPromise(input, attachment.url, id));
-                id++;
+                customID = id + iterator.toString();
+                promises.push(ingestPromise(input, attachment.url, customID));
+                iterator++;
             });
 
             Promise.all(promises).then(() => {
@@ -42,9 +50,9 @@ module.exports = (input) => {
             break;
     }
     
-    function ingestPromise(input, imageURL, id) {
+    function ingestPromise(input, imageURL, customID) {
         return new Promise((resolve, reject) => {
-            ingestImage(input, imageURL, id, resolve, reject);
+            ingestImage(input, imageURL, customID, resolve, reject);
         });
     }
     
