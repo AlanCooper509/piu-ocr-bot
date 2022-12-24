@@ -12,10 +12,6 @@ const formatPlayDetails = require("../../utilities/embedPlayDetailsFormatter.js"
 const formatScores = require("../../utilities/embedJudgementFormatter.js");
 const makeEditButtons = require("../../utilities/buttonsToEditPlay.js");
 
-// file variables
-const c_slashObject = "ChatInputCommandInteraction";
-const c_messageObject = "Message";
-
 module.exports = (input, entryID = null) => {
     if (!entryID) { playParseInput(input) };
 
@@ -36,17 +32,17 @@ module.exports = (input, entryID = null) => {
     });
     
     function playParseInput(input) {
-        if (![c_slashObject, c_messageObject].includes(input.constructor.name)) {
+        if (![c.COMMAND, c.MESSAGE].includes(input.constructor.name)) {
             console.log(`${input.constructor.name}: Object input type not recognized`);
             return;
         }
         
         let playID = '';
         switch (input.constructor.name) {
-            case c_slashObject:
+            case c.COMMAND:
                 playID = input.options.getString(c.COMMAND_SHOW_SUBCOMMAND_PLAY_ID_NAME);
                 break;
-            case c_messageObject:
+            case c.MESSAGE:
                 if (input.content.split(' ').length < 2) {
                     return;
                 };
