@@ -138,9 +138,11 @@ module.exports = (input) => {
             for (let j = 0; i < rows.length && j < params.PAGE_ROWS; j++) {
                 let chartType = condenseChartType(rows[i].chart_type);
                 let chartDiff = rows[i].chart_diff > 0 ? rows[i].chart_diff : c.JSON_NO_VALUE;
+                let timestamp = new Date(rows[i].time_uploaded).toLocaleDateString();
                 fields.push({
-                    name: `> __${rows[i].chart_name}__\t${chartType}${chartDiff}`,
-                    value: "> `" + new Date(rows[i].time_uploaded).toLocaleDateString() + ' '.repeat(15) + rows[i].total_score.toString() + "`",
+                    name: `> ${i+1}. __${rows[i].chart_name}__\t${chartType}${chartDiff}`,
+                    value: ">>> ```" + `${timestamp}${' '.repeat(15)}${rows[i].total_score.toString()}\n` +
+                           `Play ID: ${rows[i].id}` +  "```",
                     inline: false
                 });
                 i++;
