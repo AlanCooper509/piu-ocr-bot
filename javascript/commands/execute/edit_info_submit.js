@@ -23,7 +23,7 @@ module.exports = (interaction) => {
         discordReply(interaction, formInputValues, uploaded, modified)
     ).catch((err) => {
         console.error(err);
-        interaction.reply({ content: "Error updating Total Score.", ephemeral: true});
+        interaction.editReply({ content: "Error updating Total Score.", ephemeral: true});
     });
     
     function parseSubmission(interaction) {
@@ -33,7 +33,7 @@ module.exports = (interaction) => {
         let formValueDiff = interaction.fields.getTextInputValue(c.DEV_MODAL_EDIT_CHART_DIFF_TEXT_ID);
         
         if (!/^([A-Z|a-z|0-9|_]+)$/.test(formValueGameID)) {
-            interaction.reply({
+            interaction.editReply({
                 content: `An invalid game ID of \`${formValueGameID}\` was found in your CHART/USER submission!\nPlease try again.`, 
                 ephemeral: true
             });
@@ -41,7 +41,7 @@ module.exports = (interaction) => {
         }
         
         if (!/^[A-DFS]$|^SS$|^SSS$/.test(formValueGrade)) {
-            interaction.reply({
+            interaction.editReply({
                 content: `An invalid grade of \`${formValueGrade}\` was found in your CHART/USER submission!\nPlease try again.`, 
                 ephemeral: true
             });
@@ -49,7 +49,7 @@ module.exports = (interaction) => {
         }
         
         if (/('|"|`)+/.test(formValueName)) {
-            interaction.reply({
+            interaction.editReply({
                 content: `An invalid Chart Name of \`${formValueName}\` was found in your CHART/USER submission!\nPlease try again.`, 
                 ephemeral: true
             });
@@ -57,7 +57,7 @@ module.exports = (interaction) => {
         }
         
         if (!/^[S|D][P]?[0-9][0-9]?$|^CO-OP$/.test(formValueDiff)) {
-            interaction.reply({
+            interaction.editReply({
                 content: `An invalid Chart Type/Difficulty of \`${formValueDiff}\` was found in your TOTAL submission!\nPlease try again.`, 
                 ephemeral: true
             });
@@ -160,6 +160,6 @@ module.exports = (interaction) => {
         embed.setDescription(`**${formValueName}**\n*${chartType} ${chartDiff}*`);
 
         interaction.message.edit({ embeds: [embed] });
-        interaction.reply({ content: 'Chart/User information was updated on this submission!', ephemeral: true });
+        interaction.editReply({ content: 'Chart/User information was updated on this submission!', ephemeral: true });
     }
 }

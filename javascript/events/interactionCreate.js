@@ -85,7 +85,9 @@ module.exports = (client, interaction) => {
                 edit_total_submit(interaction);
                 break;
             case c.DEV_MODAL_EDIT_INFO_ID:
-                edit_info_submit(interaction);
+                interaction.deferReply({ ephemeral: true }).then(() => {
+                    edit_info_submit(interaction);
+                });
                 break;
             case c.DEV_MODAL_SELECT_ID:
                 select_submit(interaction);
