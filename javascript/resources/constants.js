@@ -90,6 +90,10 @@ exports.JSON_NO_VALUE     = "!!";
 // HEY!!
 exports.HEY = { content: '**HEY!!**', files: ['https://i.ytimg.com/vi/YknOygHNv1U/maxresdefault.jpg'] };
 
+// console logging prefixes
+exports.DEBUG_INPUT = "[INPUT]";
+exports.DEBUG_QUERY = "[QUERY]";
+
 // Discord Object Strings
 exports.COMMAND = "ChatInputCommandInteraction";
 exports.MESSAGE = "Message";

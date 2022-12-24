@@ -28,7 +28,17 @@ module.exports = (input, embeds) => {
             const collector = message.createMessageComponentCollector({ componentType: Discord.ComponentType.Button, time: params.PAGE_TIMEOUT });
 
             collector.on("collect", async interaction => {
-                if (interaction.user.id !== input.user.id) {
+                let originalUserID = '';
+                switch (input.constructor.name) {
+                    case c.COMMAND:
+                        originalUserID = input.user.id;
+                        break;
+                    case c.MESSAGE:
+                        originalUserID = input.author.id;
+                        break;
+                }
+
+                if (interaction.user.id !== originalUserID) {
                     interaction.reply({
                         content: `These buttons aren't for you!`,
                         ephemeral: true

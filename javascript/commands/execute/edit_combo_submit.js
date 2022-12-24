@@ -45,7 +45,7 @@ module.exports = (interaction) => {
                     console.error(err.message);
                     reject(err);
                 }
-                console.log('Connected to the database.');
+                console.log(`${c.DEBUG_QUERY}: Connected to the database.`);
             });
 
             let sql = 
@@ -59,7 +59,7 @@ module.exports = (interaction) => {
                     console.log(err);
                     reject(err);
                 } else {
-                    console.log("UPDATE query was successful.");
+                    console.log(`${c.DEBUG_QUERY}: UPDATE query was successful.`);
                 }
             });
             
@@ -68,7 +68,7 @@ module.exports = (interaction) => {
                     console.error(err.message);
                     reject(err);
                 }
-                console.log('Closed the database connection.');
+                console.log(`${c.DEBUG_QUERY}: Closed the database connection.`);
                 resolve();
             });
         });

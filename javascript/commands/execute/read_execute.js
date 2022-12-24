@@ -18,6 +18,7 @@ module.exports = (input) => {
         case c.COMMAND:
             input.deferReply();
             attachmentURL = input.options.getAttachment(c.COMMAND_READ_SCORE_ATTACHMENT_OPTION_NAME).url;
+            ingestImage(input, attachmentURL);
             break;
         case c.MESSAGE:
             if (input.attachments.size == 0) {
@@ -25,19 +26,42 @@ module.exports = (input) => {
                 console.log(`${c.COMMAND_READ}: IMAGE NOT FOUND`);
                 return;
             }
-            attachmentURL = input.attachments.first().url;
+            let promises = [];
+            let id = input.id;
+            input.attachments.forEach(attachment => {
+                console.log(attachment.url);
+                promises.push(ingestPromise(input, attachment.url, id));
+                id++;
+            });
+
+            Promise.all(promises).then(() => {
+                // finished all images
+                console.log(`finished saving ${input.attachments.size} images from ${input.author.id}.`);
+            });
             input.react('🔎').then(replyMessage => setTimeout(() => input.react('🤔'), 5000));
             break;
     }
+    
+    function ingestPromise(input, imageURL, id) {
+        return new Promise((resolve, reject) => {
+            ingestImage(input, imageURL, id, resolve, reject);
+        });
+    }
+    
+    function ingestImage(input, imageURL, customID = null, resolve = null, reject = null) {
+        console.log(`OCR processing: ${imageURL}`);
+        const pythonProcess = spawn('python', ["../python/readscores.py", imageURL]);
+        pythonProcess.stdout.on('data', (data) => {
+            console.log(`OCR success: ${imageURL}`);
+            let timestamp = new Date();
 
-    console.log(`OCR processing: ${attachmentURL}`);
-    const pythonProcess = spawn('python', ["../python/readscores.py", attachmentURL]);
-    pythonProcess.stdout.on('data', (data) => {
-        console.log(`OCR success: ${attachmentURL}`);
-        let timestamp = new Date();
+            // output retrieval from OCR script
+            let outputs = JSON.parse(data.toString());
+            read_process(input, outputs, timestamp, imageURL, customID);
 
-        // output retrieval from OCR script
-        let outputs = JSON.parse(data.toString());
-        read_process(input, outputs, timestamp, attachmentURL);
-    });
+            if (resolve) {
+                resolve();
+            }
+        });
+    }
 };

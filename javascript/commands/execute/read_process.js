@@ -28,7 +28,7 @@ let f_misses = '';
 let f_combo = '';
 let f_score = '';
 
-module.exports = (input, results, timestamp, attachmentURL) => {
+module.exports = (input, results, timestamp, attachmentURL, customID = null) => {
     init(input, results, timestamp);
     let runSQLpromise = promiseSQL(input, attachmentURL);
     runSQLpromise.then(
@@ -67,7 +67,7 @@ module.exports = (input, results, timestamp, attachmentURL) => {
                     console.error(err.message);
                     reject(err);
                 }
-                console.log('Connected to the database.');
+                console.log(`${c.DEBUG_QUERY}: Connected to the database.`);
             });
             let id_fields = ["id", "discord_id", "server_id", "game_id"];
             let play_fields = ["image_url", "chart_name", "chart_type", "chart_diff", "grade", "break_on"];
@@ -77,7 +77,7 @@ module.exports = (input, results, timestamp, attachmentURL) => {
             let sql = 
                 `INSERT INTO ${process.env.DB_SCORES_TABLE} (${fields.join(', ')})
                                   VALUES (
-                                      ${input.id},
+                                      ${customID ? customID : input.id},
                                       ${f_discordID},
                                       ${input.guild.id},
                                       "${f_user}",
@@ -101,9 +101,8 @@ module.exports = (input, results, timestamp, attachmentURL) => {
                 if (err) {
                     console.log(err);
                     reject(err);
-                } else {
-                    console.log("INSERT query was successful.");
                 }
+                console.log(`${c.DEBUG_QUERY}: INSERT query was successful.`);
             });
             
             db.close((err) => {
@@ -111,7 +110,7 @@ module.exports = (input, results, timestamp, attachmentURL) => {
                     console.error(err.message);
                     reject(err);
                 }
-                console.log('Closed the database connection.');
+                console.log(`${c.DEBUG_QUERY}: Closed the database connection.`);
                 resolve();
             });
         });

@@ -23,11 +23,11 @@ module.exports = (client, interaction) => {
     if (interaction.isChatInputCommand()) {
         switch(interaction.commandName) {
             case c.COMMAND_READ:
-                console.log(`user ${interaction.user.id} input a /${c.COMMAND_READ} COMMAND`)
+                console.log(`${c.DEBUG_INPUT}: user ${interaction.user.id} input a /${c.COMMAND_READ} COMMAND`)
                 read_execute(interaction);
                 break;
             case c.COMMAND_SHOW:
-                console.log(`user ${interaction.user.id} input a /${c.COMMAND_SHOW} COMMAND`)
+                console.log(`${c.DEBUG_INPUT}: user ${interaction.user.id} input a /${c.COMMAND_SHOW} COMMAND`)
                 interaction.deferReply().then(() => {
                     show_execute(interaction);
                 });
@@ -43,7 +43,7 @@ module.exports = (client, interaction) => {
     }
     
     if (interaction.isButton()) {
-        console.log(`${interaction.user.id} clicked on the ${interaction.customId} button.`);
+        console.log(`${c.DEBUG_INPUT}: user ${interaction.user.id} clicked on the ${interaction.customId} button.`);
         switch (interaction.customId) {
             case c.DEV_MODAL_EDIT_SCORES_BUTTON_ID:
                 edit_scores_modal(interaction);
@@ -74,6 +74,7 @@ module.exports = (client, interaction) => {
     }
 
     if (interaction.isModalSubmit()) {
+        console.log(`${c.DEBUG_INPUT}: user ${interaction.user.id} submitted a ${interaction.customId} modal.`);
         switch(interaction.customId) {
             case c.DEV_MODAL_EDIT_SCORES_ID:
                 edit_scores_submit(interaction);

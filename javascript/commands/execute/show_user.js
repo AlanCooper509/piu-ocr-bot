@@ -27,7 +27,15 @@ module.exports = (input) => {
         userDiscordReply(rows, gameID, input);
     }).catch(error => {
         console.error(error);
-        input.reply({ content: error.toString(), ephemeral: true});
+        let reply = { content: error.toString(), ephemeral: true };
+        switch (input.constructor.name) {
+            case c.COMMAND:
+                input.editReply(reply);
+                return;
+            case c.MESSAGE:
+                input.reply(reply);
+                return;
+        }
     });;
     
     function userParseInput(input) {
@@ -50,11 +58,18 @@ module.exports = (input) => {
         }
         
         if (!/^([A-Z|a-z|0-9|_]+)$/.test(gameID)) {
-            interaction.reply({
+            let reply = {
                 content: `An invalid game ID of \`${gameID}\` was found in your CHART/USER submission!\nPlease try again.`, 
                 ephemeral: true
-            });
-            return;
+            }
+            switch (input.constructor.name) {
+                case c.COMMAND:
+                    input.editReply(reply);
+                    return;
+                case c.MESSAGE:
+                    input.Reply(reply);
+                    return;
+            }
         }
 
         return gameID;
@@ -84,11 +99,18 @@ module.exports = (input) => {
         }
         
         if (!/^([A-Z|a-z|0-9|_|\s]+)$/.test(chartName)) {
-            input.reply({
-                content: `An invalid chart name of \`${chartName}\` was found in your CHART/USER submission!\nPlease try again.`, 
-                ephemeral: true
-            });
-            return;
+            let reply = {
+                    content: `An invalid chart name of \`${chartName}\` was found in your CHART/USER submission!\nPlease try again.`, 
+                    ephemeral: true
+                };
+            switch (input.constructor.name) {
+                case c.COMMAND:
+                    input.editReply(reply);
+                    return;
+                case c.MESSAGE:
+                    input.Reply(reply);
+                    return;
+            }
         }
 
         return chartName;
@@ -101,7 +123,7 @@ module.exports = (input) => {
                     console.error(err.message);
                     reject(err);
                 }
-                console.log('Connected to the database.');
+                console.log(`${c.DEBUG_QUERY}: Connected to the database.`);
             });
 
             // CAST since retrieving as INT leads to big-int rounding errors
@@ -114,7 +136,7 @@ module.exports = (input) => {
                     console.log(err);
                     reject(err);
                 } else {
-                    console.log("SELECT query was successful.");
+                    console.log(`${c.DEBUG_QUERY}: SELECT query was successful.`);
                     resolve(rows);
                 }
             });
@@ -124,7 +146,7 @@ module.exports = (input) => {
                     console.error(err.message);
                     reject(err);
                 }
-                console.log('Closed the database connection.');
+                console.log(`${c.DEBUG_QUERY}: Closed the database connection.`);
             });
         });
     }
@@ -139,11 +161,9 @@ module.exports = (input) => {
                 let chartType = condenseChartType(rows[i].chart_type);
                 let chartDiff = rows[i].chart_diff > 0 ? rows[i].chart_diff : c.JSON_NO_VALUE;
                 let timestamp = new Date(rows[i].time_uploaded).toLocaleDateString();
-                
                 let chartName = rows[i].chart_name.length > params.CHART_NAME_MAX_LENGTH ? 
                                 rows[i].chart_name.slice(0, params.CHART_NAME_MAX_LENGTH) + '...' :
                                 rows[i].chart_name;
-                console.log(chartName);
                 fields.push({
                     name: `> ${i+1}. __${chartName}__\t${chartType}${chartDiff}`,
                     value: ">>> ```" + `${timestamp}${' '.repeat(15)}${rows[i].total_score.toString()}\n` +

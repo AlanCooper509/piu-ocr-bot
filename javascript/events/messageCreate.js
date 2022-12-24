@@ -22,12 +22,15 @@ module.exports = (client, message) => {
     let command = message.content.split(' ')[0];
     switch(command.toLowerCase()) {
         case c.COMMAND_READ:
+            console.log(`${c.DEBUG_INPUT}: user ${message.author.id} input a /${c.COMMAND_READ} COMMAND`)
             read_execute(message);
             break;
         case c.COMMAND_SHOW:
+            console.log(`${c.DEBUG_INPUT}: user ${message.author.id} input a /${c.COMMAND_SHOW} COMMAND`)
             show_execute(message);
             break;
         case c.COMMAND_HEY:
+            console.log(`${c.DEBUG_INPUT}: user ${message.author.id} input a /${c.COMMAND_HEY} COMMAND`)
             hey_execute(message);
             break;
         default:

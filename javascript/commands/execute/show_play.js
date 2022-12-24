@@ -13,7 +13,9 @@ const formatScores = require("../../utilities/embedJudgementFormatter.js");
 const makeEditButtons = require("../../utilities/buttonsToEditPlay.js");
 
 module.exports = (input, entryID = null) => {
-    if (!entryID) { playParseInput(input) };
+    if (!entryID) { 
+        entryID = playParseInput(input);
+    };
 
     entryID = playValidateID(entryID);
     if (entryID == null || entryID == '') { return; }
@@ -54,18 +56,34 @@ module.exports = (input, entryID = null) => {
 
     function playValidateID(playID) {
         if (!/^\d+$/.test(playID)) {
-            input.reply({
+            let reply = {
                 content: "The Play ID should be numbers only!",
                 ephemeral: true
-            });
+            }
+            switch (input.constructor.name) {
+                case c.COMMAND:
+                    input.editReply(reply);
+                    break;
+                case c.MESSAGE:
+                    input.reply(reply);
+                    break;
+            }
             return;
         }
         
         if (playID.length < 17 || playID.length > 19) {
-            input.reply({
+            let reply = {
                 content: "The Play ID should be between 17 to 19 numbers!",
                 ephemeral: true
-            });
+            }
+            switch (input.constructor.name) {
+                case c.COMMAND:
+                    input.editReply(reply);
+                    break;
+                case c.MESSAGE:
+                    input.reply(reply);
+                    break;
+            }
             return;
         }
         
@@ -79,7 +97,7 @@ module.exports = (input, entryID = null) => {
                     console.error(err.message);
                     reject(err);
                 }
-                console.log('Connected to the database.');
+                console.log(`${c.DEBUG_QUERY}: Connected to the database.`);
             });
 
             // CAST since retrieving as INT leads to big-int rounding errors
@@ -90,7 +108,7 @@ module.exports = (input, entryID = null) => {
                     console.log(err);
                     reject(err);
                 } else {
-                    console.log("SELECT query was successful.");
+                    console.log(`${c.DEBUG_QUERY}: SELECT query was successful.`);
                     resolve(row);
                 }
             });
@@ -100,7 +118,7 @@ module.exports = (input, entryID = null) => {
                     console.error(err.message);
                     reject(err);
                 }
-                console.log('Closed the database connection.');
+                console.log(`${c.DEBUG_QUERY}: Closed the database connection.`);
             });
         });
     }
@@ -209,7 +227,6 @@ module.exports = (input, entryID = null) => {
 
         // Buttons below the embed for triggering edit actions
         const row = makeEditButtons();
-        console.log(input.constructor.name);
 
         switch (input.constructor.name) {
             case c.COMMAND:
