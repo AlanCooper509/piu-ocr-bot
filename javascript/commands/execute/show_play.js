@@ -30,7 +30,16 @@ module.exports = (input, entryID = null) => {
     }).then((retVals) => {
         playDiscordReply(retVals.author, retVals.entry, input);
     }).catch(error => {
-        input.reply({ content: error.toString(), ephemeral: true});
+        console.error(error);
+        let reply = { content: error.toString(), ephemeral: true };
+        switch (input.constructor.name) {
+            case c.COMMAND:
+                input.editReply(reply);
+                return;
+            case c.MESSAGE:
+                input.reply(reply);
+                return;
+        }
     });
     
     function playParseInput(input) {

@@ -131,7 +131,7 @@ module.exports = (input, results, timestamp, attachmentURL, customID = null) => 
                 // EMBED: add fields to display user info and capture date
                 {
                     name: c.EMBED_FIELD_RECORD_ID,
-                    value: input.id,
+                    value: customID ? customID : input.id,
                     inline: false
                 },
                 {

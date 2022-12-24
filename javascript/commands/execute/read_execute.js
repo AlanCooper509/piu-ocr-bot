@@ -26,18 +26,18 @@ module.exports = (input) => {
                 console.log(`${c.COMMAND_READ}: IMAGE NOT FOUND`);
                 return;
             }
-            if (input.attachments.size > 100) {
+            if (input.attachments.size > 99) {
                 input.react('❌');
-                console.log(`${c.COMMAND_READ}: OVER 100 IMAGES`);
+                console.log(`${c.COMMAND_READ}: OVER 99 IMAGES`);
                 return;
             }
 
             let promises = [];
-            id = input.id.slice(0, input.id.length - 3);
+            id = input.id.slice(0, input.id.length - 2);
             let iterator = 0;
             input.attachments.forEach(attachment => {
                 console.log(attachment.url);
-                customID = id + iterator.toString();
+                customID = id + String(iterator).padStart(2, '0');
                 promises.push(ingestPromise(input, attachment.url, customID));
                 iterator++;
             });
