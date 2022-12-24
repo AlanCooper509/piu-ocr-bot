@@ -51,7 +51,7 @@ module.exports = (input, embeds) => {
                                 buttons.components[0].setDisabled(false);
                             }
                             buttons.components[2].setDisabled(false);
-                            input.editReply({ embeds: [embeds[pageNumber]], components: [buttons] });
+                            message.edit({ embeds: [embeds[pageNumber]], components: [buttons] });
                             break;
                         case c.PAGE_NEXT_BUTTON_ID:
                             if (++pageNumber == embeds.length - 1) {
@@ -60,7 +60,7 @@ module.exports = (input, embeds) => {
                                 buttons.components[2].setDisabled(false);
                             }
                             buttons.components[0].setDisabled(false);
-                            input.editReply({ embeds: [embeds[pageNumber]], components: [buttons] });
+                            message.edit({ embeds: [embeds[pageNumber]], components: [buttons] });
                             break;
                     }
                 });
@@ -80,7 +80,11 @@ module.exports = (input, embeds) => {
                     // disable the right page turn button
                     buttons.components[2].setDisabled(true);
                 }
-                input.editReply({ embeds: [embeds[pageNumber]], components: [buttons] });
+                try {
+                    message.edit({ embeds: [embeds[pageNumber]], components: [buttons] });
+                } catch (error) {
+                    console.error(error);
+                }
             });
         });
 }
