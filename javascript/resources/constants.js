@@ -12,7 +12,7 @@ exports.COMMAND_SHOW_SUBCOMMAND_PLAY = "play";
 exports.COMMAND_SHOW_SUBCOMMAND_PLAY_DESC = "Show a specific play";
 exports.COMMAND_SHOW_SUBCOMMAND_PLAY_ID_NAME = "play_id";
 exports.COMMAND_SHOW_SUBCOMMAND_PLAY_ID_DESC = "the play id to show";
-exports.COMMAND_SHOW_SUBCOMMAND_USER = "user";
+exports.COMMAND_SHOW_SUBCOMMAND_USER = "player";
 exports.COMMAND_SHOW_SUBCOMMAND_USER_DESC = "Show a specific PIU user's plays";
 exports.COMMAND_SHOW_SUBCOMMAND_USER_ID_NAME = "game_id";
 exports.COMMAND_SHOW_SUBCOMMAND_USER_ID_DESC = "the IGN of the PIU player to show";
@@ -50,6 +50,7 @@ exports.DEV_MODAL_EDIT_SCORES_ID = "editScoreModal";
 exports.DEV_MODAL_EDIT_COMBO_ID = "editComboModal";
 exports.DEV_MODAL_EDIT_TOTAL_ID = "editTotalModal";
 exports.DEV_MODAL_EDIT_INFO_ID = "editInfoModal";
+exports.DEV_MODAL_SELECT_ID = "selectRowModal";
 
 // Modals' User-Input Text Field ID's created using Discord.TextInputBuilder() and accessed by interaction.fields.getTextInputValue();
 modalTextPerfectId = "perfectInput";
@@ -68,6 +69,8 @@ exports.DEV_MODAL_EDIT_SCORES_TEXT_IDS   = [modalTextPerfectId,
                                             modalTextGoodId,
                                             modalTextBadId,
                                             modalTextMissId];
+exports.DEV_MODAL_SELECT_PLAY_ID = "playIdRowSelection";
+
 
 // JSON parameters taken as output from Python OCR component
 exports.JSON_TEXT_USER    = "user";
@@ -90,3 +93,4 @@ exports.HEY = { content: '**HEY!!**', files: ['https://i.ytimg.com/vi/YknOygHNv1
 // Discord Object Strings
 exports.COMMAND = "ChatInputCommandInteraction";
 exports.MESSAGE = "Message";
+exports.SUBMIT = "ModalSubmitInteraction";

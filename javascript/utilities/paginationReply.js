@@ -28,10 +28,20 @@ module.exports = (input, embeds) => {
             const collector = message.createMessageComponentCollector({ componentType: Discord.ComponentType.Button, time: params.PAGE_TIMEOUT });
 
             collector.on("collect", async interaction => {
-                if (interaction.user.id === input.user.id) {
-                    await interaction.deferUpdate();
-                    console.log(`${interaction.user.id} clicked on the ${interaction.customId} button.`);
+                if (interaction.user.id !== input.user.id) {
+                    interaction.reply({
+                        content: `These buttons aren't for you!`,
+                        ephemeral: true
+                    });
+                    return;
+                }
+                
+                if (![c.PAGE_PREV_BUTTON_ID, c.PAGE_NEXT_BUTTON_ID].includes(interaction.customId)) {
+                    // SELECT button is handled by the events/interactionCreate class
+                    return;
+                }
 
+                interaction.deferUpdate().then(() => {
                     // buttons.components[0] should be prev page button, [2] should be next page button
                     switch (interaction.customId) {
                         case c.PAGE_PREV_BUTTON_ID:
@@ -52,27 +62,22 @@ module.exports = (input, embeds) => {
                             buttons.components[0].setDisabled(false);
                             input.editReply({ embeds: [embeds[pageNumber]], components: [buttons] });
                             break;
-                        case c.PAGE_SELECT_BUTTON_ID:
-                            console.log("SELECT ROW NOT YET IMPLEMENTED");
-                            interaction.followUp({
-                                content: `These buttons aren't for you!`,
-                                ephemeral: true
-                            });
-                            break;
                     }
-                } else {
-                    interaction.reply({
-                        content: `These buttons aren't for you!`,
-                        ephemeral: true
-                    });
-                }
+                });
+
                 collector.resetTimer();
             });
 
             collector.on('end', (collected, reason) => {
                 if (reason !== "messageDelete") {
+                    // disable the left page turn button
                     buttons.components[0].setDisabled(true);
-                    buttons.components[1].setDisabled(true);
+
+                    // the SELECT button is actually okay to keep enabled even after...
+                    //     expiry, since it only relies on info from the current embed
+                    /* buttons.components[1].setDisabled(true); */
+
+                    // disable the right page turn button
                     buttons.components[2].setDisabled(true);
                 }
                 input.editReply({ embeds: [embeds[pageNumber]], components: [buttons] });

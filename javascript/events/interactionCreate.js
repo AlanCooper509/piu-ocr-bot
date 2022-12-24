@@ -16,6 +16,7 @@ const edit_total_submit = require("../commands/execute/edit_total_submit.js");
 const edit_info_modal = require("../commands/execute/edit_info_modal.js");
 const edit_info_submit = require("../commands/execute/edit_info_submit.js");
 const select_modal = require("../commands/execute/select_modal.js");
+const select_submit = require("../commands/execute/select_submit.js");
 
 // define listener(s)
 module.exports = (client, interaction) => {
@@ -85,6 +86,9 @@ module.exports = (client, interaction) => {
                 break;
             case c.DEV_MODAL_EDIT_INFO_ID:
                 edit_info_submit(interaction);
+                break;
+            case c.DEV_MODAL_SELECT_ID:
+                select_submit(interaction);
                 break;
             default:
                 console.log(`Modal ID not recognized: ${interaction.customId}`)
