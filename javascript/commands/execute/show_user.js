@@ -139,8 +139,13 @@ module.exports = (input) => {
                 let chartType = condenseChartType(rows[i].chart_type);
                 let chartDiff = rows[i].chart_diff > 0 ? rows[i].chart_diff : c.JSON_NO_VALUE;
                 let timestamp = new Date(rows[i].time_uploaded).toLocaleDateString();
+                
+                let chartName = rows[i].chart_name.length > params.CHART_NAME_MAX_LENGTH ? 
+                                rows[i].chart_name.slice(0, params.CHART_NAME_MAX_LENGTH) + '...' :
+                                rows[i].chart_name;
+                console.log(chartName);
                 fields.push({
-                    name: `> ${i+1}. __${rows[i].chart_name}__\t${chartType}${chartDiff}`,
+                    name: `> ${i+1}. __${chartName}__\t${chartType}${chartDiff}`,
                     value: ">>> ```" + `${timestamp}${' '.repeat(15)}${rows[i].total_score.toString()}\n` +
                            `Play ID: ${rows[i].id}` +  "```",
                     inline: false
