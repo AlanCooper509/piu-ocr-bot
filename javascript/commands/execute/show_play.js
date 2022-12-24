@@ -16,9 +16,11 @@ const makeEditButtons = require("../../utilities/buttonsToEditPlay.js");
 const c_slashObject = "ChatInputCommandInteraction";
 const c_messageObject = "Message";
 
-module.exports = (input) => {
-    let entryID = playParseInput(input);
-    if (entryID == null) { return; }
+module.exports = (input, entryID = null) => {
+    if (!entryID) { playParseInput(input) };
+
+    entryID = playValidateID(entryID);
+    if (entryID == null || entryID == '') { return; }
     
     let runPlaySQLpromise = playPromiseSQL(entryID);
     runPlaySQLpromise.catch((err) => {
@@ -51,7 +53,10 @@ module.exports = (input) => {
                 playID = input.content.split(' ')[2];
                 break;
         }
-        
+        return playID;
+    }
+
+    function playValidateID(playID) {
         if (!/^\d+$/.test(playID)) {
             input.reply({
                 content: "The Play ID should be numbers only!",
@@ -208,12 +213,16 @@ module.exports = (input) => {
 
         // Buttons below the embed for triggering edit actions
         const row = makeEditButtons();
+        console.log(input.constructor.name);
 
         switch (input.constructor.name) {
             case c.COMMAND:
                 input.editReply({ embeds: [embed], components: [row] });
                 break;
             case c.MESSAGE:
+                input.reply({ embeds: [embed], components: [row] });
+                break;
+            case c.SUBMIT:
                 input.reply({ embeds: [embed], components: [row] });
                 break;
             break;
