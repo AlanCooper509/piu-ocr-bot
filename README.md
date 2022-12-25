@@ -36,7 +36,7 @@ One purpose of utilizing Discord is as an interface for performing CRUD (Create/
     - Button Interactions: `SCORES` / `CHART/USER` / `COMBO` / `TOTAL` / `DELETE` for editing a specific DB entry and the displayed Discord Embed (UPDATE/DELETE)
 - `/show play <play_id>`: retrieve a play from back-end DB and display the play details as a Discord Embed (READ)
     - Button Interactions: `SCORES` / `CHART/USER` / `COMBO` / `TOTAL` / `DELETE` for editing the specific DB entry and the displayed Discord Embed (UPDATE/DELETE)
-- `/show user <user_id> ((optional) chart <filtered_chart_name>)`: retrieves all user plays (optionally of a specific chart) by most recent and displays them as paginated results in a Discord Embed (READ)
+- `/show player <game_id> ((optional) chart <filtered_chart_name>) ((optional) type <chart_type>)`: retrieves all user plays (optionally of a specific chart/type) by most recent (or by highest total score if chart filter is present) and displays them as paginated results in a Discord Embed (READ)
     - user may then SELECT a row number from the paginated results to display details on a specific play, identical to calling `/show play <play_id>`
 
 #### Misc. Features:
