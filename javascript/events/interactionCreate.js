@@ -15,6 +15,8 @@ const edit_total_modal = require("../commands/execute/edit_total_modal.js");
 const edit_total_submit = require("../commands/execute/edit_total_submit.js");
 const edit_info_modal = require("../commands/execute/edit_info_modal.js");
 const edit_info_submit = require("../commands/execute/edit_info_submit.js");
+const edit_delete_modal = require("../commands/execute/edit_delete_modal.js");
+const edit_delete_submit = require("../commands/execute/edit_delete_submit.js");
 const select_modal = require("../commands/execute/select_modal.js");
 const select_submit = require("../commands/execute/select_submit.js");
 
@@ -57,6 +59,9 @@ module.exports = (client, interaction) => {
             case c.DEV_MODAL_EDIT_INFO_BUTTON_ID:
                 edit_info_modal(interaction);
                 break;
+            case c.DEV_MODAL_EDIT_DELETE_BUTTON_ID:
+                edit_delete_modal(interaction);
+                break;
             case c.PAGE_PREV_BUTTON_ID:
                 // handled as collector in another file
                 break;
@@ -89,6 +94,9 @@ module.exports = (client, interaction) => {
                 interaction.deferReply({ ephemeral: true }).then(() => {
                     edit_info_submit(interaction);
                 });
+                break;
+            case c.DEV_MODAL_EDIT_DELETE_ID:
+                edit_delete_submit(interaction);
                 break;
             case c.DEV_MODAL_SELECT_ID:
                 select_submit(interaction);

@@ -41,6 +41,7 @@ exports.DEV_MODAL_EDIT_SCORES_BUTTON_ID = "editScoresButton";
 exports.DEV_MODAL_EDIT_COMBO_BUTTON_ID = "editComboButton";
 exports.DEV_MODAL_EDIT_TOTAL_BUTTON_ID = "editTotalButton";
 exports.DEV_MODAL_EDIT_INFO_BUTTON_ID = "editInfoButton";
+exports.DEV_MODAL_EDIT_DELETE_BUTTON_ID = "editDeleteButton";
 exports.PAGE_PREV_BUTTON_ID = "paginateLeftButton";
 exports.PAGE_NEXT_BUTTON_ID = "paginateRightButton";
 exports.PAGE_SELECT_BUTTON_ID = "selectRowButton";
@@ -50,6 +51,7 @@ exports.DEV_MODAL_EDIT_SCORES_ID = "editScoreModal";
 exports.DEV_MODAL_EDIT_COMBO_ID = "editComboModal";
 exports.DEV_MODAL_EDIT_TOTAL_ID = "editTotalModal";
 exports.DEV_MODAL_EDIT_INFO_ID = "editInfoModal";
+exports.DEV_MODAL_EDIT_DELETE_ID = "editDeleteModal";
 exports.DEV_MODAL_SELECT_ID = "selectRowModal";
 
 // Modals' User-Input Text Field ID's created using Discord.TextInputBuilder() and accessed by interaction.fields.getTextInputValue();
@@ -64,6 +66,7 @@ exports.DEV_MODAL_EDIT_GAMEID_TEXT_ID     = "gameId";
 exports.DEV_MODAL_EDIT_GRADE_TEXT_ID      = "grade";
 exports.DEV_MODAL_EDIT_CHART_NAME_TEXT_ID = "chartName";
 exports.DEV_MODAL_EDIT_CHART_DIFF_TEXT_ID = "chartDiff";
+exports.DEV_MODAL_EDIT_DELETE_TEXT_ID     = "deleteId";
 exports.DEV_MODAL_EDIT_SCORES_TEXT_IDS   = [modalTextPerfectId,
                                             modalTextGreatId,
                                             modalTextGoodId,

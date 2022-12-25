@@ -10,19 +10,23 @@ module.exports = () => {
     return new Discord.ActionRowBuilder()
         .addComponents(
             new Discord.ButtonBuilder()
+                .setCustomId(c.DEV_MODAL_EDIT_TOTAL_BUTTON_ID)
+                .setLabel('💯 TOTAL')
+                .setStyle(Discord.ButtonStyle.Primary),
+            new Discord.ButtonBuilder()
+                .setCustomId(c.DEV_MODAL_EDIT_INFO_BUTTON_ID)
+                .setLabel('📝 CHART / USER')
+                .setStyle(Discord.ButtonStyle.Secondary),
+            new Discord.ButtonBuilder()
                 .setCustomId(c.DEV_MODAL_EDIT_SCORES_BUTTON_ID)
                 .setLabel('⚖️ SCORES')
                 .setStyle(Discord.ButtonStyle.Success),
-            new Discord.ButtonBuilder()
-                .setCustomId(c.DEV_MODAL_EDIT_INFO_BUTTON_ID)
-                .setLabel('📝 CHART/USER')
-                .setStyle(Discord.ButtonStyle.Secondary),
             new Discord.ButtonBuilder()
                 .setCustomId(c.DEV_MODAL_EDIT_COMBO_BUTTON_ID)
                 .setLabel('🔗 COMBO')
                 .setStyle(Discord.ButtonStyle.Secondary),
             new Discord.ButtonBuilder()
-                .setCustomId(c.DEV_MODAL_EDIT_TOTAL_BUTTON_ID)
-                .setLabel('💯 TOTAL')
-                .setStyle(Discord.ButtonStyle.Primary));
+                .setCustomId(c.DEV_MODAL_EDIT_DELETE_BUTTON_ID)
+                .setLabel('⇗')
+                .setStyle(Discord.ButtonStyle.Danger));
 }
