@@ -19,7 +19,8 @@ module.exports = {
                             .setDescription(c.COMMAND_SHOW_SUBCOMMAND_PLAY_ID_DESC)
                             .setMinLength(17)
                             .setMaxLength(19)
-                            .setRequired(true)))
+                            .setRequired(true))
+        )
         .addSubcommand(subcommand =>
                 subcommand
                     .setName(c.COMMAND_SHOW_SUBCOMMAND_USER)
@@ -37,5 +38,13 @@ module.exports = {
                             .setDescription(c.COMMAND_SHOW_SUBCOMMAND_CHART_TITLE_DESC)
                             .setMinLength(1)
                             .setMaxLength(100)
-                            .setRequired(false)))
+                            .setRequired(false))
+                    .addStringOption(option =>
+                        option
+                            .setName(c.COMMAND_SHOW_SUBCOMMAND_CHART_DIFF_NAME)
+                            .setDescription(c.COMMAND_SHOW_SUBCOMMAND_CHART_DIFF_DESC)
+                            .setMinLength(2)
+                            .setMaxLength(5)
+                            .setRequired(false))
+        )
 };

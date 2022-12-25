@@ -18,6 +18,8 @@ exports.COMMAND_SHOW_SUBCOMMAND_USER_ID_NAME = "game_id";
 exports.COMMAND_SHOW_SUBCOMMAND_USER_ID_DESC = "the IGN of the PIU player to show";
 exports.COMMAND_SHOW_SUBCOMMAND_CHART_TITLE_NAME = "filtered_chart_name";
 exports.COMMAND_SHOW_SUBCOMMAND_CHART_TITLE_DESC = "filter for a specific chart";
+exports.COMMAND_SHOW_SUBCOMMAND_CHART_DIFF_NAME = "chart_type";
+exports.COMMAND_SHOW_SUBCOMMAND_CHART_DIFF_DESC = "examples: D21, S10, SP8, CO-OP";
 
 // Embed field names or keyword strings created using Discord.EmbedBuilder() and accessed whenever updating or reading the embed
 exports.EMBED_FIELD_PLAY_DETAILS = "PLAY DETAILS";
