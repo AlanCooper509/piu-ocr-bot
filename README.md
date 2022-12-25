@@ -1,7 +1,7 @@
 # piu-ocr-bot 
 
 > "write a real readme"<br> 
-> \- *EpikWaffle*
+> \- *EpikWaffle, 10/18/22*
 
 ## Python (v3.10.7) with EasyOCR (v1.6.2)
 #### Driver Code:
