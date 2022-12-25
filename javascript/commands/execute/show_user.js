@@ -36,7 +36,7 @@ module.exports = (input) => {
                 input.reply(reply);
                 return;
         }
-    });;
+    });
     
     function userParseInput(input) {
         if (![c.COMMAND, c.MESSAGE].includes(input.constructor.name)) {
