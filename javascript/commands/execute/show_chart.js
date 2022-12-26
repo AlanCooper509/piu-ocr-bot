@@ -1,13 +1,18 @@
+// npm install discord.js@14.6.0
 // npm install sqlite3@5.1.4
 // npm install dotenv@16.0.3
 
+const Discord = require("discord.js");
 const sqlite3 = require("sqlite3").verbose();
 require("dotenv").config();
 
 // local imports
 const c = require("../../resources/constants.js");
+const params = require("../../resources/params.js");
 const parseChart = require("../../utilities/parseChart.js");
 const parseDiff = require("../../utilities/parseDiff.js");
+const condenseChartType = require("../../utilities/condenseChartType.js");
+const sendEmbeds = require("../../utilities/paginationReply.js");
 
 module.exports = (input) => {
     let chartName = parseChart(input, c.COMMAND_SHOW_SUBCOMMAND_CHART_TITLE_NAME);
@@ -20,30 +25,17 @@ module.exports = (input) => {
         console.error(err); 
         throw "Error during chart lookup request.";
     }).then(rows => {
-        console.log(rows.length);
-        /*
         if (rows.length == 0) { 
-            if (!chartName && !chartDiff) {
-                throw `User ${gameID} not found in records.`;
-            } else if (chartName && !chartDiff) {
-                throw `${gameID} does not have any plays on ${chartName}.`;
-            } else if (chartDiff && !chartName) {
+            if (!chartDiff) {
+                throw `This Discord server does not have any plays on ${chartName}.`;
+            } else {
                 if (chartDiff.type == "CO-OP") {
-                    throw `${gameID} does not have any CO-OP plays.`;
+                    throw `This Discord server does not have any CO-OP plays on ${chartName}.`;
                 }
-                throw `${gameID} does not have any ${chartDiff.type} ${chartDiff.diff} plays.`;
-            } else if (chartDiff && chartName) {
-                if (chartDiff.type == "CO-OP") {
-                    throw `${gameID} does not have any CO-OP plays on ${chartName}.`;
-                }
-                throw `${gameID} does not have any ${chartDiff.type} ${chartDiff.diff} plays on ${chartName}.`;
+                throw `This Discord server does not have any plays on ${chartName} ${condenseChartType(chartDiff.type)}${chartDiff.diff}.`;
             }
         }
-
-        if (rows.length == 0) { throw `No results for ${gameID} playing ${chartName}.`; }
-
-        userDiscordReply(rows, gameID, input, chartName != null);
-        */
+        chartDiscordReply(rows, input, chartName, chartDiff);
     }).catch(error => {
         console.error(error);
         let reply = { content: error.toString(), ephemeral: true };
@@ -91,5 +83,41 @@ module.exports = (input) => {
                 console.log(`${c.DEBUG_QUERY}: Closed the database connection.`);
             });
         });
+    }
+    
+    function chartDiscordReply(rows, input, chartName, chartDetails) {
+        embeds = [];
+        // create embeds
+        for (let i = 0; i < rows.length;) {
+            // fill up a single embed (page) at a time with a max of params.PAGE_ROWS entries each
+            let fields = [];
+            for (let j = 0; i < rows.length && j < params.PAGE_ROWS; j++) {
+                let chartType = condenseChartType(rows[i].chart_type);
+                let chartDiff = rows[i].chart_diff > 0 ? rows[i].chart_diff : c.JSON_NO_VALUE;
+                let timestamp = new Date(rows[i].time_uploaded);
+                let chartName = rows[i].chart_name.length > params.CHART_NAME_MAX_LENGTH ? 
+                                rows[i].chart_name.slice(0, params.CHART_NAME_MAX_LENGTH) + '...' :
+                                rows[i].chart_name;
+                fields.push({
+                    name: `> ${i+1}. __${rows[i].game_id}__` + `\t${rows[i].total_score.toLocaleString()}` + (chartDetails ? '' : '\t' + chartType + chartDiff),
+                    value: ">>> ```" + `Uploaded: ${timestamp.toLocaleDateString()} at ${timestamp.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}\n` +
+                           `Play ID: ${rows[i].id}` +  "```",
+                    inline: false
+                });
+                i++;
+            }
+            
+            let nextEmbed = new Discord.EmbedBuilder()
+                .setColor(14680086)
+                .setDescription(`**${chartName}${chartDetails ? ' ' + condenseChartType(chartDetails.type) + chartDetails.diff : ''}**\n\n**[Best Plays]**`);
+            
+            for(let j = 0; j < fields.length; j++) {
+                nextEmbed.addFields(fields[j]);
+            }
+            embeds.push(nextEmbed);
+        }
+        
+        // reply to user and setup collector for handling pagination
+        sendEmbeds(input, embeds);
     }
 }
