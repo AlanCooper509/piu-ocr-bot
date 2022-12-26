@@ -16,10 +16,16 @@ exports.COMMAND_SHOW_SUBCOMMAND_USER = "player";
 exports.COMMAND_SHOW_SUBCOMMAND_USER_DESC = "Show a specific PIU user's plays";
 exports.COMMAND_SHOW_SUBCOMMAND_USER_ID_NAME = "game_id";
 exports.COMMAND_SHOW_SUBCOMMAND_USER_ID_DESC = "the IGN of the PIU player to show";
-exports.COMMAND_SHOW_SUBCOMMAND_CHART_TITLE_NAME = "filtered_chart_name";
-exports.COMMAND_SHOW_SUBCOMMAND_CHART_TITLE_DESC = "filter for a specific chart";
-exports.COMMAND_SHOW_SUBCOMMAND_CHART_DIFF_NAME = "chart_type";
-exports.COMMAND_SHOW_SUBCOMMAND_CHART_DIFF_DESC = "examples: D21, S10, SP8, CO-OP";
+exports.COMMAND_SHOW_SUBCOMMAND_USER_TITLE_NAME = "filtered_chart_name";
+exports.COMMAND_SHOW_SUBCOMMAND_USER_TITLE_DESC = "filter for a specific chart";
+exports.COMMAND_SHOW_SUBCOMMAND_USER_DIFF_NAME = "chart_type";
+exports.COMMAND_SHOW_SUBCOMMAND_USER_DIFF_DESC = "examples: D21, S14, SP8, CO-OP";
+exports.COMMAND_SHOW_SUBCOMMAND_CHART = "chart";
+exports.COMMAND_SHOW_SUBCOMMAND_CHART_DESC = "Show all of the server's plays on a speicifc chart";
+exports.COMMAND_SHOW_SUBCOMMAND_CHART_TITLE_NAME = "chart_name";
+exports.COMMAND_SHOW_SUBCOMMAND_CHART_TITLE_DESC = "the name of the chart to show";
+exports.COMMAND_SHOW_SUBCOMMAND_CHART_DIFF_NAME = "difficulty";
+exports.COMMAND_SHOW_SUBCOMMAND_CHART_DIFF_DESC = "examples: D21, S14, SP8, CO-OP";
 
 // Embed field names or keyword strings created using Discord.EmbedBuilder() and accessed whenever updating or reading the embed
 exports.EMBED_FIELD_PLAY_DETAILS = "PLAY DETAILS";

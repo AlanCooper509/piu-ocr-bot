@@ -11,13 +11,14 @@ const c = require("../../resources/constants.js");
 const params = require("../../resources/params.js");
 const sendEmbeds = require("../../utilities/paginationReply.js");
 const condenseChartType = require("../../utilities/condenseChartType.js");
-const expandChartType = require("../../utilities/expandChartType.js");
+const parseChart = require("../../utilities/parseChart.js");
+const parseDiff = require("../../utilities/parseDiff.js");
 
 module.exports = (input) => {
     let gameID = userParseInput(input);
     if (gameID == null) { return; }
-    let chartName = userParseChart(input);
-    let chartDiff = userParseDiff(input);
+    let chartName = parseChart(input, c.COMMAND_SHOW_SUBCOMMAND_USER_TITLE_NAME);
+    let chartDiff = parseDiff(input, c.COMMAND_SHOW_SUBCOMMAND_USER_DIFF_NAME);
     
     let runUserSQLpromise = userPromiseSQL(gameID, chartName, chartDiff);
     runUserSQLpromise.catch((err) => {
@@ -93,134 +94,6 @@ module.exports = (input) => {
         }
 
         return gameID;
-    }
-    
-    function userParseChart(input) {
-        if (![c.COMMAND, c.MESSAGE].includes(input.constructor.name)) {
-            console.log(`${input.constructor.name}: Object input type not recognized`);
-            return;
-        }
-        
-        let chartName = '';
-        switch (input.constructor.name) {
-            case c.COMMAND:
-                chartName = input.options.getString(c.COMMAND_SHOW_SUBCOMMAND_CHART_TITLE_NAME);
-                if (!chartName) { return; }
-                break;
-            case c.MESSAGE:
-                let tokens = input.content.split(' ');
-                
-                // remove the token "type" with the corresponding, adjacent difficulty specifier if present
-                if (tokens.includes("type")) {
-                    let idx = tokens.indexOf("type");
-                    tokens.splice(idx, 1); // remove one item only
-                    if (idx < tokens.length) {
-                        tokens.splice(idx, 1); // remove one item only
-                    }
-                }
-
-                // get the remaining parts of the message as the chart name
-                if (tokens.length < 4) { return; };
-                if (tokens[3].toLowerCase() == "chart") {
-                    if (tokens.length < 5) { return; };
-                    chartName = tokens.slice(4).join(' ');
-                } else {
-                    return;
-                }
-                break;
-        }
-        
-        if (!/^([A-Z|a-z|0-9|_|\s]+)$/.test(chartName)) {
-            let reply = {
-                    content: `An invalid chart name of \`${chartName}\` was found in your "/${c.COMMAND_SHOW} ${c.COMMAND_SHOW_SUBCOMMAND_USER}" submission!\nPlease try again.`, 
-                    ephemeral: true
-                };
-            switch (input.constructor.name) {
-                case c.COMMAND:
-                    input.editReply(reply);
-                    return;
-                case c.MESSAGE:
-                    input.Reply(reply);
-                    return;
-            }
-        }
-
-        return chartName;
-    }
-    
-    function userParseDiff(input) {
-        if (![c.COMMAND, c.MESSAGE].includes(input.constructor.name)) {
-            console.log(`${input.constructor.name}: Object input type not recognized`);
-            return;
-        }
-        
-        let diff = '';
-        switch (input.constructor.name) {
-            case c.COMMAND:
-                diff = input.options.getString(c.COMMAND_SHOW_SUBCOMMAND_CHART_DIFF_NAME);
-                if (!diff) { return; }
-                break;
-            case c.MESSAGE:
-                let tokens = input.content.split(' ');
-                if (tokens.length < 4) { return; };
-                if (tokens[3].toLowerCase() == "type") {
-                    if (tokens.length < 5) { return; };
-                    diff = tokens[4];
-                } else if (tokens.includes("type")) {
-                    let idx = tokens.indexOf("type") + 1;
-                    if (tokens.length - 1 < idx) { return; }
-                    diff = tokens[idx];
-                } else {
-                    return;
-                }
-                break;
-        }
-        
-        // tests for S/SP/D/DP together with difficulty (00-29) or variations on co-op/coop.
-        if (!/^(S|s|SP|sp|D|d|DP|dp)\d\d?$|^(C|c)(O|o)-?(O|o)(P|p)$/.test(diff)) {
-            let reply = {
-                    content: `An invalid chart difficulty of \`${diff}\` was found in your "/${c.COMMAND_SHOW} ${c.COMMAND_SHOW_SUBCOMMAND_USER}" submission!\nPlease try again.`, 
-                    ephemeral: true
-                };
-            switch (input.constructor.name) {
-                case c.COMMAND:
-                    input.editReply(reply);
-                    return;
-                case c.MESSAGE:
-                    input.Reply(reply);
-                    return;
-            }
-        }
-
-        // tests for variations on co-op/coop
-        diff = diff.toUpperCase();
-        if (/^CO-?OP$/.test(diff)) {
-            return {
-                type: "CO-OP",
-                diff: -1
-            }
-        } else if (diff.startsWith("DP")) {
-            return {
-                type: expandChartType("DP"),
-                diff: parseInt(diff.split("DP")[1])
-            }
-        } else if (diff.startsWith("SP")) {
-            return {
-                type: expandChartType("SP"),
-                diff: parseInt(diff.split("SP")[1])
-            }
-        } else if (diff.startsWith("D")) {
-            return {
-                type: expandChartType("D"),
-                diff: parseInt(diff.split("D")[1])
-            }
-        } else if (diff.startsWith("S")) {
-            return {
-                type: expandChartType("S"),
-                diff: parseInt(diff.split("S")[1])
-            }
-        }
-        return diff;
     }
     
     function userPromiseSQL(gameID, chartName, chartDiff) {

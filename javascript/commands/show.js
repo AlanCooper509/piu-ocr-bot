@@ -34,11 +34,30 @@ module.exports = {
                             .setRequired(true))
                     .addStringOption(option =>
                         option
+                            .setName(c.COMMAND_SHOW_SUBCOMMAND_USER_TITLE_NAME)
+                            .setDescription(c.COMMAND_SHOW_SUBCOMMAND_USER_TITLE_DESC)
+                            .setMinLength(1)
+                            .setMaxLength(100)
+                            .setRequired(false))
+                    .addStringOption(option =>
+                        option
+                            .setName(c.COMMAND_SHOW_SUBCOMMAND_USER_DIFF_NAME)
+                            .setDescription(c.COMMAND_SHOW_SUBCOMMAND_USER_DIFF_DESC)
+                            .setMinLength(2)
+                            .setMaxLength(5)
+                            .setRequired(false))
+        )
+        .addSubcommand(subcommand =>
+                subcommand
+                    .setName(c.COMMAND_SHOW_SUBCOMMAND_CHART)
+                    .setDescription(c.COMMAND_SHOW_SUBCOMMAND_CHART_DESC)
+                    .addStringOption(option =>
+                        option
                             .setName(c.COMMAND_SHOW_SUBCOMMAND_CHART_TITLE_NAME)
                             .setDescription(c.COMMAND_SHOW_SUBCOMMAND_CHART_TITLE_DESC)
                             .setMinLength(1)
                             .setMaxLength(100)
-                            .setRequired(false))
+                            .setRequired(true))
                     .addStringOption(option =>
                         option
                             .setName(c.COMMAND_SHOW_SUBCOMMAND_CHART_DIFF_NAME)
