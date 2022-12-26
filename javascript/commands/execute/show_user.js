@@ -148,7 +148,7 @@ module.exports = (input) => {
                                 rows[i].chart_name;
                 fields.push({
                     name: `> ${i+1}. __${chartName}__\t${chartType}${chartDiff}`,
-                    value: ">>> ```" + `${timestamp}${' '.repeat(15)}${rows[i].total_score.toString()}\n` +
+                    value: ">>> ```" + `${timestamp}${' '.repeat(15)}${rows[i].total_score.toLocaleString()}\n` +
                            `Play ID: ${rows[i].id}` +  "```",
                     inline: false
                 });
