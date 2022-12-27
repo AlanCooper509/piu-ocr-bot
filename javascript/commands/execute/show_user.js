@@ -11,11 +11,12 @@ const c = require("../../resources/constants.js");
 const params = require("../../resources/params.js");
 const sendEmbeds = require("../../utilities/paginationReply.js");
 const condenseChartType = require("../../utilities/condenseChartType.js");
+const parseUser = require("../../utilities/parseUser.js");
 const parseChart = require("../../utilities/parseChart.js");
 const parseDiff = require("../../utilities/parseDiff.js");
 
 module.exports = (input) => {
-    let gameID = userParseInput(input);
+    let gameID = parseUser(input, c.COMMAND_SHOW_SUBCOMMAND_USER_ID_NAME, true);
     if (gameID == null) { return; }
     let chartName = parseChart(input, c.COMMAND_SHOW_SUBCOMMAND_USER_TITLE_NAME);
     let chartDiff = parseDiff(input, c.COMMAND_SHOW_SUBCOMMAND_USER_DIFF_NAME);
@@ -58,43 +59,6 @@ module.exports = (input) => {
                 return;
         }
     });
-    
-    function userParseInput(input) {
-        if (![c.COMMAND, c.MESSAGE].includes(input.constructor.name)) {
-            console.log(`${input.constructor.name}: Object input type not recognized`);
-            return;
-        }
-        
-        let gameID = '';
-        switch (input.constructor.name) {
-            case c.COMMAND:
-                gameID = input.options.getString(c.COMMAND_SHOW_SUBCOMMAND_USER_ID_NAME);
-                break;
-            case c.MESSAGE:
-                if (input.content.split(' ').length < 2) {
-                    return;
-                };
-                gameID = input.content.split(' ')[2];
-                break;
-        }
-        
-        if (!/^([A-Z|a-z|0-9|_]+)$/.test(gameID)) {
-            let reply = {
-                content: `An invalid game ID of \`${gameID}\` was found in your CHART/USER submission!\nPlease try again.`, 
-                ephemeral: true
-            }
-            switch (input.constructor.name) {
-                case c.COMMAND:
-                    input.editReply(reply);
-                    return;
-                case c.MESSAGE:
-                    input.Reply(reply);
-                    return;
-            }
-        }
-
-        return gameID;
-    }
     
     function userPromiseSQL(gameID, chartName, chartDiff) {
         return new Promise((resolve, reject) => {

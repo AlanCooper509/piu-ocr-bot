@@ -27,6 +27,11 @@ exports.COMMAND_SHOW_SUBCOMMAND_CHART_TITLE_DESC = "the name of the chart to sho
 exports.COMMAND_SHOW_SUBCOMMAND_CHART_DIFF_NAME = "difficulty";
 exports.COMMAND_SHOW_SUBCOMMAND_CHART_DIFF_DESC = "examples: D21, S14, SP8, CO-OP";
 
+exports.COMMAND_NAME = "name";
+exports.COMMAND_NAME_DESC = "Set your Game ID automatically for future uploads!";
+exports.COMMAND_NAME_SUBCOMMAND_USER_ID_NAME = "game_id";
+exports.COMMAND_NAME_SUBCOMMAND_USER_ID_DESC = "the IGN of your AM Pass card";
+
 // Embed field names or keyword strings created using Discord.EmbedBuilder() and accessed whenever updating or reading the embed
 exports.EMBED_FIELD_PLAY_DETAILS = "PLAY DETAILS";
 exports.EMBED_FIELD_MAX_COMBO    = "MAX COMBO";
