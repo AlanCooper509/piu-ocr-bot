@@ -83,7 +83,7 @@ module.exports = (input) => {
         let name = input.member.nickname ?? input.member.user.username;
         let reply = `<@${discordID}>'s default PIU name is now **${gameID}**.`;
         if (count > 1) {
-            reply += `\n> *[WARNING] **${count}** total Discord users are now using the PIU name **${gameID}**.*`;
+            reply += `\n> *[WARNING] **${count}** Discord users are now using the PIU name **${gameID}**.*`;
         }
         input.reply({ content: reply, ephemeral: true });
     }
