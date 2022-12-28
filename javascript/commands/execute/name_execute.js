@@ -18,9 +18,9 @@ module.exports = (input) => {
             input.constructor.name == c.MESSAGE ? input.author.id : c.JSON_NO_VALUE;
     let timestamp = new Date();
     let runSQLpromise = namePromiseSQL(discordID, gameID, timestamp);
-    runSQLpromise.then(
-        discordReply(input, discordID, gameID)
-    ).catch((err) => {
+    runSQLpromise.then((rows) => {
+        discordReply(input, discordID, gameID, rows.length)
+    }).catch((err) => {
         console.error(err);
         input.reply({ content: "Error setting default Game ID", ephemeral: true});
     });
@@ -46,14 +46,26 @@ module.exports = (input) => {
                             (SELECT status from DiscordPlayers WHERE id = ${discordID}),
                             "${timestamp.toISOString()}"
                         );`
-            db.run(sql, (err) => {
-                if (err) {
-                    console.log(err);
-                    reject(err);
-                } else {
-                    console.log(`${c.DEBUG_QUERY}: INSERT OR REPLACE query was successful.`);
-                    resolve();
-                }
+
+            let sqlCount = `SELECT * FROM ${process.env.DB_USERS_TABLE} WHERE game_id = "${gameID}"`;
+            db.serialize(() => {
+                db.run(sql, (err) => {
+                    if (err) {
+                        console.log(err);
+                        reject(err);
+                    } else {
+                        console.log(`${c.DEBUG_QUERY}: INSERT OR REPLACE query was successful.`);
+                    }
+                });
+                db.all(sqlCount, (err, rows) => {
+                    if (err) {
+                        console.log(err);
+                        reject(err);
+                    } else {
+                        console.log(`${c.DEBUG_QUERY}: SELECT query was successful.`);
+                        resolve(rows);
+                    }
+                });
             });
             
             db.close((err) => {
@@ -66,7 +78,13 @@ module.exports = (input) => {
         });
     }
     
-    function discordReply(input, discordID, gameID) {
-        input.reply(`${discordID}'s default username is now ${gameID}`);
+    function discordReply(input, discordID, gameID, count) {
+        console.log(count);
+        let name = input.member.nickname ?? input.member.user.username;
+        let reply = `<@${discordID}>'s default PIU name is now **${gameID}**.`;
+        if (count > 1) {
+            reply += `\n> *[WARNING] **${count}** total Discord users are now using the PIU name **${gameID}**.*`;
+        }
+        input.reply({ content: reply, ephemeral: true });
     }
 }
