@@ -40,5 +40,5 @@ One purpose of utilizing Discord is as an interface for performing CRUD (Create/
     - user may then SELECT a row number from the paginated results to display details on a specific play, identical to calling `/show play <play_id>`
 
 #### Misc. Features:
-- `/name ((optional) <game_id>)`: sets the Discord user's default `<game_id>` (PIU AM Pass IGN) to use when uploading any future score images. This takes priority over whatever OCR detects upon upload. Not supplying the `<game_id>` removes the default `<game_id>` for the user.
+- `/name ((optional) <game_id>)`: sets the Discord user's default `<game_id>` (PIU AM Pass IGN) to use when uploading any future score images. This takes priority over whatever OCR detects upon upload. Not supplying the `<game_id>` removes any default `<game_id>` that may be already set for the user.
 - `/hey` [hey!!](https://i.ytimg.com/vi/YknOygHNv1U/maxresdefault.jpg)
