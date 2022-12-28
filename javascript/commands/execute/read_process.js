@@ -8,9 +8,7 @@ require("dotenv").config();
 
 // local imports
 const c = require("../../resources/constants.js");
-const formatPlayDetails = require("../../utilities/embedPlayDetailsFormatter.js");
-const formatScores = require("../../utilities/embedJudgementFormatter.js");
-const makeEditButtons = require("../../utilities/buttonsToEditPlay.js");
+const showPlay = require("./show_play.js");
 
 // file variables
 let f_discordID = '';
@@ -31,8 +29,8 @@ let f_score = '';
 module.exports = (input, results, timestamp, attachmentURL, customID = null) => {
     init(input, results, timestamp);
     let runSQLpromise = promiseSQL(input, attachmentURL);
-    runSQLpromise.then((customGameID) => {
-        discordReply(input, attachmentURL, customGameID)
+    runSQLpromise.then((entryID) => {
+        showPlay(input, entryID);
     }).catch((err) => {
         console.error(err);
         input.reply({ content: "Error saving score results", ephemeral: true});
@@ -116,7 +114,7 @@ module.exports = (input, results, timestamp, attachmentURL, customID = null) => 
                         reject(err);
                     }
                     console.log(`${c.DEBUG_QUERY}: INSERT query was successful.`);
-                    resolve(gameID);
+                    resolve(customID ? customID : input.id);
                 });
             });
 
