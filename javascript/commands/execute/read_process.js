@@ -31,9 +31,9 @@ let f_score = '';
 module.exports = (input, results, timestamp, attachmentURL, customID = null) => {
     init(input, results, timestamp);
     let runSQLpromise = promiseSQL(input, attachmentURL);
-    runSQLpromise.then(
-        discordReply(input, attachmentURL)
-    ).catch((err) => {
+    runSQLpromise.then((customGameID) => {
+        discordReply(input, attachmentURL, customGameID)
+    }).catch((err) => {
         console.error(err);
         input.reply({ content: "Error saving score results", ephemeral: true});
     });
@@ -61,6 +61,12 @@ module.exports = (input, results, timestamp, attachmentURL, customID = null) => 
     }
     
     function promiseSQL(input) {
+        let id_fields = ["id", "discord_id", "server_id", "game_id"];
+        let play_fields = ["image_url", "chart_name", "chart_type", "chart_diff", "grade", "break_on"];
+        let score_fields = ["perfects", "greats", "goods", "bads", "misses", "max_combo", "total_score"];
+        let time_field = ["time_uploaded"];
+        let fields = id_fields.concat(play_fields).concat(score_fields).concat(time_field);
+
         return new Promise((resolve, reject) => {
             const db = new sqlite3.Database(process.env.DB_NAME, (err) => {
                 if (err) {
@@ -69,54 +75,62 @@ module.exports = (input, results, timestamp, attachmentURL, customID = null) => 
                 }
                 console.log(`${c.DEBUG_QUERY}: Connected to the database.`);
             });
-            let id_fields = ["id", "discord_id", "server_id", "game_id"];
-            let play_fields = ["image_url", "chart_name", "chart_type", "chart_diff", "grade", "break_on"];
-            let score_fields = ["perfects", "greats", "goods", "bads", "misses", "max_combo", "total_score"];
-            let time_field = ["time_uploaded"];
-            let fields = id_fields.concat(play_fields).concat(score_fields).concat(time_field);
-            let sql = 
-                `INSERT INTO ${process.env.DB_SCORES_TABLE} (${fields.join(', ')})
-                                  VALUES (
-                                      ${customID ? customID : input.id},
-                                      ${f_discordID},
-                                      ${input.guild.id},
-                                      "${f_user}",
-                                      "${attachmentURL}",
-                                      "${f_chart}",
-                                      "${f_type}",
-                                      ${f_diff != c.JSON_NO_VALUE ? f_diff : -1},
-                                      "${f_grade}",
-                                      0,
-                                      ${f_perfects},
-                                      ${f_greats},
-                                      ${f_goods},
-                                      ${f_bads},
-                                      ${f_misses},
-                                      ${f_combo},
-                                      ${f_score},
-                                      "${f_time}"
-                                  );`;
-            
-            db.run(sql, (err) => {
+
+            // first query:
+            let findDefaultIGNquery = `SELECT game_id FROM ${process.env.DB_USERS_TABLE} WHERE id = (?)`
+            db.get(findDefaultIGNquery, f_discordID, (err, row) => {
                 if (err) {
-                    console.log(err);
+                    console.error(err.message);
                     reject(err);
                 }
-                console.log(`${c.DEBUG_QUERY}: INSERT query was successful.`);
+                let gameID = row ? row.game_id : '';
+                console.log(`${c.DEBUG_QUERY}: SELECT query was successful.`);
+                console.log(gameID);
+                
+                // second query:
+                let sql = 
+                    `INSERT INTO ${process.env.DB_SCORES_TABLE} (${fields.join(', ')})
+                        VALUES (
+                            ${customID ? customID : input.id},
+                            ${f_discordID},
+                            ${input.guild.id},
+                            "${gameID != '' ? gameID : f_user}",
+                            "${attachmentURL}",
+                            "${f_chart}",
+                            "${f_type}",
+                            ${f_diff != c.JSON_NO_VALUE ? f_diff : -1},
+                            "${f_grade}",
+                            0,
+                            ${f_perfects},
+                            ${f_greats},
+                            ${f_goods},
+                            ${f_bads},
+                            ${f_misses},
+                            ${f_combo},
+                            ${f_score},
+                            "${f_time}"
+                        );`;
+                db.run(sql, (err) => {
+                    if (err) {
+                        console.log(err);
+                        reject(err);
+                    }
+                    console.log(`${c.DEBUG_QUERY}: INSERT query was successful.`);
+                    resolve(gameID);
+                });
             });
-            
+
             db.close((err) => {
                 if (err) {
                     console.error(err.message);
                     reject(err);
                 }
                 console.log(`${c.DEBUG_QUERY}: Closed the database connection.`);
-                resolve();
             });
         });
     }
     
-    function discordReply(input, attachmentURL) {
+    function discordReply(input, attachmentURL, gameID) {
         let embed = new Discord.EmbedBuilder()
             .setAuthor({
                 name: (input.member.nickname ?? input.member.user.username),
@@ -136,7 +150,7 @@ module.exports = (input, results, timestamp, attachmentURL, customID = null) => 
                 },
                 {
                     name: c.EMBED_FIELD_PLAY_DETAILS,
-                    value: "```" + formatPlayDetails(f_user, f_grade) + "```",
+                    value: "```" + formatPlayDetails(gameID ? gameID : f_user, f_grade) + "```",
                     inline: false
                 },
 

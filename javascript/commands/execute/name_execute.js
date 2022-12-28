@@ -25,9 +25,6 @@ module.exports = (input) => {
         input.reply({ content: "Error setting default Game ID", ephemeral: true});
     });
 
-    // TODO: also need to add a query in /save of a score after this is implemented
-
-
     function namePromiseSQL(discordID, gameID, timestamp) {
         return new Promise((resolve, reject) => {
             const db = new sqlite3.Database(process.env.DB_NAME, (err) => {
