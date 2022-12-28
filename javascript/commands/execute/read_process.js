@@ -81,7 +81,7 @@ module.exports = (input, results, timestamp, attachmentURL, customID = null) => 
                     console.error(err.message);
                     reject(err);
                 }
-                let gameID = row ? row.game_id : '';
+                let gameID = row && row.game_id ? row.game_id : '';
                 console.log(`${c.DEBUG_QUERY}: SELECT query was successful.`);
                 console.log(gameID);
                 

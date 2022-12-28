@@ -12,8 +12,6 @@ const parseUser = require("../../utilities/parseUser.js");
 
 module.exports = (input) => {
     let gameID = parseUser(input, c.COMMAND_SHOW_SUBCOMMAND_USER_ID_NAME, false);
-    if (gameID == null) { return; }
-
     let discordID = input.constructor.name == c.COMMAND ? input.user.id : 
             input.constructor.name == c.MESSAGE ? input.author.id : c.JSON_NO_VALUE;
     let timestamp = new Date();
@@ -39,7 +37,7 @@ module.exports = (input) => {
             let sql = `INSERT OR REPLACE INTO ${process.env.DB_USERS_TABLE} (id, game_id, status, last_active) ` + 
                         `VALUES (
                             ${discordID},
-                            "${gameID}",
+                            ${gameID ? '"' + gameID + '"' : "NULL"},
                             (SELECT status from DiscordPlayers WHERE id = ${discordID}),
                             "${timestamp.toISOString()}"
                         );`
@@ -76,12 +74,18 @@ module.exports = (input) => {
     }
     
     function discordReply(input, discordID, gameID, count) {
-        console.log(count);
         let name = input.member.nickname ?? input.member.user.username;
-        let reply = `<@${discordID}>'s default PIU name is now **${gameID}**.`;
+        let reply = '';
+        if (gameID) {
+            reply = `<@${discordID}>'s default PIU name is now **${gameID}**.`;
+        } else {
+            reply = `<@${discordID}> no longer has a default PIU name.`;
+        }
+
         if (count > 1) {
             reply += `\n> *[WARNING] **${count}** Discord users are now using the PIU name **${gameID}**.*`;
         }
-        input.reply({ content: reply, ephemeral: true });
+
+        input.reply({ content: reply });
     }
 }

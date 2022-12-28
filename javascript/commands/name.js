@@ -13,5 +13,5 @@ module.exports = {
                 .setDescription(c.COMMAND_NAME_SUBCOMMAND_USER_ID_DESC)
                 .setMinLength(1)
                 .setMaxLength(20)
-                .setRequired(true))
+                .setRequired(false))
 };
