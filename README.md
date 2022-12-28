@@ -32,7 +32,7 @@ prints the player's Game ID, Chart Name, PERFECT/GREAT/GOOD/BAD/MISS count, MAX 
 
 #### CRUD opterations
 One purpose of utilizing Discord is as an interface for performing CRUD (Create/Read/Update/Delete) operations.
-- `/save <image upload>`: write to a back-end DB and display the play details as a Discord Embed (CREATE)
+- `/save <image upload>`: write to a back-end DB and display the play details as a Discord Embed (CREATE/READ)
     - Button Interactions: `SCORES` / `CHART/USER` / `COMBO` / `TOTAL` / `DELETE` for editing a specific DB entry and the displayed Discord Embed (UPDATE/DELETE)
 - `/show play <play_id>`: retrieve a play from back-end DB and display the play details as a Discord Embed (READ)
     - Button Interactions: `SCORES` / `CHART/USER` / `COMBO` / `TOTAL` / `DELETE` for editing the specific DB entry and the displayed Discord Embed (UPDATE/DELETE)
