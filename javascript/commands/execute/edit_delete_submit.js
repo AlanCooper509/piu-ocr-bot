@@ -93,7 +93,7 @@ module.exports = (interaction) => {
     }
 
     function discordReply(interaction) {
-        interaction.message.edit({ content: "*This score has been removed*", embeds: [] });
+        interaction.message.edit({ content: "*This score has been removed*", embeds: [], components: [] });
         interaction.reply({ content: "Your play has been removed successfully!", ephemeral: true });
     }
 }
