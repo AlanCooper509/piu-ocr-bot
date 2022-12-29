@@ -32,6 +32,9 @@ exports.COMMAND_NAME_DESC = "Set your Game ID automatically for future uploads!"
 exports.COMMAND_NAME_SUBCOMMAND_USER_ID_NAME = "game_id";
 exports.COMMAND_NAME_SUBCOMMAND_USER_ID_DESC = "the IGN of your AM Pass card";
 
+exports.COMMAND_EXPORT = "export";
+exports.COMMAND_EXPORT_DESC = "Returns all of your saved plays as a downloadable CSV!";
+
 // Embed field names or keyword strings created using Discord.EmbedBuilder() and accessed whenever updating or reading the embed
 exports.EMBED_FIELD_PLAY_DETAILS = "PLAY DETAILS";
 exports.EMBED_FIELD_MAX_COMBO    = "MAX COMBO";
