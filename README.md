@@ -41,4 +41,5 @@ One purpose of utilizing Discord is as an interface for performing CRUD (Create/
 
 #### Misc. Features:
 - `/name ((optional) <game_id>)`: sets the Discord user's default `<game_id>` (PIU AM Pass IGN) to use when uploading any future score images via `/save <image upload>`. This takes priority over whatever OCR detects upon upload. Not supplying the `<game_id>` removes any default `<game_id>` that may be already set for the user.
+- `/export`: writes all DB scores uploaded by the Discord user (across all servers) into a (hidden) CSV file that can be downloaded
 - `/hey` [hey!!](https://i.ytimg.com/vi/YknOygHNv1U/maxresdefault.jpg)
