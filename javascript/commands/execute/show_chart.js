@@ -97,7 +97,7 @@ module.exports = (input) => {
                                 rows[i].chart_name.slice(0, params.CHART_NAME_MAX_LENGTH) + '...' :
                                 rows[i].chart_name;
                 fields.push({
-                    name: `>>> ${i+1}. __${rows[i].game_id}__` + `\t\t\t\t\t${rows[i].total_score.toLocaleString()}\n` + `${rows[i].chart_name} ${chartType}${chartDiff}`,
+                    name: `>>> ${i+1}. __${rows[i].game_id}__` + `\t\t\t\t\t\t\t\t${rows[i].total_score.toLocaleString()}\n` + `${rows[i].chart_name} ${chartType}${chartDiff}`,
                     value: ">>> ```" + `Uploaded: ${timestamp.toLocaleDateString()} at ${timestamp.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}\n` +
                            `Play ID: ${rows[i].id}` +  "```",
                     inline: false
