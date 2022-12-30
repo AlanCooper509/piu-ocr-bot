@@ -31,7 +31,7 @@ module.exports = (input, optionID) => {
             break;
     }
     
-    if (!/^([A-Z|a-z|0-9|_|\s]+)$/.test(chartName)) {
+    if (!/^([A-Z|a-z|0-9|_|\s|.]+)$/.test(chartName)) {
         let reply = {
                 content: `An invalid chart name of \`${chartName}\` was found in your "/${c.COMMAND_SHOW}" command!\nPlease try again.`, 
                 ephemeral: true

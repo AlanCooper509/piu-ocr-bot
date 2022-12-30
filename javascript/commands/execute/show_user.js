@@ -21,7 +21,7 @@ module.exports = (input) => {
     let chartName = parseChart(input, c.COMMAND_SHOW_SUBCOMMAND_USER_TITLE_NAME);
     let chartDiff = parseDiff(input, c.COMMAND_SHOW_SUBCOMMAND_USER_DIFF_NAME);
     
-    let runUserSQLpromise = userPromiseSQL(gameID, chartName, chartDiff);
+    let runUserSQLpromise = userPromiseSQL(gameID, chartName ? chartName.replaceAll("...", '%') : null, chartDiff);
     runUserSQLpromise.catch((err) => {
         console.error(err);
         throw "Error during Game ID lookup request.";
@@ -46,7 +46,7 @@ module.exports = (input) => {
 
         if (rows.length == 0) { throw `No results for ${gameID} playing ${chartName}.`; }
 
-        userDiscordReply(rows, gameID, input, chartName != null);
+        userDiscordReply(rows, gameID, input, chartName, chartDiff);
     }).catch(error => {
         console.error(error);
         let reply = { content: error.toString(), ephemeral: true };
@@ -73,7 +73,7 @@ module.exports = (input) => {
             // CAST since retrieving as INT leads to big-int rounding errors
             let sql = `SELECT *, CAST(id as TEXT) as id, CAST(server_id as TEXT) as server_id, CAST(discord_id as TEXT) as discord_id 
                        FROM ${process.env.DB_SCORES_TABLE} WHERE game_id = ? ` + 
-                       (chartName ? `AND chart_name = "${chartName}" `: '') + 
+                       (chartName ? `AND chart_name LIKE "${chartName}" `: '') + 
                        (chartDiff ? `AND chart_type = "${chartDiff.type}" AND chart_diff = ${chartDiff.diff} ` : '') + 
                        `ORDER BY ` + (chartName ? "total_score " : "time_uploaded ") + 
                        `DESC LIMIT 1000 OFFSET 0;`;
@@ -97,8 +97,9 @@ module.exports = (input) => {
         });
     }
     
-    function userDiscordReply(rows, gameID, input, byBestPlays) {
-        embeds = [];
+    function userDiscordReply(rows, gameID, input, chartFiltered, chartType) {
+        let embeds = [];
+        let chartDetails = chartType ? (chartType.type + chartType != "CO-OP" ? chartType.diff : '') : '';
         // create embeds
         for (let i = 0; i < rows.length;) {
             // fill up a single embed (page) at a time with a max of params.PAGE_ROWS entries each
@@ -121,7 +122,7 @@ module.exports = (input) => {
             
             let nextEmbed = new Discord.EmbedBuilder()
                 .setColor(14680086)
-                .setDescription(`**${gameID}**\n\n**[${byBestPlays ? "Best" : "Recent"} Plays]**`);
+                .setDescription(`**Showing ${gameID}**${chartFiltered ? "\n> " + chartFiltered + ' ' + chartDetails : ''}\n\n**[${chartFiltered ? "Best" : "Recent"} Plays]**`);
             
             for(let j = 0; j < fields.length; j++) {
                 nextEmbed.addFields(fields[j]);

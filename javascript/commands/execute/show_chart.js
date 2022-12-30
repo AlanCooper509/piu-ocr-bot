@@ -16,11 +16,9 @@ const sendEmbeds = require("../../utilities/paginationReply.js");
 
 module.exports = (input) => {
     let chartName = parseChart(input, c.COMMAND_SHOW_SUBCOMMAND_CHART_TITLE_NAME);
-    console.log(chartName);
     if (chartName == null) { return; }
     let chartDiff = parseDiff(input, c.COMMAND_SHOW_SUBCOMMAND_CHART_DIFF_NAME);
-    
-    let runChartSQLpromise = chartPromiseSQL(input, chartName, chartDiff);
+    let runChartSQLpromise = chartPromiseSQL(input, chartName.replaceAll("...", '%'), chartDiff);
     runChartSQLpromise.catch((err) => {
         console.error(err); 
         throw "Error during chart lookup request.";
@@ -61,7 +59,7 @@ module.exports = (input) => {
 
             // CAST since retrieving as INT leads to big-int rounding errors
             let sql = `SELECT *, CAST(id as TEXT) as id, CAST(server_id as TEXT) as server_id, CAST(discord_id as TEXT) as discord_id 
-                       FROM ${process.env.DB_SCORES_TABLE} WHERE chart_name = ? ` + 
+                       FROM ${process.env.DB_SCORES_TABLE} WHERE chart_name LIKE ? ` + 
                        `AND server_id = "${input.guildId}" ` + 
                        (chartDiff ? `AND chart_type = "${chartDiff.type}" AND chart_diff = ${chartDiff.diff} ` : '') + 
                        `ORDER BY total_score DESC LIMIT 1000 OFFSET 0;`;
@@ -93,13 +91,13 @@ module.exports = (input) => {
             let fields = [];
             for (let j = 0; i < rows.length && j < params.PAGE_ROWS; j++) {
                 let chartType = condenseChartType(rows[i].chart_type);
-                let chartDiff = rows[i].chart_diff > 0 ? rows[i].chart_diff : c.JSON_NO_VALUE;
+                let chartDiff = chartType != "CO-OP" ? (rows[i].chart_diff > 0 ? rows[i].chart_diff : c.JSON_NO_VALUE) : '';
                 let timestamp = new Date(rows[i].time_uploaded);
                 let chartName = rows[i].chart_name.length > params.CHART_NAME_MAX_LENGTH ? 
                                 rows[i].chart_name.slice(0, params.CHART_NAME_MAX_LENGTH) + '...' :
                                 rows[i].chart_name;
                 fields.push({
-                    name: `> ${i+1}. __${rows[i].game_id}__` + `\t${rows[i].total_score.toLocaleString()}` + (chartDetails ? '' : '\t' + chartType + chartDiff),
+                    name: `>>> ${i+1}. __${rows[i].game_id}__` + `\t\t\t\t\t${rows[i].total_score.toLocaleString()}\n` + `${rows[i].chart_name} ${chartType}${chartDiff}`,
                     value: ">>> ```" + `Uploaded: ${timestamp.toLocaleDateString()} at ${timestamp.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}\n` +
                            `Play ID: ${rows[i].id}` +  "```",
                     inline: false
@@ -109,7 +107,7 @@ module.exports = (input) => {
             
             let nextEmbed = new Discord.EmbedBuilder()
                 .setColor(14680086)
-                .setDescription(`**${chartName}${chartDetails ? ' ' + condenseChartType(chartDetails.type) + chartDetails.diff : ''}**\n\n**[Best Plays]**`);
+                .setDescription(`**Showing ${chartName}${chartDetails ? ' ' + condenseChartType(chartDetails.type) + chartDetails.diff : ''}**\n\n**[Best Plays]**`);
             
             for(let j = 0; j < fields.length; j++) {
                 nextEmbed.addFields(fields[j]);
