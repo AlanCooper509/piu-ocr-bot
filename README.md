@@ -5,7 +5,7 @@
 
 ## Python (v3.10.7) with EasyOCR (v1.6.2)
 #### Driver Code:
-`readscores.py` [<image_url>] ((optional) LOCAL) ((optional) DEBUG)
+`readscores.py [<image_url>] ((optional) LOCAL) ((optional) DEBUG)`
 
 #### Required Input Arg:
 - `arg[0]`: URL path to an image, or the file name (with extension) found in the `input_images` directory if `LOCAL` is passed in. Image should only show one side's score (half of the screen) to function properly
