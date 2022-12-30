@@ -14,7 +14,7 @@
 - `arg[1]`: `LOCAL` or `DEBUG`
 - `arg[2]`: `LOCAL` or `DEBUG`
 
-`LOCAL` treats the `arg[0]` as a file name rather than a URL, and `DEBUG` puts a bunch of print statements to console for debugging purposes.
+`LOCAL` treats the `arg[0]` as a file name to grab from the `input_images` directory rather than a URL, and `DEBUG` puts a bunch of print statements to console for debugging purposes.
 
 #### Output:
 prints the player's Game ID, Chart Name, PERFECT/GREAT/GOOD/BAD/MISS count, MAX COMBO, and TOTAL SCORE based on the input image.
