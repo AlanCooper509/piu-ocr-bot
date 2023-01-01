@@ -49,3 +49,9 @@ One purpose of utilizing Discord is as an interface for performing CRUD (Create/
 #### Misc. Notes:
 - filtering chart names support partial matching, such as `/show chart chart_name:The Quick Brow...` to pull up "The Quick Brown Fox Jumps Over the Lazy Dog"
 - there are implicit message commands implemented that are almost identical to the slash commands listed above
+
+#### Planned:
+- break on/off support
+- `/tourney` command (specify a chart and start/end times to accept score submissions)
+- chat name approximate matching in post-processing of OCR (probably from python side)
+- vs mode screenshot support (python side)
