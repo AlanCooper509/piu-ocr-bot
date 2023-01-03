@@ -15,9 +15,10 @@ const sql_scores =
         chart_type       TEXT,
         chart_diff       INTEGER CHECK (chart_diff >= -1),
         grade            TEXT,
-        break_on         INTEGER CHECK (break_on == 0 OR 
+        break_on         INTEGER CHECK (break_on == -1 OR
+                                        break_on == 0 OR 
                                         break_on == 1) 
-                                 DEFAULT (0),
+                                 DEFAULT (-1),
         details_modified TEXT    CHECK (details_modified == 0 OR 
                                         details_modified == 1) 
                                  DEFAULT (0),

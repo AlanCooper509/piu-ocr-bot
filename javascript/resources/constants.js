@@ -51,6 +51,8 @@ exports.EMBED_SUBFIELD_GREAT     = "GREAT";
 exports.EMBED_SUBFIELD_GOOD      = "GOOD";
 exports.EMBED_SUBFIELD_BAD       = "BAD";
 exports.EMBED_SUBFIELD_MISS      = "MISS";
+exports.EMBED_EMOJI_BREAK_ON     = "✅";
+exports.EMBED_EMOJI_BREAK_OFF    = "💔";
 
 // Button ID's created using Discord.ButtonBuilder() and accessed by interaction.customId
 exports.DEV_MODAL_EDIT_SCORES_BUTTON_ID = "editScoresButton";
@@ -89,7 +91,6 @@ exports.DEV_MODAL_EDIT_SCORES_TEXT_IDS   = [modalTextPerfectId,
                                             modalTextBadId,
                                             modalTextMissId];
 exports.DEV_MODAL_SELECT_PLAY_ID = "playIdRowSelection";
-
 
 // JSON parameters taken as output from Python OCR component
 exports.JSON_TEXT_USER    = "user";

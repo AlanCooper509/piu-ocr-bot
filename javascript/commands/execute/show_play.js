@@ -8,9 +8,12 @@ require("dotenv").config();
 
 // local imports
 const c = require("../../resources/constants.js");
+const params = require("../../resources/params.js");
 const formatPlayDetails = require("../../utilities/embedPlayDetailsFormatter.js");
 const formatScores = require("../../utilities/embedJudgementFormatter.js");
 const makeEditButtons = require("../../utilities/buttonsToEditPlay.js");
+const getEntryID = require("../../utilities/getEntryID.js");
+const updateEmbed = require("../../utilities/embedCopier.js");
 
 module.exports = (input, entryID = null) => {
     if (!entryID) { 
@@ -174,6 +177,7 @@ module.exports = (input, entryID = null) => {
     }
 
     function playDiscordReply(author, entry, input) {
+        let pass = entry.break_on == 1 ? '✅' : entry.break_on == 0 ? '💔' : '';
         let embed = new Discord.EmbedBuilder()
             .setAuthor(author)
             
@@ -181,7 +185,7 @@ module.exports = (input, entryID = null) => {
             .setColor(14680086)
             
             // EMBED: use description to display chart information
-            .setDescription(`**${entry.chart_name}**\n*${entry.chart_type} ${entry.chart_diff}*`)
+            .setDescription(formatDescription(entry.chart_name, entry.chart_type, entry.chart_diff, entry.break_on))
 
             .addFields(
                 // EMBED: add fields to display user info and capture date
@@ -239,15 +243,140 @@ module.exports = (input, entryID = null) => {
 
         switch (input.constructor.name) {
             case c.COMMAND:
-                input.editReply({ embeds: [embed], components: [row] });
+                input.editReply({ 
+                    embeds: [embed], 
+                    components: [row], 
+                    fetchReply: true 
+                }).then((message) => { 
+                    collectReactions(message, input);
+                });
                 break;
             case c.MESSAGE:
-                input.reply({ embeds: [embed], components: [row] });
+                input.reply({ 
+                    embeds: [embed], 
+                    components: [row], 
+                    fetchReply: true  
+                }).then((message) => { 
+                    collectReactions(message, input);
+                });
                 break;
             case c.SUBMIT:
-                input.reply({ embeds: [embed], components: [row] });
+                input.reply({ 
+                    embeds: [embed], 
+                    components: [row], 
+                    fetchReply: true  
+                }).then((message) => { 
+                    collectReactions(message, input);
+                });
                 break;
             break;
         }
+    }
+    
+    function collectReactions(message, input) {
+        message.react('✅').then(() => message.react('💔'))
+
+        let originalUserID = '';
+                        switch (input.constructor.name) {
+                            case c.COMMAND:
+                                originalUserID = input.user.id;
+                                break;
+                            case c.MESSAGE:
+                                originalUserID = input.author.id;
+                                break;
+                            case c.SUBMIT:
+                                originalUserID = input.user.id;
+                                break;
+                        }
+
+        const collector = message.createReactionCollector({ time: params.REACT_TIMEOUT });
+        collector.on('collect', (reaction, user) => {
+            if (user.id == originalUserID) {
+                const entryID = getEntryID(message, true);
+                let promise = null;
+                switch (reaction.emoji.name) {
+                    case '✅':
+                        console.log(`${c.DEBUG_INPUT}: user ${user.id} reacted with :white_check_mark:`);
+                        promise = reactPromiseSQL(entryID, true);
+                        promise.then((entry) => {
+                            discordEmbedUpdateBreak(message, entry);
+                        });
+                        break;
+                    case '💔':
+                        console.log(`${c.DEBUG_INPUT}: user ${user.id} reacted with :broken_heart:`);
+                        promise = reactPromiseSQL(entryID, false);
+                        promise.then((entry) => {
+                            discordEmbedUpdateBreak(message, entry);
+                        });
+                        break;
+                    default: break;
+                }
+            }
+        });
+
+        collector.on('end', (collected, reason) => {
+            if (reason !== "messageDelete") {
+                message.reactions.cache.get('✅').remove();
+                message.reactions.cache.get('💔').remove();
+            }
+        });
+    }
+
+    function reactPromiseSQL(entryID, success) {
+        return new Promise((resolve, reject) => {
+            const db = new sqlite3.Database(process.env.DB_NAME, (err) => {
+                if (err) {
+                    console.error(err.message);
+                    reject(err);
+                }
+                console.log(`${c.DEBUG_QUERY}: Connected to the database.`);
+            });
+
+
+            db.serialize(() => {
+                let sql = `UPDATE ${process.env.DB_SCORES_TABLE} SET break_on = ${success ? 1 : 0} WHERE id = ?;`;
+                db.run(sql, entryID, (err) => {
+                    if (err) {
+                        console.log(err);
+                        reject(err);
+                    } else {
+                        console.log(`${c.DEBUG_QUERY}: UPDATE query was successful.`);
+                    }
+                });
+                sql = `SELECT * FROM ${process.env.DB_SCORES_TABLE} WHERE id = ?;`;
+                db.get(sql, entryID, (err, row) => {
+                    if (err) {
+                        console.log(err);
+                        reject(err);
+                    } else {
+                        console.log(`${c.DEBUG_QUERY}: SELECT query was successful.`);
+                        resolve(row);
+                    }
+                });
+            });
+            
+            db.close((err) => {
+                if (err) {
+                    console.error(err.message);
+                    reject(err);
+                }
+                console.log(`${c.DEBUG_QUERY}: Closed the database connection.`);
+            });
+        });
+    }
+
+    function discordEmbedUpdateBreak(message, entry) {
+        const originalEmbed = message.embeds[0];
+        let updateFieldName = c.EMBED_FIELD_PLAY_DETAILS;
+        let updateFieldValue = "```" + formatPlayDetails(entry.game_id, entry.grade, entry.break_on) + "```";
+        let embed = updateEmbed(originalEmbed, updateFieldName, updateFieldValue);
+        embed.setDescription(formatDescription(entry.chart_name, entry.chart_type, entry.chart_diff, entry.break_on))
+
+        message.edit({ embeds: [embed] });
+    }
+    
+    function formatDescription(chartName, chartType, chartDiff, breakOn) {
+        let pass = breakOn == 1 ? '✅' : breakOn == 0 ? '💔' : '';
+        return `**${chartName}**\n${pass} *${chartType} ${chartDiff}*`;
     }
 }
