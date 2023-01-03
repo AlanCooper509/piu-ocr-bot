@@ -11,6 +11,7 @@ const c = require("../../resources/constants.js");
 const params = require("../../resources/params.js");
 const formatPlayDetails = require("../../utilities/embedPlayDetailsFormatter.js");
 const formatScores = require("../../utilities/embedJudgementFormatter.js");
+const formatDescription = require("../../utilities/embedFormatDescription.js");
 const makeEditButtons = require("../../utilities/buttonsToEditPlay.js");
 const getEntryID = require("../../utilities/getEntryID.js");
 const updateEmbed = require("../../utilities/embedCopier.js");
@@ -373,10 +374,5 @@ module.exports = (input, entryID = null) => {
         embed.setDescription(formatDescription(entry.chart_name, entry.chart_type, entry.chart_diff, entry.break_on))
 
         message.edit({ embeds: [embed] });
-    }
-    
-    function formatDescription(chartName, chartType, chartDiff, breakOn) {
-        let pass = breakOn == 1 ? '✅' : breakOn == 0 ? '💔' : '';
-        return `**${chartName}**\n${pass} *${chartType} ${chartDiff}*`;
     }
 }

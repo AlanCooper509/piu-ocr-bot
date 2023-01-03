@@ -8,6 +8,7 @@ require("dotenv").config();
 const c = require("../../resources/constants.js");
 const getEntryID = require("../../utilities/getEntryID.js");
 const formatPlayDetails = require("../../utilities/embedPlayDetailsFormatter.js");
+const formatDescription = require("../../utilities/embedFormatDescription.js");
 const update_embed = require("../../utilities/embedCopier.js");
 
 module.exports = (interaction) => {
@@ -19,9 +20,9 @@ module.exports = (interaction) => {
     let modified = new Date();
 
     let runSQLpromise = promiseSQL(formInputValues, modified, entryID);
-    runSQLpromise.then(
-        discordReply(interaction, formInputValues, uploaded, modified)
-    ).catch((err) => {
+    runSQLpromise.then((row) => {
+        discordReply(interaction, row, uploaded, modified)
+    }).catch((err) => {
         console.error(err);
         interaction.editReply({ content: "Error updating Total Score.", ephemeral: true});
     });
@@ -117,23 +118,35 @@ module.exports = (interaction) => {
                 console.log(`${c.DEBUG_QUERY}: Connected to the database.`);
             });
 
-            let sql = 
-                `UPDATE ${process.env.DB_SCORES_TABLE} SET 
-                    game_id = "${formValueGameID}",
-                    grade = "${formValueGrade}",
-                    chart_name = "${formValueName}",
-                    chart_type = "${chartType}",
-                    chart_diff = ${chartDiff != c.JSON_NO_VALUE ? chartDiff : -1},
-                    details_modified = 1,
-                    time_modified = "${timestamp.toISOString()}"
-                WHERE id = ?;`;
-            db.run(sql, entryID, (err) => {
-                if (err) {
-                    console.log(err);
-                    reject(err);
-                } else {
-                    console.log(`${c.DEBUG_QUERY}: UPDATE query was successful.`);
-                }
+            db.serialize(() => {
+                let sql = 
+                    `UPDATE ${process.env.DB_SCORES_TABLE} SET 
+                        game_id = "${formValueGameID}",
+                        grade = "${formValueGrade}",
+                        chart_name = "${formValueName}",
+                        chart_type = "${chartType}",
+                        chart_diff = ${chartDiff != c.JSON_NO_VALUE ? chartDiff : -1},
+                        details_modified = 1,
+                        time_modified = "${timestamp.toISOString()}"
+                    WHERE id = ?;`;
+                db.run(sql, entryID, (err) => {
+                    if (err) {
+                        console.log(err);
+                        reject(err);
+                    } else {
+                        console.log(`${c.DEBUG_QUERY}: UPDATE query was successful.`);
+                    }
+                });
+                sql = `SELECT * FROM ${process.env.DB_SCORES_TABLE} WHERE id = ?`
+                db.get(sql, entryID, (err, row) => {
+                    if (err) {
+                        console.log(err);
+                        reject(err);
+                    } else {
+                        console.log(`${c.DEBUG_QUERY}: SELECT query was successful.`);
+                        resolve(row);
+                    }
+                });
             });
             
             db.close((err) => {
@@ -142,22 +155,19 @@ module.exports = (interaction) => {
                     reject(err);
                 }
                 console.log(`${c.DEBUG_QUERY}: Closed the database connection.`);
-                resolve();
             });
         });
     }
 
-    function discordReply(interaction, formInputValues, uploaded, modified) {
-        let [formValueGameID, formValueGrade, formValueName, chartType, chartDiff] = formInputValues;
+    function discordReply(interaction, entry, uploaded, modified) {
         let uploadDate = uploaded.toLocaleDateString();
         let uploadTime = uploaded.toLocaleTimeString();
 
         const originalEmbed = interaction.message.embeds[0];
         let updateFieldName = c.EMBED_FIELD_PLAY_DETAILS;
-        let updateFieldValue = "```" + formatPlayDetails(formValueGameID, formValueGrade) + "```";
+        let updateFieldValue = "```" + formatPlayDetails(entry.game_id, entry.grade, entry.break_on) + "```";
         let embed = update_embed(originalEmbed, updateFieldName, updateFieldValue, modified);
-
-        embed.setDescription(`**${formValueName}**\n*${chartType} ${chartDiff}*`);
+        embed.setDescription(formatDescription(entry.chart_name, entry.chart_type, entry.chart_diff, entry.break_on))
 
         interaction.message.edit({ embeds: [embed] });
         interaction.editReply({ content: 'Chart/User information was updated on this submission!', ephemeral: true });

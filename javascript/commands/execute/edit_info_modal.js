@@ -29,12 +29,13 @@ module.exports = (interaction) => {
 
         const messageEmbed = interaction.message.embeds[0];
         
-        // retrieve chartName, chartType, and chartDiff
-        let embedDesc = messageEmbed.description.replace(/\*/g, '').split(/\r?\n/);
+        // retrieve chartName, chartType, and chartDiff (filtering out break on/off emoji prefixes and markdown formatting)
+        let embedDesc = messageEmbed.description.replace(/\*|(✅ )|(💔 )/g, '').split(/\r?\n/);
         let chartName = embedDesc[0];
         let chartDetails = embedDesc[1];
         let chartType = '';
         let chartDiff = '';
+        console.log(chartDetails);
         if (chartDetails.split(' ').length == 2) {
             if (embedDesc[1].split(' ')[0] == "CO-OP") {
                 // CO-OP
@@ -49,7 +50,9 @@ module.exports = (interaction) => {
             chartType = embedDesc[1].split(' ')[0][0]+'P';
             chartDiff = embedDesc[1].split(' ')[1];
         }
-        
+        console.log(chartType);
+        console.log(chartDiff);
+        console.log("==========");
         
         // retrieve gameID and grade: relies on the formatting of the field section
         let gameID = c.JSON_NO_VALUE;
@@ -58,9 +61,10 @@ module.exports = (interaction) => {
         const fieldLines = playField.replace(/`/g, '').split(/\r?\n/);
         for (let i = 0; i < fieldLines.length; i++) {
             if (fieldLines[i].startsWith(c.EMBED_SUBFIELD_GAME_ID)) {
-                gameID = fieldLines[i].split(c.EMBED_SUBFIELD_GAME_ID)[1].replace(/:| /g, '');
+                gameID = fieldLines[i].split(c.EMBED_SUBFIELD_GAME_ID)[1].replace(/:|\s/g, '');
             } else if (fieldLines[i].startsWith(c.EMBED_SUBFIELD_GRADE)) {
-                grade = fieldLines[i].split(c.EMBED_SUBFIELD_GRADE)[1].replace(/:| /g, '');
+                // split on '(' due to sometimes suffixing with formatting "(BREAK <ON/OFF>)" when retrieving grade from embed
+                grade = fieldLines[i].split(c.EMBED_SUBFIELD_GRADE)[1].replace(/:|\s/g, '').split('(')[0];
             }
         }
 
