@@ -98,7 +98,7 @@ module.exports = (input, results, timestamp, attachmentURL, customID = null) => 
                             "${f_type}",
                             ${f_diff != c.JSON_NO_VALUE ? f_diff : -1},
                             "${f_grade}",
-                            0,
+                            -1,
                             ${f_perfects},
                             ${f_greats},
                             ${f_goods},
