@@ -12,6 +12,7 @@ const parseUser = require("../../utilities/parseUser.js");
 
 module.exports = (input) => {
     let gameID = parseUser(input, c.COMMAND_SHOW_SUBCOMMAND_USER_ID_NAME, false);
+    gameID = gameID ? gameID.toUpperCase() : gameID;
     let discordID = input.constructor.name == c.COMMAND ? input.user.id : 
             input.constructor.name == c.MESSAGE ? input.author.id : c.JSON_NO_VALUE;
     let timestamp = new Date();

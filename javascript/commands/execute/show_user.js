@@ -99,7 +99,7 @@ module.exports = (input) => {
     
     function userDiscordReply(rows, gameID, input, chartFiltered, chartType) {
         let embeds = [];
-        let chartDetails = chartType ? (chartType.type + chartType != "CO-OP" ? chartType.diff : '') : '';
+        let chartDetails = chartType ? (condenseChartType(chartType.type) + (chartType.type != "CO-OP" ? chartType.diff : '')) : '';
         // create embeds
         for (let i = 0; i < rows.length;) {
             // fill up a single embed (page) at a time with a max of params.PAGE_ROWS entries each
@@ -111,8 +111,9 @@ module.exports = (input) => {
                 let chartName = rows[i].chart_name.length > params.CHART_NAME_MAX_LENGTH ? 
                                 rows[i].chart_name.slice(0, params.CHART_NAME_MAX_LENGTH) + '...' :
                                 rows[i].chart_name;
+                let breakStat = rows[i].break_on == 1 ? '✅ ' : (rows[i].break_on == 0 ? '💔 ' : '');
                 fields.push({
-                    name: `> ${i+1}. __${chartName}__\t${chartType}${chartDiff}`,
+                    name: `> ${i+1}. ${breakStat}__${chartName}__\t${chartType}${chartDiff}`,
                     value: ">>> ```" + `${timestamp}${' '.repeat(12)}${rows[i].total_score.toLocaleString()}\n` +
                            `Play ID: ${rows[i].id}` +  "```",
                     inline: false
@@ -122,7 +123,7 @@ module.exports = (input) => {
             
             let nextEmbed = new Discord.EmbedBuilder()
                 .setColor(14680086)
-                .setDescription(`**Showing ${gameID}**${chartFiltered ? "\n> " + chartFiltered + ' ' + chartDetails : ''}\n\n**[${chartFiltered ? "Best" : "Recent"} Plays]**`);
+                .setDescription(`**Showing ${gameID}**${chartFiltered ? "\n> " + chartFiltered + ' ' + chartDetails : (chartDetails ? ("\n> " + chartDetails) : '')}\n\n**[${chartFiltered ? "Best" : "Recent"} Plays]**`);
             
             for(let j = 0; j < fields.length; j++) {
                 nextEmbed.addFields(fields[j]);
