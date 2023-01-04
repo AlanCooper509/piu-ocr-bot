@@ -35,7 +35,6 @@ module.exports = (interaction) => {
         let chartDetails = embedDesc[1];
         let chartType = '';
         let chartDiff = '';
-        console.log(chartDetails);
         if (chartDetails.split(' ').length == 2) {
             if (embedDesc[1].split(' ')[0] == "CO-OP") {
                 // CO-OP
@@ -50,10 +49,7 @@ module.exports = (interaction) => {
             chartType = embedDesc[1].split(' ')[0][0]+'P';
             chartDiff = embedDesc[1].split(' ')[1];
         }
-        console.log(chartType);
-        console.log(chartDiff);
-        console.log("==========");
-        
+
         // retrieve gameID and grade: relies on the formatting of the field section
         let gameID = c.JSON_NO_VALUE;
         let grade = c.JSON_NO_VALUE;
