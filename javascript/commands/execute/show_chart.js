@@ -13,6 +13,8 @@ const parseChart = require("../../utilities/parseChart.js");
 const parseDiff = require("../../utilities/parseDiff.js");
 const condenseChartType = require("../../utilities/condenseChartType.js");
 const sendEmbeds = require("../../utilities/paginationReply.js");
+const emojiGrade = require("../../utilities/grade2emoji.js");
+const emojiBreak = require("../../utilities/gradebreak2emoji.js");
 
 module.exports = (input) => {
     let chartName = parseChart(input, c.COMMAND_SHOW_SUBCOMMAND_CHART_TITLE_NAME);
@@ -96,10 +98,15 @@ module.exports = (input) => {
                 let chartName = rows[i].chart_name.length > params.CHART_NAME_MAX_LENGTH ? 
                                 rows[i].chart_name.slice(0, params.CHART_NAME_MAX_LENGTH) + '...' :
                                 rows[i].chart_name;
+                let gradeBreak = emojiBreak(rows[i].break_on);
+                let gradeIcon = emojiGrade(rows[i].grade);
+                let prefix = gradeBreak != '' ? (gradeBreak + '\t') : '';
+                let suffix = gradeIcon != '' ? ('\t' + gradeIcon) : '';
                 fields.push({
-                    name: `>>> ${i+1}. __${rows[i].game_id}__` + `\t\t\t\t\t\t\t\t${rows[i].total_score.toLocaleString()}\n` + `${rows[i].chart_name} ${chartType}${chartDiff}`,
+                    name:  `>>> ${i+1}. __${rows[i].game_id}__` + `\t\t\t\t\t\t\t\t${rows[i].total_score.toLocaleString()}\n` + 
+                               `${prefix}${rows[i].chart_name} ${chartType}${chartDiff}${suffix}`,
                     value: ">>> ```" + `Uploaded: ${timestamp.toLocaleDateString()} at ${timestamp.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}\n` +
-                           `Play ID: ${rows[i].id}` +  "```",
+                               `Play ID: ${rows[i].id}` +  "```",
                     inline: false
                 });
                 i++;
@@ -107,7 +114,7 @@ module.exports = (input) => {
             
             let nextEmbed = new Discord.EmbedBuilder()
                 .setColor(14680086)
-                .setDescription(`**Showing ${chartName}${chartDetails ? ' ' + condenseChartType(chartDetails.type) + chartDetails.diff : ''}**\n\n**[Best Plays]**`);
+                .setDescription(`**Showing __${chartName}__${chartDetails ? (' ' + condenseChartType(chartDetails.type) + chartDetails.diff) : ''}**\n\n**[Best Plays]**`);
             
             for(let j = 0; j < fields.length; j++) {
                 nextEmbed.addFields(fields[j]);

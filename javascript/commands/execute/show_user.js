@@ -14,6 +14,8 @@ const condenseChartType = require("../../utilities/condenseChartType.js");
 const parseUser = require("../../utilities/parseUser.js");
 const parseChart = require("../../utilities/parseChart.js");
 const parseDiff = require("../../utilities/parseDiff.js");
+const emojiGrade = require("../../utilities/grade2emoji.js");
+const emojiBreak = require("../../utilities/gradebreak2emoji.js");
 
 module.exports = (input) => {
     let gameID = parseUser(input, c.COMMAND_SHOW_SUBCOMMAND_USER_ID_NAME, true);
@@ -111,9 +113,13 @@ module.exports = (input) => {
                 let chartName = rows[i].chart_name.length > params.CHART_NAME_MAX_LENGTH ? 
                                 rows[i].chart_name.slice(0, params.CHART_NAME_MAX_LENGTH) + '...' :
                                 rows[i].chart_name;
-                let breakStat = rows[i].break_on == 1 ? '✅ ' : (rows[i].break_on == 0 ? '💔 ' : '');
+                let gradeBreak = emojiBreak(rows[i].break_on);
+                let gradeIcon = emojiGrade(rows[i].grade);
+                let prefix = gradeBreak != '' ? (gradeBreak + ' ') : '';
+                let suffix = gradeIcon;
                 fields.push({
-                    name: `> ${i+1}. ${breakStat}__${chartName}__\t${chartType}${chartDiff}`,
+                    name: `>>> ${i+1}. __${chartName}__\t${chartType}${chartDiff}\n` +
+                          `${prefix}${suffix}`,
                     value: ">>> ```" + `${timestamp}${' '.repeat(12)}${rows[i].total_score.toLocaleString()}\n` +
                            `Play ID: ${rows[i].id}` +  "```",
                     inline: false
