@@ -19,6 +19,7 @@ const emojiBreak = require("../../utilities/gradebreak2emoji.js");
 
 module.exports = (input) => {
     let gameID = parseUser(input, c.COMMAND_SHOW_SUBCOMMAND_USER_ID_NAME, true);
+        gameID = gameID ? gameID.toUpperCase() : gameID;
     if (gameID == null) { return; }
     let chartName = parseChart(input, c.COMMAND_SHOW_SUBCOMMAND_USER_TITLE_NAME);
     let chartDiff = parseDiff(input, c.COMMAND_SHOW_SUBCOMMAND_USER_DIFF_NAME);
