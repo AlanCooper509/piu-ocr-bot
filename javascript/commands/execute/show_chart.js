@@ -100,11 +100,11 @@ module.exports = (input) => {
                                 rows[i].chart_name;
                 let gradeBreak = emojiBreak(rows[i].break_on);
                 let gradeIcon = emojiGrade(rows[i].grade);
-                let prefix = gradeBreak != '' ? (gradeBreak + '\t') : '';
-                let suffix = gradeIcon != '' ? ('\t' + gradeIcon) : '';
+                let prefix = gradeBreak != '' ? (gradeBreak + ' ') : '';
+                let suffix = gradeIcon != '' ? (gradeIcon + '\t') : '';
                 fields.push({
                     name:  `>>> ${i+1}. __${rows[i].game_id}__` + `\t\t\t\t\t\t\t\t${rows[i].total_score.toLocaleString()}\n` + 
-                               `${prefix}${rows[i].chart_name} ${chartType}${chartDiff}${suffix}`,
+                               `${prefix}${suffix}${rows[i].chart_name} ${chartType}${chartDiff}`,
                     value: ">>> ```" + `Uploaded: ${timestamp.toLocaleDateString()} at ${timestamp.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}\n` +
                                `Play ID: ${rows[i].id}` +  "```",
                     inline: false
