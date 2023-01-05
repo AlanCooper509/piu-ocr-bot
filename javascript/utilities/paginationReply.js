@@ -11,6 +11,11 @@ module.exports = (input, embeds) => {
         // Buttons below the embed for triggering edit actions
         let buttons = makePaginationButtons(embeds.length > 1);
 
+        // set embed footers to show page numbers
+        for (let i = 0; i < embeds.length; i++) {
+            embeds[i].setFooter({ text: `Page ${i+1}/${embeds.length}` });
+        }
+
         let embedPromise = null;
         switch (input.constructor.name) {
             case c.COMMAND:
