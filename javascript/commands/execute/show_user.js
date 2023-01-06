@@ -103,6 +103,8 @@ module.exports = (input) => {
     function userDiscordReply(rows, gameID, input, chartFiltered, chartType) {
         let embeds = [];
         let chartDetails = chartType ? (condenseChartType(chartType.type) + (chartType.type != "CO-OP" ? chartType.diff : '')) : '';
+        let thumbnail = chartDetails && !chartFiltered ? `${chartDetails}.png` : null;
+
         // create embeds
         for (let i = 0; i < rows.length;) {
             // fill up a single embed (page) at a time with a max of params.PAGE_ROWS entries each
@@ -120,8 +122,8 @@ module.exports = (input) => {
                 let suffix = gradeIcon;
                 fields.push({
                     name: `>>> ${i+1}. __${chartName}__\t${chartType}${chartDiff}\n` +
-                          `${prefix}${suffix}`,
-                    value: ">>> ```" + `${timestamp}${' '.repeat(12)}${rows[i].total_score.toLocaleString()}\n` +
+                          `${prefix}${suffix} - *${timestamp}*`,
+                    value: ">>> ```" + `TOTAL SCORE: ${rows[i].total_score.toLocaleString(undefined, {year: "2-digit", month: "2-digit", day: "2-digit"})}\n` + 
                            `Play ID: ${rows[i].id}` +  "```",
                     inline: false
                 });
@@ -134,6 +136,11 @@ module.exports = (input) => {
             
             for(let j = 0; j < fields.length; j++) {
                 nextEmbed.addFields(fields[j]);
+            }
+            if (thumbnail) {
+                try {
+                    nextEmbed.setThumbnail(`https://raw.githubusercontent.com/AlanCooper509/piu-ocr-bot/master/javascript/resources/icons/${thumbnail}`);
+                } catch (error) {}
             }
             embeds.push(nextEmbed);
         }

@@ -43,6 +43,9 @@ module.exports = (input, entryID = null) => {
             case c.MESSAGE:
                 input.reply(reply);
                 return;
+            case c.SUBMIT:
+                input.reply(reply);
+                return;
         }
     });
     
