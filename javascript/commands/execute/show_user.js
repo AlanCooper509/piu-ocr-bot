@@ -17,6 +17,11 @@ const parseDiff = require("../../utilities/parseDiff.js");
 const emojiGrade = require("../../utilities/grade2emoji.js");
 const emojiBreak = require("../../utilities/gradebreak2emoji.js");
 
+// class variables
+const arrow_url = "https://raw.githubusercontent.com/AlanCooper509/piu-ocr-bot/master/javascript/resources/icons/arrow7.png";
+const remote_icons = "https://raw.githubusercontent.com/AlanCooper509/piu-ocr-bot/master/javascript/resources/icons/";
+
+
 module.exports = (input) => {
     let gameID = parseUser(input, c.COMMAND_SHOW_SUBCOMMAND_USER_ID_NAME, true);
         gameID = gameID ? gameID.toUpperCase() : gameID;
@@ -135,7 +140,7 @@ module.exports = (input) => {
                 .setColor(14680086)
                 .setAuthor({
                     name: `${gameID}: ${filterText} (${chartFiltered ? "Best" : "Recent"})`,
-                    iconURL: "https://raw.githubusercontent.com/AlanCooper509/piu-ocr-bot/master/javascript/resources/icons/arrow7.png"
+                    iconURL: arrow_url
                 });
             
             for(let j = 0; j < fields.length; j++) {
@@ -143,7 +148,7 @@ module.exports = (input) => {
             }
             if (thumbnail) {
                 try {
-                    nextEmbed.setThumbnail(`https://raw.githubusercontent.com/AlanCooper509/piu-ocr-bot/master/javascript/resources/icons/${thumbnail}`);
+                    nextEmbed.setThumbnail(remote_icons + thumbnail);
                 } catch (error) {}
             }
             embeds.push(nextEmbed);
