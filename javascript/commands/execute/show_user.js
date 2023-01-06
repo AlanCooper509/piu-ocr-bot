@@ -147,9 +147,7 @@ module.exports = (input) => {
                 nextEmbed.addFields(fields[j]);
             }
             if (thumbnail) {
-                try {
-                    nextEmbed.setThumbnail(remote_icons + thumbnail);
-                } catch (error) {}
+                nextEmbed.setThumbnail(remote_icons + thumbnail);
             }
             embeds.push(nextEmbed);
         }
