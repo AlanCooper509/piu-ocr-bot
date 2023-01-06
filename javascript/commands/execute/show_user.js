@@ -130,9 +130,13 @@ module.exports = (input) => {
                 i++;
             }
             
+            let filterText = `${chartFiltered ? chartFiltered + ' ' + chartDetails : chartDetails}`;
             let nextEmbed = new Discord.EmbedBuilder()
                 .setColor(14680086)
-                .setDescription(`**Showing ${gameID}**${chartFiltered ? "\n> " + chartFiltered + ' ' + chartDetails : (chartDetails ? ("\n> " + chartDetails) : '')}\n\n**[${chartFiltered ? "Best" : "Recent"} Plays]**`);
+                .setAuthor({
+                    name: `${gameID}: ${filterText} (${chartFiltered ? "Best" : "Recent"})`,
+                    iconURL: "https://raw.githubusercontent.com/AlanCooper509/piu-ocr-bot/master/javascript/resources/icons/arrow7.png"
+                });
             
             for(let j = 0; j < fields.length; j++) {
                 nextEmbed.addFields(fields[j]);
