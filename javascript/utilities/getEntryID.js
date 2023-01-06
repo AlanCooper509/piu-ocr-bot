@@ -12,6 +12,10 @@ module.exports = (input, isMessage = false) => {
      * }
      **/
     const messageEmbed = isMessage ? input.embeds[0] : input.message.embeds[0];
+    if (!messageEmbed) return null;
+
     const scoresField = messageEmbed.fields.find(e => e.name.includes(c.EMBED_FIELD_RECORD_ID));
+    if (!scoresField) return null;
+
     return scoresField.value;
 }

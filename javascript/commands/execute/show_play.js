@@ -294,23 +294,25 @@ module.exports = (input, entryID = null) => {
         collector.on('collect', (reaction, user) => {
             if (user.id == originalUserID) {
                 const entryID = getEntryID(message, true);
-                let promise = null;
-                switch (reaction.emoji.name) {
-                    case '✅':
-                        console.log(`${c.DEBUG_INPUT}: user ${user.id} reacted with :white_check_mark:`);
-                        promise = reactPromiseSQL(entryID, true);
-                        promise.then((entry) => {
-                            discordEmbedUpdateBreak(message, entry);
-                        });
-                        break;
-                    case '💔':
-                        console.log(`${c.DEBUG_INPUT}: user ${user.id} reacted with :broken_heart:`);
-                        promise = reactPromiseSQL(entryID, false);
-                        promise.then((entry) => {
-                            discordEmbedUpdateBreak(message, entry);
-                        });
-                        break;
-                    default: break;
+                if (entryID) {
+                    let promise = null;
+                    switch (reaction.emoji.name) {
+                        case '✅':
+                            console.log(`${c.DEBUG_INPUT}: user ${user.id} reacted with :white_check_mark:`);
+                            promise = reactPromiseSQL(entryID, true);
+                            promise.then((entry) => {
+                                discordEmbedUpdateBreak(message, entry);
+                            });
+                            break;
+                        case '💔':
+                            console.log(`${c.DEBUG_INPUT}: user ${user.id} reacted with :broken_heart:`);
+                            promise = reactPromiseSQL(entryID, false);
+                            promise.then((entry) => {
+                                discordEmbedUpdateBreak(message, entry);
+                            });
+                            break;
+                        default: break;
+                    }
                 }
             }
         });
