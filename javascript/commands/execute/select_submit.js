@@ -9,17 +9,33 @@ module.exports = (modalSubmitInteraction) => {
     let rowNums = getRowNums(fields);
     let playIDs = getPlayIDs(fields, rowNums);
 
-    // validation checks on the user submission for PLAY IDs
-    if (playIDs.length > 0 && rowNums.length == playIDs.length) {
-        let formValue = parseSubmission(modalSubmitInteraction, rowNums, playIDs);
-        if (formValue == null) { return; }
-
-        // get the play ID and show that play's details to the user
-        let targetPlayID = playIDs[rowNums.findIndex((num) => num == formValue)];
-        showPlay(modalSubmitInteraction, targetPlayID);
+    // validation checks for finding and matching row numbers to play IDs on the embed
+    if (rowNums.length == 0 || playIDs.length == 0 || rowNums.length != playIDs.length) {
+        input.reply({
+                content: `Trouble finding play IDs to select from on the embed!\nPlease try again.`, 
+                ephemeral: true
+            });
+        return;
+    }
+    
+    // match form value to a row number
+    let formValue = parseSubmission(modalSubmitInteraction, rowNums, playIDs);
+    if (formValue == null) { return; }
+    let index = rowNums.findIndex((num) => num == formValue);
+    if (index == -1) {
+        input.reply({
+                content: `Could not find that row number on the current page! It might have been changed while selecting one.\nPlease try again.`, 
+                ephemeral: true
+            });
+        return;
     }
 
+    // get the play ID and show that play's details to the user
+    let targetPlayID = playIDs[index];
+    showPlay(modalSubmitInteraction, targetPlayID);
+
     function getPlayIDs(fields) {
+        if (!Array.isArray(fields)) { return []; }
         let playIDs = [];
         for (let i = 0; i < fields.length; i++) {
             let rows = fields[i].value.replaceAll(/>|`/g, '').split('\n');

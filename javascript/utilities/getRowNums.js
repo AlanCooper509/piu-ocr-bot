@@ -3,6 +3,7 @@ module.exports = (fields) => {
      * Expected input:
      *     Discord.Embed fields array
      **/
+    if (!Array.isArray(fields)) { return []; }
     let rowNums = [];
     for (let i = 0; i < fields.length; i++) {
         let name = fields[i].name.replaceAll(/>|`|\s/g, '');
