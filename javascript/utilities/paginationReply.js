@@ -33,6 +33,7 @@ module.exports = (input, embeds) => {
             const collector = message.createMessageComponentCollector({ componentType: Discord.ComponentType.Button, time: params.PAGE_TIMEOUT });
 
             collector.on("collect", async interaction => {
+                /*
                 let originalUserID = '';
                 switch (input.constructor.name) {
                     case c.COMMAND:
@@ -50,6 +51,7 @@ module.exports = (input, embeds) => {
                     });
                     return;
                 }
+                */
                 
                 if (![c.PAGE_PREV_BUTTON_ID, c.PAGE_NEXT_BUTTON_ID].includes(interaction.customId)) {
                     // SELECT button is handled by the events/interactionCreate class
