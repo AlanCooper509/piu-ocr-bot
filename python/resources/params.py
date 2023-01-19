@@ -15,6 +15,7 @@ X_TOL = 0.75
 Y_TOL = 2
 NAME_X_TOL = 5
 GAP_TOL = 1.3
+FUZZY_EDIT_TEMPLATE_TOL = 2
 
 # for alignment and score validation (expected minimum score)
 SCORE_MIN = 10000

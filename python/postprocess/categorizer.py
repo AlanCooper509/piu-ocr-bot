@@ -38,8 +38,15 @@ def categorize_results(confident_results, template):
             template[c.FOOTER] = Textbox(result)
             break
         else:
+            assigned = False
+            for idx, exp_word in enumerate(c.TEMPLATE_WORDS):
+                if editdistance.eval(exp_word, template_entry) <= params.FUZZY_EDIT_TEMPLATE_TOL:
+                    template[exp_word] = Textbox(result)
+                    assigned = True
+                    break
             # uncategorized text
-            other.append(Textbox(result))
+            if not assigned:
+                other.append(Textbox(result))
     
     return (template, digits, other)
 
