@@ -32,7 +32,6 @@ module.exports = (input) => {
             const csv = parser.parse(rows);
             const buffer = Buffer.from(csv, 'utf-8');
             let builder = new Discord.AttachmentBuilder(buffer);
-            console.log(builder.attachment);
             input.reply({ 
                 files: [{
                     attachment: builder.attachment,
