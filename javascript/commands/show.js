@@ -65,5 +65,10 @@ module.exports = {
                             .setMinLength(2)
                             .setMaxLength(5)
                             .setRequired(false))
+                    .addBooleanOption(option =>
+                        option
+                            .setName(c.COMMAND_SHOW_SUBCOMMAND_CHART_ALL_NAME)
+                            .setDescription(c.COMMAND_SHOW_SUBCOMMAND_CHART_ALL_DESC)
+                            .setRequired(false))
         )
 };

@@ -26,6 +26,8 @@ exports.COMMAND_SHOW_SUBCOMMAND_CHART_TITLE_NAME = "chart_name";
 exports.COMMAND_SHOW_SUBCOMMAND_CHART_TITLE_DESC = "the name of the chart to show";
 exports.COMMAND_SHOW_SUBCOMMAND_CHART_DIFF_NAME = "difficulty";
 exports.COMMAND_SHOW_SUBCOMMAND_CHART_DIFF_DESC = "examples: D21, S14, SP8, CO-OP";
+exports.COMMAND_SHOW_SUBCOMMAND_CHART_ALL_NAME = "all_uploads";
+exports.COMMAND_SHOW_SUBCOMMAND_CHART_ALL_DESC = "'True' for this server's users' uploads (across all servers). 'False' for server-specific uploads."
 
 exports.COMMAND_NAME = "name";
 exports.COMMAND_NAME_DESC = "Set your Game ID automatically for future uploads!";
