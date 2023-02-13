@@ -48,7 +48,7 @@ One purpose of utilizing Discord is as an interface for performing CRUD (Create/
 - `/hey` [hey!!](https://i.ytimg.com/vi/YknOygHNv1U/maxresdefault.jpg)
 
 #### Misc. Notes:
-- filtering chart names support partial matching, such as `/show chart chart_name:The Quick Brow...` to pull up "The Quick Brown Fox Jumps Over the Lazy Dog"
+- filtering chart names support partial matching, such as `/show server chart_name:The Quick Brow...` to pull up "The Quick Brown Fox Jumps Over the Lazy Dog"
 - there are implicit message commands implemented that are almost identical to the slash commands listed above
 
 #### Planned:
