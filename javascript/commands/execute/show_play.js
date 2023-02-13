@@ -212,12 +212,12 @@ module.exports = (input, entryID = null) => {
                 },
                 {
                     name: (entry.combo_modified == 1 ? c.EMBED_FIELD_MAX_COMBO + '*' : c.EMBED_FIELD_MAX_COMBO),
-                    value: "```" + entry.max_combo.toString() + "```",
+                    value: "```c++\n" + entry.max_combo.toString() + "```",
                     inline: true
                 },
                 {
                     name: (entry.total_modified == 1 ? c.EMBED_FIELD_TOTAL_SCORE + '*' : c.EMBED_FIELD_TOTAL_SCORE),
-                    value: "```" + entry.total_score.toLocaleString() + "```",
+                    value: "```c++\n" + entry.total_score.toLocaleString() + "```",
                     inline: true
                 }
             ).setFooter({

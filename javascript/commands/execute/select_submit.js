@@ -42,7 +42,7 @@ module.exports = (modalSubmitInteraction) => {
             for (let j = 0; j < rows.length; j++) {
                 let row = rows[j];
                 // THE FOLLOWING ASSUMES SPECIFIC EMBED FIELD FORMATTING
-                if (row.startsWith("Play ID: ")) {
+                if (row.startsWith("Play ID: ") || row.startsWith("// Play ID: ")) {
                     let id = row.split("Play ID: ")[1].replaceAll(/[^0-9]/g, '');
                     playIDs.push(id);
                 }

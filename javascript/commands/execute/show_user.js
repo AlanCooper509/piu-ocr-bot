@@ -128,8 +128,8 @@ module.exports = (input) => {
                 fields.push({
                     name: `>>> ${i+1}. __${chartName}__\t${chartType}${chartDiff}\n` +
                           `${prefix}${suffix} - *${timestamp}*`,
-                    value: ">>> ```" + `TOTAL SCORE: ${rows[i].total_score.toLocaleString(undefined, {year: "2-digit", month: "2-digit", day: "2-digit"})}\n` + 
-                           `Play ID: ${rows[i].id}` +  "```",
+                    value: ">>> ```c++\n" + `Total Score: ${rows[i].total_score.toLocaleString(undefined, {year: "2-digit", month: "2-digit", day: "2-digit"})}\n` + 
+                           `// Play ID: ${rows[i].id}` +  "```",
                     inline: false
                 });
                 i++;
