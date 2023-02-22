@@ -11,7 +11,7 @@ module.exports = {
             option
                 .setName(c.COMMAND_NAME_SUBCOMMAND_USER_ID_NAME)
                 .setDescription(c.COMMAND_NAME_SUBCOMMAND_USER_ID_DESC)
-                .setMinLength(1)
-                .setMaxLength(20)
+                .setMinLength(4)
+                .setMaxLength(8)
                 .setRequired(false))
 };
