@@ -37,6 +37,21 @@ exports.COMMAND_NAME_SUBCOMMAND_USER_ID_DESC = "the IGN of your AM Pass card";
 exports.COMMAND_EXPORT = "export";
 exports.COMMAND_EXPORT_DESC = "Returns all of your saved plays as a downloadable CSV!";
 
+exports.COMMAND_TOURNEY = "tourney";
+exports.COMMAND_TOURNEY_DESC = "View or setup a server-wide tourney on a specific chart!";
+exports.COMMAND_TOURNEY_SUBCOMMAND_CREATE = "create";
+exports.COMMAND_TOURNEY_SUBCOMMAND_CREATE_DESC = "Setup a server-wide tourney on a specific chart!";
+exports.COMMAND_TOURNEY_SUBCOMMAND_VIEW = "view";
+exports.COMMAND_TOURNEY_SUBCOMMAND_VIEW_DESC = "View a server-wide tourney on a specific chart!";
+exports.COMMAND_TOURNEY_SUBCOMMAND_CHART_TITLE_NAME = "chart_name";
+exports.COMMAND_TOURNEY_SUBCOMMAND_CHART_TITLE_DESC = "the name of the chart for competition";
+exports.COMMAND_TOURNEY_SUBCOMMAND_CHART_DIFF_NAME = "difficulty";
+exports.COMMAND_TOURNEY_SUBCOMMAND_CHART_DIFF_DESC = "examples: D21, S14, SP8, CO-OP";
+exports.COMMAND_TOURNEY_SUBCOMMAND_START_NAME = "start_date";
+exports.COMMAND_TOURNEY_SUBCOMMAND_START_DESC = "start of tourney 'yyyy-mm-dd hh:mm:ss'";
+exports.COMMAND_TOURNEY_SUBCOMMAND_END_NAME = "end_date";
+exports.COMMAND_TOURNEY_SUBCOMMAND_END_DESC = "end of tourney 'yyyy-mm-dd hh:mm:ss'";
+
 // Embed field names or keyword strings created using Discord.EmbedBuilder() and accessed whenever updating or reading the embed
 exports.EMBED_FIELD_PLAY_DETAILS = "PLAY DETAILS";
 exports.EMBED_FIELD_MAX_COMBO    = "MAX COMBO";

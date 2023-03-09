@@ -15,6 +15,7 @@ module.exports = (input, optionID) => {
             break;
         case c.MESSAGE:
             let tokens = input.content.split(' ');
+
             // remove the token "type" with the corresponding, adjacent difficulty specifier if present
             if (tokens.includes("type")) {
                 let idx = tokens.indexOf("type");
@@ -23,6 +24,25 @@ module.exports = (input, optionID) => {
                     tokens.splice(idx, 1); // remove one item only
                 }
             }
+
+            // remove the token "startDate" with the corresponding, adjacent difficulty specifier if present
+            if (tokens.includes("startDate")) {
+                let idx = tokens.indexOf("startDate");
+                tokens.splice(idx, 1); // remove one item only
+                if (idx < tokens.length) {
+                    tokens.splice(idx, 1); // remove one item only
+                }
+            }
+
+            // remove the token "endDate" with the corresponding, adjacent difficulty specifier if present
+            if (tokens.includes("endDate")) {
+                let idx = tokens.indexOf("endDate");
+                tokens.splice(idx, 1); // remove one item only
+                if (idx < tokens.length) {
+                    tokens.splice(idx, 1); // remove one item only
+                }
+            }
+
             // get the remaining parts of the message as the chart name
             if (!tokens.includes("chart")) { return; }
             let idx = tokens.indexOf("chart") + 1;
@@ -33,7 +53,7 @@ module.exports = (input, optionID) => {
     
     if (!/^([A-Z|a-z|0-9|_|\s|.]+)$/.test(chartName)) {
         let reply = {
-                content: `An invalid chart name of \`${chartName}\` was found in your "/${c.COMMAND_SHOW}" command!\nPlease try again.`, 
+                content: `An invalid chart name of \`${chartName}\` was found in your command!\nPlease try again.`, 
                 ephemeral: true
             };
         switch (input.constructor.name) {

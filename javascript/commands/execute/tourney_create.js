@@ -1,0 +1,115 @@
+// npm install sqlite3@5.1.4
+
+const sqlite3 = require("sqlite3").verbose();
+require("dotenv").config();
+
+// local imports
+const c = require("../../resources/constants.js");
+const parseChart = require("../../utilities/parseChart.js");
+const parseDiff = require("../../utilities/parseDiff.js");
+const parseDate = require("../../utilities/parseDate.js");
+
+module.exports = (input) => {
+    if (![c.COMMAND, c.MESSAGE].includes(input.constructor.name)) {
+        console.log(`${input.constructor.name}: Object input type not recognized`);
+        return;
+    }
+    
+    let chartName = parseChart(input, c.COMMAND_SHOW_SUBCOMMAND_CHART_TITLE_NAME);
+    if (chartName == null) { return; }
+    let chartDiff = parseDiff(input, c.COMMAND_SHOW_SUBCOMMAND_CHART_DIFF_NAME);
+    let startDate = parseDate(input, c.COMMAND_TOURNEY_SUBCOMMAND_START_NAME, "startDate");
+    if (startDate == null) { return; }
+    let endDate = parseDate(input, c.COMMAND_TOURNEY_SUBCOMMAND_END_NAME, "endDate");
+    if (endDate == null) { return; }
+    
+    let retVal = validateDates(startDate, endDate);
+
+    
+    // 
+    console.log(`chartName: ${chartName}\nchartDiff: type=${chartDiff.type}, diff=${chartDiff.diff}\nstart=${startDate}, end=${endDate}`);
+
+    let runTourneySQLpromise = tourneyPromiseSQL(input, chartName, chartDiff.type, chartDiff.diff, startDate.toISOString(), endDate.toISOString());
+    runTourneySQLpromise.catch((err) => {
+        console.error(err);
+        throw "Error during Play ID lookup request.";
+    }).then(() => {
+        console.log("success");
+    });
+
+    input.reply("hey");
+
+    function validateDates(startDate, endDate) {
+        let retVal = 0;
+        if (Date.parse(startDate) > Date.parse(endDate)) {
+            let reply = {
+                content: "The end date `" + endDate.toLocaleString() + "` must be after the start date `" + startDate.toLocaleString() + "`\nPlease try again.", 
+                ephemeral: true
+            };
+            switch (input.constructor.name) {
+                case c.COMMAND:
+                    input.editReply(reply);
+                    return;
+                case c.MESSAGE:
+                    input.reply(reply);
+                    return;
+            }
+        }
+
+        if (Date.parse(new Date()) > Date.parse(endDate)) {
+            let reply = {
+                content: "The end date `" + endDate.toLocaleString() + "` must be after the current datetime `" + (new Date()).toLocaleString() + "`\nPlease try again.", 
+                ephemeral: true
+            };
+            switch (input.constructor.name) {
+                case c.COMMAND:
+                    input.editReply(reply);
+                    return;
+                case c.MESSAGE:
+                    input.reply(reply);
+                    return;
+            }
+        }
+    }
+
+    function tourneyPromiseSQL(input, chartName, chartType, chartDiff, startISOtime, endISOtime) {
+        return new Promise((resolve, reject) => {
+            const db = new sqlite3.Database(process.env.DB_NAME, (err) => {
+                if (err) {
+                    console.error(err.message);
+                    reject(err);
+                }
+                console.log(`${c.DEBUG_QUERY}: Connected to the database.`);
+            });
+
+            let fields = ["id", "server_id", "chart_name", "chart_type", "chart_diff", "time_start", "time_end"];
+            let sql = 
+                `INSERT INTO ${process.env.DB_TOURNEY_TABLE} (${fields.join(', ')})
+                    VALUES (
+                        ${input.id},
+                        ${input.guild.id},
+                        "${chartName}",
+                        ${chartType != null ? '"' + chartType + '"' : NULL},
+                        ${chartDiff != null ? chartDiff : NULL},
+                        "${startISOtime}",
+                        "${endISOtime}"
+                    );`;
+            db.run(sql, (err) => {
+                if (err) {
+                    console.log(err);
+                    reject(err);
+                }
+                console.log(`${c.DEBUG_QUERY}: INSERT query was successful.`);
+                resolve();
+            });
+
+            db.close((err) => {
+                if (err) {
+                    console.error(err.message);
+                    reject(err);
+                }
+                console.log(`${c.DEBUG_QUERY}: Closed the database connection.`);
+            });
+        });
+    }
+}

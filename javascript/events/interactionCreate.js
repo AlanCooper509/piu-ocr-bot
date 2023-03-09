@@ -7,6 +7,7 @@ const c = require("../resources/constants.js");
 const read_execute = require("../commands/execute/read_execute.js");
 const show_execute = require("../commands/execute/show_execute.js");
 const name_execute = require("../commands/execute/name_execute.js");
+const tourney_execute = require("../commands/execute/tourney_execute.js");
 const export_execute = require("../commands/execute/export_execute.js");
 const hey_execute = require("../commands/execute/hey_execute.js");
 const edit_scores_modal = require("../commands/execute/edit_scores_modal.js");
@@ -39,6 +40,10 @@ module.exports = (client, interaction) => {
             case c.COMMAND_NAME:
                 console.log(`${c.DEBUG_INPUT}: user ${interaction.user.id} input a /${c.COMMAND_NAME} COMMAND`);
                 name_execute(interaction);
+                break;
+            case c.COMMAND_TOURNEY:
+                console.log(`${c.DEBUG_INPUT}: user ${interaction.user.id} input a /${c.COMMAND_TOURNEY} COMMAND`);
+                tourney_execute(interaction);
                 break;
             case c.COMMAND_EXPORT:
                 console.log(`${c.DEBUG_INPUT}: user ${interaction.user.id} input a /${c.COMMAND_EXPORT} COMMAND`);
