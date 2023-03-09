@@ -34,7 +34,7 @@ module.exports = (input, optionID) => {
     // tests for S/SP/D/DP together with difficulty (00-29) or variations on co-op/coop.
     if (!/^(S|s|SP|sp|D|d|DP|dp)\d\d?$|^(C|c)(O|o)-?(O|o)(P|p)$/.test(diff)) {
         let reply = {
-                content: `An invalid chart difficulty of \`${diff}\` was found in your "/${c.COMMAND_SHOW} submission!\nPlease try again.`, 
+                content: `An invalid chart difficulty of \`${diff}\` was found in your command!\nPlease try again.`, 
                 ephemeral: true
             };
         switch (input.constructor.name) {
