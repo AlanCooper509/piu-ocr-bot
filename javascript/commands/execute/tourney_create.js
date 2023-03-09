@@ -24,23 +24,20 @@ module.exports = (input) => {
     if (endDate == null) { return; }
     
     let retVal = validateDates(startDate, endDate);
-
+    if (retVal == null) { return; }
     
-    // 
-    console.log(`chartName: ${chartName}\nchartDiff: type=${chartDiff.type}, diff=${chartDiff.diff}\nstart=${startDate}, end=${endDate}`);
-
     let runTourneySQLpromise = tourneyPromiseSQL(input, chartName, chartDiff.type, chartDiff.diff, startDate.toISOString(), endDate.toISOString());
     runTourneySQLpromise.catch((err) => {
         console.error(err);
-        throw "Error during Play ID lookup request.";
-    }).then(() => {
-        console.log("success");
+        throw "Error during tourney creation.";
+    }).then((tourney_id) => {
+        console.log(`success: ${tourney_id}`);
     });
-
+    
     input.reply("hey");
-
+    
     function validateDates(startDate, endDate) {
-        let retVal = 0;
+        let retVal = true;
         if (Date.parse(startDate) > Date.parse(endDate)) {
             let reply = {
                 content: "The end date `" + endDate.toLocaleString() + "` must be after the start date `" + startDate.toLocaleString() + "`\nPlease try again.", 
@@ -70,6 +67,7 @@ module.exports = (input) => {
                     return;
             }
         }
+        return retVal;
     }
 
     function tourneyPromiseSQL(input, chartName, chartType, chartDiff, startISOtime, endISOtime) {
@@ -100,7 +98,7 @@ module.exports = (input) => {
                     reject(err);
                 }
                 console.log(`${c.DEBUG_QUERY}: INSERT query was successful.`);
-                resolve();
+                resolve(input.id);
             });
 
             db.close((err) => {
