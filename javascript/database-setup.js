@@ -48,6 +48,17 @@ const sql_users =
         status           TEXT,
         last_active      TEXT);`;
 
+const sql_tourneys =
+    `CREATE TABLE IF NOT EXISTS ${process.env.DB_TOURNEY_TABLE} (
+        id         INTEGER PRIMARY KEY,
+        server_id  NUMERIC NOT NULL,
+        chart_name TEXT    NOT NULL,
+        chart_type TEXT,
+        chart_diff INTEGER CHECK (chart_diff >= -1),
+        time_start TEXT    NOT NULL,
+        time_end   TEXT    NOT NULL);`;
+
+
 const db = new sqlite3.Database(process.env.DB_NAME, (err) => {
     if (err) {
         console.error(err.message);
@@ -64,6 +75,13 @@ db.serialize(() => {
             console.log("CREATE TABLE COMPLETE");
         }
     }).run(sql_users, (err) => {
+        if (err) {
+            console.log(err);
+            throw err;
+        } else {
+            console.log("CREATE TABLE COMPLETE");
+        }
+    }).run(sql_tourneys, (err) => {
         if (err) {
             console.log(err);
             throw err;

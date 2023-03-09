@@ -9,6 +9,6 @@
     "start": "node bot.js",
     "dev": "nodemon bot.js",
     "register": "node deploy-commands.js",
-    "resetdb": "node database-reset.js"
+    "setupdb": "node database-setup.js"
   }
 }
