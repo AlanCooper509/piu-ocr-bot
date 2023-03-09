@@ -5,6 +5,7 @@ require("dotenv").config();
 
 // local imports
 const c = require("../../resources/constants.js");
+const condenseChartType = require("../../utilities/condenseChartType.js");
 const parseChart = require("../../utilities/parseChart.js");
 const parseDiff = require("../../utilities/parseDiff.js");
 const parseDate = require("../../utilities/parseDate.js");
@@ -31,10 +32,8 @@ module.exports = (input) => {
         console.error(err);
         throw "Error during tourney creation.";
     }).then((tourney_id) => {
-        console.log(`success: ${tourney_id}`);
+        tourneyDiscordReply(input, tourney_id, chartName);
     });
-    
-    input.reply("hey");
     
     function validateDates(startDate, endDate) {
         let retVal = true;
@@ -109,5 +108,19 @@ module.exports = (input) => {
                 console.log(`${c.DEBUG_QUERY}: Closed the database connection.`);
             });
         });
+    }
+
+    function tourneyDiscordReply(input, tourney_id, chartName) {
+        let reply = {
+            content: "🏆 A new tournament 🏆\n" + `> **${tourney_id}**\n\n` + "...has been created for the chart `" + `${chartName} ${condenseChartType(chartDiff.type)}${chartDiff.diff}` + '`'
+        };
+        switch (input.constructor.name) {
+            case c.COMMAND:
+                input.editReply(reply);
+                return;
+            case c.MESSAGE:
+                input.reply(reply);
+                return;
+        }
     }
 }

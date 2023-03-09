@@ -43,7 +43,9 @@ module.exports = (client, interaction) => {
                 break;
             case c.COMMAND_TOURNEY:
                 console.log(`${c.DEBUG_INPUT}: user ${interaction.user.id} input a /${c.COMMAND_TOURNEY} COMMAND`);
-                tourney_execute(interaction);
+                interaction.deferReply().then(() => {
+                    tourney_execute(interaction);
+                });
                 break;
             case c.COMMAND_EXPORT:
                 console.log(`${c.DEBUG_INPUT}: user ${interaction.user.id} input a /${c.COMMAND_EXPORT} COMMAND`);
