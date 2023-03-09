@@ -14,5 +14,14 @@ module.exports = (input) => {
     let chartDiff = parseDiff(input, c.COMMAND_SHOW_SUBCOMMAND_CHART_DIFF_NAME);
     
     console.log(`chartName: ${chartName}\nchartDiff: type=${chartDiff.type}, diff=${chartDiff.diff}`);
-    input.reply("hey");
+
+    let reply = "hey";
+    switch (input.constructor.name) {
+        case c.COMMAND:
+            input.editReply(reply);
+            return;
+        case c.MESSAGE:
+            input.reply(reply);
+            return;
+    }
 }
