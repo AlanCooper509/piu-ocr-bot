@@ -9,6 +9,8 @@ require("dotenv").config();
 // local imports
 const c = require("../../resources/constants.js");
 const params = require("../../resources/params.js");
+const parseDiscordId = require("../../utilities/discordId/parse.js");
+const validateDiscordId = require("../../utilities/discordId/validate.js");
 const formatPlayDetails = require("../../utilities/embedPlayDetailsFormatter.js");
 const formatScores = require("../../utilities/embedJudgementFormatter.js");
 const formatDescription = require("../../utilities/embedFormatDescription.js");
@@ -18,10 +20,10 @@ const updateEmbed = require("../../utilities/embedCopier.js");
 
 module.exports = (input, entryID = null) => {
     if (!entryID) { 
-        entryID = playParseInput(input);
+        entryID = parseDiscordId(input, c.COMMAND_SHOW_SUBCOMMAND_PLAY_ID_NAME);
     };
 
-    entryID = playValidateID(entryID);
+    entryID = validateDiscordId(input, entryID, true);
     if (entryID == null || entryID == '') { return; }
     
     let runPlaySQLpromise = playPromiseSQL(entryID);
@@ -49,63 +51,6 @@ module.exports = (input, entryID = null) => {
         }
     });
     
-    function playParseInput(input) {
-        if (![c.COMMAND, c.MESSAGE].includes(input.constructor.name)) {
-            console.log(`${input.constructor.name}: Object input type not recognized`);
-            return;
-        }
-        
-        let playID = '';
-        switch (input.constructor.name) {
-            case c.COMMAND:
-                playID = input.options.getString(c.COMMAND_SHOW_SUBCOMMAND_PLAY_ID_NAME);
-                break;
-            case c.MESSAGE:
-                if (input.content.split(' ').length < 2) {
-                    return;
-                };
-                playID = input.content.split(' ')[2];
-                break;
-        }
-        return playID;
-    }
-
-    function playValidateID(playID) {
-        if (!/^\d+$/.test(playID)) {
-            let reply = {
-                content: "The Play ID should be numbers only!",
-                ephemeral: true
-            }
-            switch (input.constructor.name) {
-                case c.COMMAND:
-                    input.editReply(reply);
-                    break;
-                case c.MESSAGE:
-                    input.reply(reply);
-                    break;
-            }
-            return;
-        }
-        
-        if (playID.length < 17 || playID.length > 19) {
-            let reply = {
-                content: "The Play ID should be between 17 to 19 numbers!",
-                ephemeral: true
-            }
-            switch (input.constructor.name) {
-                case c.COMMAND:
-                    input.editReply(reply);
-                    break;
-                case c.MESSAGE:
-                    input.reply(reply);
-                    break;
-            }
-            return;
-        }
-        
-        return playID;
-    }
-
     function playPromiseSQL(entryID) {
         return new Promise((resolve, reject) => {
             const db = new sqlite3.Database(process.env.DB_NAME, (err) => {

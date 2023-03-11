@@ -1,4 +1,5 @@
 // npm install sqlite3@5.1.4
+// npm install dotenv@16.0.3
 
 const sqlite3 = require("sqlite3").verbose();
 require("dotenv").config();
