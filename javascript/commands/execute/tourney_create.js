@@ -17,17 +17,16 @@ module.exports = (input) => {
         return;
     }
     
-    let chartName = parseChart(input, c.COMMAND_SHOW_SUBCOMMAND_CHART_TITLE_NAME);
+    let chartName = parseChart(input, c.COMMAND_TOURNEY_SUBCOMMAND_CREATE_CHART_TITLE_NAME);
+        console.log(c.COMMAND_TOURNEY_SUBCOMMAND_CREATE_CHART_TITLE_NAME);
     if (chartName == null) { return; }
-    let chartDiff = parseDiff(input, c.COMMAND_SHOW_SUBCOMMAND_CHART_DIFF_NAME);
-    let startDate = parseDate(input, c.COMMAND_TOURNEY_SUBCOMMAND_START_NAME, "startDate");
+    let chartDiff = parseDiff(input, c.COMMAND_TOURNEY_SUBCOMMAND_CREATE_CHART_DIFF_NAME);
+    let startDate = parseDate(input, c.COMMAND_TOURNEY_SUBCOMMAND_CREATE_START_NAME, "startDate");
     if (startDate == null) { return; }
-    let endDate = parseDate(input, c.COMMAND_TOURNEY_SUBCOMMAND_END_NAME, "endDate");
+    let endDate = parseDate(input, c.COMMAND_TOURNEY_SUBCOMMAND_CREATE_END_NAME, "endDate");
     if (endDate == null) { return; }
-    
     let retVal = validateDates(startDate, endDate);
     if (retVal == null) { return; }
-    
     let runTourneySQLpromise = tourneyPromiseSQL(input, chartName, chartDiff.type, chartDiff.diff, startDate.toISOString(), endDate.toISOString());
     runTourneySQLpromise.catch((err) => {
         console.error(err);

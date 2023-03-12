@@ -24,6 +24,9 @@ module.exports = (input, embeds) => {
             case c.MESSAGE:
                 embedPromise = input.reply({ embeds: [embeds[0]], components: [buttons], fetchReply: true });
                 break;
+            case c.SUBMIT:
+                embedPromise = input.reply({ embeds: [embeds[0]], components: [buttons], fetchReply: true });
+                break;
             default:
                 return;
         }
@@ -41,6 +44,9 @@ module.exports = (input, embeds) => {
                         break;
                     case c.MESSAGE:
                         originalUserID = input.author.id;
+                        break;
+                    case c.SUBMIT:
+                        originalUserID = input.user.id;
                         break;
                 }
 

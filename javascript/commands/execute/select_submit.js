@@ -2,17 +2,19 @@
 const c = require("../../resources/constants.js");
 const getRowNums = require("../../utilities/getRowNums.js");
 const showPlay = require("./show_play.js");
+const tourneyView = require("./tourney_view.js");
 
 module.exports = (modalSubmitInteraction) => {
     // parse embed prior to submission for upcoming validation checks
     let fields = modalSubmitInteraction.message.embeds[0].fields;
     let rowNums = getRowNums(fields);
-    let playIDs = getPlayIDs(fields, rowNums);
+    let playIDs = getIDs(fields, "Play");
+    let tourneyIDs = getIDs(fields, "T.");
 
     // validation checks for finding and matching row numbers to play IDs on the embed
-    if (rowNums.length == 0 || playIDs.length == 0 || rowNums.length != playIDs.length) {
-        input.reply({
-                content: `Trouble finding play IDs to select from on the embed!\nPlease try again.`, 
+    if (rowNums.length == 0) {
+        modalSubmitInteraction.reply({
+                content: `Trouble finding IDs to select from on the embed!\nPlease try again.`, 
                 ephemeral: true
             });
         return;
@@ -23,7 +25,7 @@ module.exports = (modalSubmitInteraction) => {
     if (formValue == null) { return; }
     let index = rowNums.findIndex((num) => num == formValue);
     if (index == -1) {
-        input.reply({
+        modalSubmitInteraction.reply({
                 content: `Could not find that row number on the current page! It might have been changed while selecting one.\nPlease try again.`, 
                 ephemeral: true
             });
@@ -31,10 +33,17 @@ module.exports = (modalSubmitInteraction) => {
     }
 
     // get the play ID and show that play's details to the user
-    let targetPlayID = playIDs[index];
-    showPlay(modalSubmitInteraction, targetPlayID);
+    if (playIDs.length == rowNums.length) {
+        let targetPlayID = playIDs[index];
+        showPlay(modalSubmitInteraction, targetPlayID);
+    }
+    
+    if (tourneyIDs.length == rowNums.length) {
+        let targetTourneyID = tourneyIDs[index];
+        tourneyView(modalSubmitInteraction, false, targetTourneyID);
+    }
 
-    function getPlayIDs(fields) {
+    function getIDs(fields, idType) {
         if (!Array.isArray(fields)) { return []; }
         let playIDs = [];
         for (let i = 0; i < fields.length; i++) {
@@ -42,8 +51,8 @@ module.exports = (modalSubmitInteraction) => {
             for (let j = 0; j < rows.length; j++) {
                 let row = rows[j];
                 // THE FOLLOWING ASSUMES SPECIFIC EMBED FIELD FORMATTING
-                if (row.startsWith("Play ID: ") || row.startsWith("// Play ID: ")) {
-                    let id = row.split("Play ID: ")[1].replaceAll(/[^0-9]/g, '');
+                if (row.startsWith(`${idType} ID: `) || row.startsWith(`${idType} ID: `)) {
+                    let id = row.split(`${idType} ID: `)[1].replaceAll(/[^0-9]/g, '');
                     playIDs.push(id);
                 }
             }

@@ -15,7 +15,7 @@ module.exports = (interaction) => {
     if (rowNums.length > 0) {
         const modal = new Discord.ModalBuilder()
             .setCustomId(c.DEV_MODAL_SELECT_ID)
-            .setTitle(`Get Play Details for a Row`);
+            .setTitle(`Get Details for a Row`);
 
         // Create the action rows which are 1:1 containers of the text input components
         let textField = new Discord.ActionRowBuilder().addComponents(

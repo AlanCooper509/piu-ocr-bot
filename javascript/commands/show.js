@@ -83,4 +83,14 @@ module.exports = {
                             .setMaxLength(19)
                             .setRequired(true))
         )
+        .addSubcommand(subcommand =>
+                subcommand
+                    .setName(c.COMMAND_SHOW_SUBCOMMAND_TOURNEYS)
+                    .setDescription(c.COMMAND_SHOW_SUBCOMMAND_TOURNEYS_DESC)
+                    .addBooleanOption(option =>
+                            option
+                                .setName(c.COMMAND_SHOW_SUBCOMMAND_TOURNEYS_ACTIVE_ONLY_NAME)
+                                .setDescription(c.COMMAND_SHOW_SUBCOMMAND_TOURNEYS_ACTIVE_ONLY_DESC)
+                                .setRequired(false))
+        )
 };

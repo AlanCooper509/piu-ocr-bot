@@ -4,6 +4,7 @@ const showPlay = require("./show_play.js");
 const showUser = require("./show_user.js");
 const showChart = require("./show_chart.js");
 const tourneyView = require("./tourney_view.js");
+const tourneyAll = require("./tourney_all.js");
 
 module.exports = (input) => {
     let subcommand = '';
@@ -27,7 +28,10 @@ module.exports = (input) => {
             showChart(input);
             break;
         case c.COMMAND_SHOW_SUBCOMMAND_TOURNEY:
-            tourneyView(input);
+            tourneyView(input, false);
+            break;
+        case c.COMMAND_SHOW_SUBCOMMAND_TOURNEYS:
+            tourneyAll(input, false);
             break;
         default:
             console.log(`subcommand ${subcommand} is not found registered`);

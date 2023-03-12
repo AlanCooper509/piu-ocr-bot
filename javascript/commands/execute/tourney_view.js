@@ -19,12 +19,13 @@ const sendEmbeds = require("../../utilities/paginationReply.js");
 // class variables
 const arrow_url = "https://raw.githubusercontent.com/AlanCooper509/piu-ocr-bot/master/javascript/resources/icons/arrow7.png";
 
-module.exports = (input) => {
+module.exports = (input, tourneyCommand, inputID = null) => {
     if (![c.COMMAND, c.MESSAGE, c.SUBMIT].includes(input.constructor.name)) {
         console.log(`${input.constructor.name}: Object input type not recognized`);
         return;
     }
-    let tourneyID = parseDiscordId(input, c.COMMAND_TOURNEY_SUBCOMMAND_VIEW_ID_NAME);
+    
+    let tourneyID = inputID ? inputID : parseDiscordId(input, tourneyCommand ? c.COMMAND_TOURNEY_SUBCOMMAND_VIEW_ID_NAME : c.COMMAND_SHOW_SUBCOMMAND_TOURNEY_ID_NAME);
     tourneyID = validateDiscordId(input, tourneyID, true);
     if (tourneyID == null || tourneyID == '') { return; }
 
@@ -151,12 +152,14 @@ module.exports = (input) => {
                     inline: false
                 })
                 .setDescription(description);
-            
             switch (input.constructor.name) {
                 case c.COMMAND:
                     input.editReply({ embeds: [nextEmbed] });
                     break;
                 case c.MESSAGE:
+                    input.reply({ embeds: [nextEmbed] });
+                    break;
+                case c.SUBMIT:
                     input.reply({ embeds: [nextEmbed] });
                     break;
                 default:
