@@ -28,6 +28,10 @@ exports.COMMAND_SHOW_SUBCOMMAND_CHART_DIFF_NAME = "difficulty";
 exports.COMMAND_SHOW_SUBCOMMAND_CHART_DIFF_DESC = "examples: D21, S14, SP8, CO-OP";
 exports.COMMAND_SHOW_SUBCOMMAND_CHART_ALL_NAME = "all_uploads";
 exports.COMMAND_SHOW_SUBCOMMAND_CHART_ALL_DESC = "'True' for this server's users' uploads (across all servers). 'False' for server-specific uploads."
+exports.COMMAND_SHOW_SUBCOMMAND_TOURNEY = "tourney";
+exports.COMMAND_SHOW_SUBCOMMAND_TOURNEY_DESC = "View a server-wide tourney on a specific chart!";
+exports.COMMAND_SHOW_SUBCOMMAND_TOURNEY_ID_NAME = "tourney_id";
+exports.COMMAND_SHOW_SUBCOMMAND_TOURNEY_ID_DESC = "the tourney id to show";
 
 exports.COMMAND_NAME = "name";
 exports.COMMAND_NAME_DESC = "Set your Game ID automatically for future uploads!";

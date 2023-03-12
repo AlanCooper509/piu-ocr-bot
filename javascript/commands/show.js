@@ -71,4 +71,16 @@ module.exports = {
                             .setDescription(c.COMMAND_SHOW_SUBCOMMAND_CHART_ALL_DESC)
                             .setRequired(false))
         )
+        .addSubcommand(subcommand =>
+                subcommand
+                    .setName(c.COMMAND_SHOW_SUBCOMMAND_TOURNEY)
+                    .setDescription(c.COMMAND_SHOW_SUBCOMMAND_TOURNEY_DESC)
+                    .addStringOption(option =>
+                        option
+                            .setName(c.COMMAND_SHOW_SUBCOMMAND_TOURNEY_ID_NAME)
+                            .setDescription(c.COMMAND_SHOW_SUBCOMMAND_TOURNEY_ID_DESC)
+                            .setMinLength(17)
+                            .setMaxLength(19)
+                            .setRequired(true))
+        )
 };
