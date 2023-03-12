@@ -48,10 +48,18 @@ const sql_users =
         status           TEXT,
         last_active      TEXT);`;
 
+const sql_groups =
+    `CREATE TABLE IF NOT EXISTS ${process.env.DB_GROUPS_TABLE} (
+        id        INTEGER PRIMARY KEY,
+        server_id NUMERIC NOT NULL,
+        name      TEXT    NOT NULL
+    );`;
+
 const sql_tourneys =
     `CREATE TABLE IF NOT EXISTS ${process.env.DB_TOURNEY_TABLE} (
         id         INTEGER PRIMARY KEY,
         server_id  NUMERIC NOT NULL,
+        parent_id  INTEGER REFERENCES TournamentListings (id),
         chart_name TEXT    NOT NULL,
         chart_type TEXT,
         chart_diff INTEGER CHECK (chart_diff >= -1),
@@ -75,6 +83,13 @@ db.serialize(() => {
             console.log("CREATE TABLE COMPLETE");
         }
     }).run(sql_users, (err) => {
+        if (err) {
+            console.log(err);
+            throw err;
+        } else {
+            console.log("CREATE TABLE COMPLETE");
+        }
+    }).run(sql_groups, (err) => {
         if (err) {
             console.log(err);
             throw err;
