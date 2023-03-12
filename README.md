@@ -28,7 +28,7 @@ prints the player's Game ID, Chart Name, PERFECT/GREAT/GOOD/BAD/MISS count, MAX 
 - #### Driver Code:
     - `node bot.js` to startup the bot and setup the listeners
 
-### Currently Supported Commands/Features (as of 02/13/22):
+### Currently Supported Commands/Features (as of 03/11/23):
 
 #### CRUD opterations
 One purpose of utilizing Discord is as an interface for performing CRUD (Create/Read/Update/Delete) operations.
@@ -40,10 +40,14 @@ One purpose of utilizing Discord is as an interface for performing CRUD (Create/
     - user may then SELECT a row number from the paginated results to display details on a specific play, identical to calling `/show play <play_id>`
 - `/show server <chart_name> ((optional) difficulty <chart_type>) ((optional) <boolean:all_uploads>)`: retrieves all of the Discord server's users' plays (optionally of a specific type/difficulty) by highest total score (regardless if difficulty filter is present) and displays them as paginated results in a Discord Embed (READ)
     - user may then SELECT a row number from the paginated results to display details on a specific play, identical to calling `/show play <play_id>`
-    - if `<boolean:all_uploads>` is set to `False`, only the scores uploaded to the specified server are retrieved. 
+    - if `<boolean:all_uploads>` is set to `False`, only the scores uploaded to the specified server are retrieved.
 
 #### Misc. Features:
 - `/name ((optional) <game_id>)`: sets the Discord user's default `<game_id>` (PIU AM Pass IGN) to use when uploading any future score images via `/save <image upload>`. This takes priority over whatever OCR detects upon upload. Not supplying the `<game_id>` removes any default `<game_id>` that may be already set for the user.
+- `/tourney` has several subvariants for creating or viewing a tourney, where a chart is specified with a start and end date for "collecting" submissions automatically: 
+    - `/tourney create <chart_name> <difficulty> <start_date> <end_date>`: sets up a server-wide tourney on a single chart
+    - `/tourney view <tourney_id>` AKA `/show tourney <tourney_id>`: shows a server-wide score leaderboard that matches the tourney filters and displays each user's highest score in the tourney period
+    - `/tourney all ((optional) boolean:active)` AKA `/show tourneys ((optional) boolean:active)`: shows all tourneys in the server. Only shows active tourneys if `active` is true (also enabled by default).
 - `/export`: writes all DB scores uploaded by the Discord user (across all servers) into a (hidden) CSV file that can be downloaded
 - `/hey` [hey!!](https://i.ytimg.com/vi/YknOygHNv1U/maxresdefault.jpg)
 
