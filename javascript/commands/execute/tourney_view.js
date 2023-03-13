@@ -435,7 +435,7 @@ module.exports = (input, tourneyCommand, inputID = null, info = null) => {
         }
         
         // reply to user and setup collector for handling pagination
-        sendEmbeds(input, embeds, component.components[0]);
+        sendEmbeds(input, embeds, false, component.components[0]);
     }
 
     function tourneyLeaderboardDiscordReply(input, rows, groupName, groupID, tourneys) {
@@ -505,6 +505,6 @@ module.exports = (input, tourneyCommand, inputID = null, info = null) => {
         }
         
         // reply to user and setup collector for handling pagination
-        sendEmbeds(input, embeds);
+        sendEmbeds(input, embeds, true);
     }
 }

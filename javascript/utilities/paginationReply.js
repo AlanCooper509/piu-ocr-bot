@@ -7,9 +7,9 @@ const c = require("../resources/constants.js");
 const params = require("../resources/params.js");
 const makePaginationButtons = require("./buttonsToPaginate.js");
 
-module.exports = (input, embeds, additionalComponent = null) => {
+module.exports = (input, embeds, selectDisabled = false, additionalComponent = null) => {
         // Buttons below the embed for triggering edit actions
-        let buttons = makePaginationButtons(embeds.length > 1);
+        let buttons = makePaginationButtons(embeds.length > 1, selectDisabled);
         if (additionalComponent) {
             buttons.addComponents(additionalComponent);
         }
