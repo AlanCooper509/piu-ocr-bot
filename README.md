@@ -28,7 +28,7 @@ prints the player's Game ID, Chart Name, PERFECT/GREAT/GOOD/BAD/MISS count, MAX 
 - #### Driver Code:
     - `node bot.js` to startup the bot and setup the listeners
 
-### Currently Supported Commands/Features (as of 03/11/23):
+### Currently Supported Commands/Features (as of 03/13/23):
 
 #### CRUD opterations
 One purpose of utilizing Discord is as an interface for performing CRUD (Create/Read/Update/Delete) operations.
