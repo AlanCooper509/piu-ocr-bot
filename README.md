@@ -46,8 +46,9 @@ One purpose of utilizing Discord is as an interface for performing CRUD (Create/
 - `/name ((optional) <game_id>)`: sets the Discord user's default `<game_id>` (PIU AM Pass IGN) to use when uploading any future score images via `/save <image upload>`. This takes priority over whatever OCR detects upon upload. Not supplying the `<game_id>` removes any default `<game_id>` that may be already set for the user.
 - `/tourney` has several subvariants for creating or viewing a tourney, where a chart is specified with a start and end date for "collecting" submissions automatically: 
     - `/tourney create <chart_name> <difficulty> <start_date> <end_date>`: sets up a server-wide tourney on a single chart
-    - `/tourney view <tourney_id>` AKA `/show tourney <tourney_id>`: shows a server-wide score leaderboard that matches the tourney filters and displays each user's highest score in the tourney period
-    - `/tourney all ((optional) boolean:active)` AKA `/show tourneys ((optional) boolean:active)`: shows all tourneys in the server. Only shows active tourneys if `active` is true (also enabled by default).
+    - `/tourney group <name>`: creates an empty tourney group for adding in existing single chart tourney ids from within the same server. A button interaction accompanying the reply allows for pulling up a modal for adding tourney ID's to associate with the new group
+    - `/tourney view <tourney_id>` AKA `/show tourney <tourney_id>`: shows a server-wide score leaderboard that matches the tourney or tourney group filters and displays each user's highest score or cumulative highest scores during the tourney period(s).
+    - `/tourney all ((optional) boolean:active)` AKA `/show tourneys ((optional) boolean:active)`: shows all single chart tourneys in the server. Only shows active tourneys if `active` is true (also enabled by default).
 - `/export`: writes all DB scores uploaded by the Discord user (across all servers) into a (hidden) CSV file that can be downloaded
 - `/hey` [hey!!](https://i.ytimg.com/vi/YknOygHNv1U/maxresdefault.jpg)
 
