@@ -249,7 +249,14 @@ module.exports = (input, tourneyCommand, inputID = null, info = null) => {
                 );
             }
             let filter = '(' + tourneyFilters.join(" OR ") + ')';
-            let sql =   `SELECT game_id, SUM(total_score) AS total_score FROM (
+            let sql =   `SELECT 
+                            game_id,
+                            GROUP_CONCAT(total_score) as scores,
+                            GROUP_CONCAT(chart_name) as names,
+                            GROUP_CONCAT(chart_type) as chart_types,
+                            GROUP_CONCAT(chart_diff) as chart_diffs,
+                            SUM(total_score) as total_score
+                         FROM (
                             SELECT *, 
                                 CAST(id as TEXT) as id, 
                                 CAST(discord_id as TEXT) as discord_id, 
@@ -485,7 +492,7 @@ module.exports = (input, tourneyCommand, inputID = null, info = null) => {
                 fields.push({
                     name:  `>>> ${i+1}. __${rows[i].game_id}__` + `\t\t\t\t\t\t\t\t\t\t\t\t${rows[i].total_score.toLocaleString()}`,
                     value: "||```c++\n" +
-                               `.` +  "```||",
+                               `${rows[i].scores}` +  "```||",
                     inline: false
                 });
                 i++;
