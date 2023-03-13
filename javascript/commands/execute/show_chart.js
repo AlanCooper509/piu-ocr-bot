@@ -155,7 +155,7 @@ module.exports = (input) => {
                 let chartDiff = chartType != "CO-OP" ? (rows[i].chart_diff > 0 ? rows[i].chart_diff : c.JSON_NO_VALUE) : '';
                 let timestamp = new Date(rows[i].time_uploaded);
                 let chartName = rows[i].chart_name.length > params.CHART_NAME_MAX_LENGTH ? 
-                                rows[i].chart_name.slice(0, params.CHART_NAME_MAX_LENGTH) + '...' :
+                                rows[i].chart_name.slice(0, params.CHART_NAME_MAX_LENGTH - 3) + '...' :
                                 rows[i].chart_name;
                 let gradeBreak = emojiBreak(rows[i].break_on);
                 let gradeIcon = emojiGrade(rows[i].grade);

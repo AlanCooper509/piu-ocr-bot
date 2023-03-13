@@ -266,7 +266,7 @@ module.exports = (input, tourneyCommand, inputID = null, info = null) => {
             let sql =   `SELECT 
                             game_id,
                             GROUP_CONCAT(total_score) as scores,
-                            GROUP_CONCAT(chart_name) as names,
+                            GROUP_CONCAT(chart_name) as chart_names,
                             GROUP_CONCAT(chart_type) as chart_types,
                             GROUP_CONCAT(chart_diff) as chart_diffs,
                             SUM(total_score) as total_score
@@ -494,19 +494,38 @@ module.exports = (input, tourneyCommand, inputID = null, info = null) => {
         // get charts and ids of tourneys in the tourney group
         let tourneysDetails = [];
         for (let i = 0; i < tourneys.length; i++) {
-            tourneysDetails.push(`- ${tourneys[i].chart_name} ${condenseChartType(tourneys[i].chart_type)}${tourneys[i].chart_diff}\n*(T. ID: ${tourneys[i].id})*\n\n`);
+            tourneysDetails.push(`- ${tourneys[i].chart_name} ${condenseChartType(tourneys[i].chart_type)}${tourneys[i].chart_diff}\n*||T. ID: ${tourneys[i].id}||*\n\n`);
         }
 
         embeds = [];
         // create embeds
         for (let i = 0; i < rows.length;) {
+            // concat fields aliased during the getTourneyGroupLeaderboardSQL() query
+            let scores = rows[i].scores.split(',');
+            let chart_names = rows[i].chart_names.split(',');
+            let chart_types = rows[i].chart_types.split(',');
+            let chart_diffs = rows[i].chart_diffs.split(',');
+            let prefix = "```c++\n";
+            let suffix = "\n```";
+            let bodyRows = [];
+            for (let j = 0; j < scores.length; j++) {
+                let bodyRow = '';
+                bodyRow += parseInt(scores[j]).toLocaleString();
+                bodyRow += "\n\t";
+                bodyRow += chart_names[j].length > params.CHART_NAME_TOURNEY_BODY_MAX_LENGTH ? chart_names[j].slice(0, params.CHART_NAME_TOURNEY_BODY_MAX_LENGTH - 3) + '...' : chart_names[j];
+                bodyRow += ' ';
+                bodyRow += condenseChartType(chart_types[j]);
+                bodyRow += chart_diffs[j];
+                bodyRows.push(bodyRow);
+            }
+            let body = prefix + bodyRows.join('\n') + suffix;
+
             // fill up a single embed (page) at a time with a max of params.PAGE_ROWS entries each
             let fields = [];
             for (let j = 0; i < rows.length && j < params.PAGE_ROWS; j++) {
                 fields.push({
                     name:  `>>> ${i+1}. __${rows[i].game_id}__` + `\t\t\t\t\t\t\t\t\t\t\t\t${rows[i].total_score.toLocaleString()}`,
-                    value: "||```c++\n" +
-                               `${rows[i].scores}` +  "```||",
+                    value: body,
                     inline: false
                 });
                 i++;
