@@ -54,6 +54,20 @@ module.exports = (input, tourneyCommand, inputID = null, info = null) => {
                         tourneyLeaderboardDiscordReply(input, rows, groupName, groupID, tourneys);
                     });
                 }
+            }).catch(error => {
+                console.error(error);
+                let reply = { content: error.toString(), ephemeral: true };
+                switch (input.constructor.name) {
+                    case c.COMMAND:
+                        input.editReply(reply);
+                        return;
+                    case c.MESSAGE:
+                        input.reply(reply);
+                        return;
+                    case c.SUBMIT:
+                        input.reply(reply);
+                        return;
+                }
             });
         } else {
             // Tourney ID found in DB_TOURNEY_TABLE

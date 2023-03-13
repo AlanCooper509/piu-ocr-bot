@@ -8,6 +8,7 @@ require("dotenv").config();
 
 // local imports
 const c = require("../../resources/constants.js");
+const tourneyView = require("./tourney_view.js");
 
 // class variables
 const arrow_url = "https://raw.githubusercontent.com/AlanCooper509/piu-ocr-bot/master/javascript/resources/icons/arrow7.png";
@@ -19,12 +20,35 @@ module.exports = (input) => {
     }
     let name = validateName(input, c.COMMAND_TOURNEY_SUBCOMMAND_GROUP_NICKNAME_NAME);
     
-    let runcreateGroupSQLpromise = createGroupPromiseSQL(input, name);
-    runcreateGroupSQLpromise.catch((err) => {
+    let runcheckGroupSQLpromise = checkGroupPromiseSQL(input, name);
+    runcheckGroupSQLpromise.catch((err) => {
         console.error(err);
-        throw "Error during tourney group creation request.";
-    }).then((rowID) => {
-        discordReply(input, rowID, name);
+        throw "Error during tourney group search.";
+    }).then((row) => {
+        if (row) {
+            tourneyView(input, true, row.id, true);
+        } else {
+            createGroupPromiseSQL(input, name).catch((err) => {
+                console.error(err);
+                throw "Error during tourney group creation request.";
+            }).then((rowID) => {
+                discordReply(input, rowID, name);;
+            }).catch(error => {
+                console.error(error);
+                let reply = { content: error.toString(), ephemeral: true };
+                switch (input.constructor.name) {
+                    case c.COMMAND:
+                        input.editReply(reply);
+                        return;
+                    case c.MESSAGE:
+                        input.reply(reply);
+                        return;
+                    case c.SUBMIT:
+                        input.reply(reply);
+                        return;
+                }
+            });
+        }
     }).catch(error => {
         console.error(error);
         let reply = { content: error.toString(), ephemeral: true };
@@ -72,6 +96,40 @@ module.exports = (input) => {
             }
         }
         return nickname;
+    }
+
+    function checkGroupPromiseSQL(input, name) {
+        return new Promise((resolve, reject) => {
+            const db = new sqlite3.Database(process.env.DB_NAME, (err) => {
+                if (err) {
+                    console.error(err.message);
+                    reject(err);
+                }
+                console.log(`${c.DEBUG_QUERY}: Connected to the database.`);
+            });
+
+            let fields = ["id", "server_id", "name"];
+            let sql = 
+                `SELECT *, CAST(id as TEXT) as id, CAST(server_id as TEXT) as server_id FROM ${process.env.DB_GROUPS_TABLE} 
+                    WHERE server_id = ${input.guild.id}
+                    AND name = "${name}";`;
+            db.get(sql, (err, row) => {
+                if (err) {
+                    console.log(err);
+                    reject(err);
+                }
+                console.log(`${c.DEBUG_QUERY}: SELECT query was successful.`);
+                resolve(row);
+            });
+
+            db.close((err) => {
+                if (err) {
+                    console.error(err.message);
+                    reject(err);
+                }
+                console.log(`${c.DEBUG_QUERY}: Closed the database connection.`);
+            });
+        });
     }
 
     function createGroupPromiseSQL(input, name) {
