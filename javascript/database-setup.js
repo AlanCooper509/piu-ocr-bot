@@ -59,7 +59,7 @@ const sql_tourneys =
     `CREATE TABLE IF NOT EXISTS ${process.env.DB_TOURNEY_TABLE} (
         id         INTEGER PRIMARY KEY,
         server_id  NUMERIC NOT NULL,
-        parent_id  INTEGER REFERENCES TournamentListings (id),
+        parent_id  INTEGER REFERENCES ${process.env.DB_GROUPS_TABLE} (id),
         chart_name TEXT    NOT NULL,
         chart_type TEXT,
         chart_diff INTEGER CHECK (chart_diff >= -1),
