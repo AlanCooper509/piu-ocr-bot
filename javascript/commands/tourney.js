@@ -42,6 +42,18 @@ module.exports = {
         )
         .addSubcommand(subcommand =>
             subcommand
+                .setName(c.COMMAND_TOURNEY_SUBCOMMAND_GROUP)
+                .setDescription(c.COMMAND_TOURNEY_SUBCOMMAND_GROUP_DESC)
+                .addStringOption(option =>
+                    option
+                        .setName(c.COMMAND_TOURNEY_SUBCOMMAND_GROUP_NICKNAME_NAME)
+                        .setDescription(c.COMMAND_TOURNEY_SUBCOMMAND_GROUP_NICKNAME_DESC)
+                        .setMinLength(1)
+                        .setMaxLength(25)
+                        .setRequired(true))
+        )
+        .addSubcommand(subcommand =>
+            subcommand
                 .setName(c.COMMAND_TOURNEY_SUBCOMMAND_VIEW)
                 .setDescription(c.COMMAND_TOURNEY_SUBCOMMAND_VIEW_DESC)
                 .addStringOption(option =>

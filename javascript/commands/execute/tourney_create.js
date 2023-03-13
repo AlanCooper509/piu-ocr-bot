@@ -79,12 +79,13 @@ module.exports = (input) => {
                 console.log(`${c.DEBUG_QUERY}: Connected to the database.`);
             });
 
-            let fields = ["id", "server_id", "chart_name", "chart_type", "chart_diff", "time_start", "time_end"];
+            let fields = ["id", "server_id", "parent_id", "chart_name", "chart_type", "chart_diff", "time_start", "time_end"];
             let sql = 
                 `INSERT INTO ${process.env.DB_TOURNEY_TABLE} (${fields.join(', ')})
                     VALUES (
                         ${input.id},
                         ${input.guild.id},
+                        NULL,
                         "${chartName}",
                         ${chartType != null ? '"' + chartType + '"' : NULL},
                         ${chartDiff != null ? chartDiff : NULL},

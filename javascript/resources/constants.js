@@ -65,6 +65,10 @@ exports.COMMAND_TOURNEY_SUBCOMMAND_ALL = "all";
 exports.COMMAND_TOURNEY_SUBCOMMAND_ALL_DESC = "View all server-wide tourneys!";
 exports.COMMAND_TOURNEY_SUBCOMMAND_ALL_ACTIVE_ONLY_NAME = "active";
 exports.COMMAND_TOURNEY_SUBCOMMAND_ALL_ACTIVE_ONLY_DESC = "Set as true (default) to only show currently active tourneys";
+exports.COMMAND_TOURNEY_SUBCOMMAND_GROUP = "group";
+exports.COMMAND_TOURNEY_SUBCOMMAND_GROUP_DESC = "Group together several server-wide tourneys as one for score tracking!";
+exports.COMMAND_TOURNEY_SUBCOMMAND_GROUP_NICKNAME_NAME = "name";
+exports.COMMAND_TOURNEY_SUBCOMMAND_GROUP_NICKNAME_DESC = "Assign a name for the tourney grouping";
 
 // Embed field names or keyword strings created using Discord.EmbedBuilder() and accessed whenever updating or reading the embed
 exports.EMBED_FIELD_PLAY_DETAILS = "PLAY DETAILS";
@@ -91,6 +95,7 @@ exports.DEV_MODAL_EDIT_COMBO_BUTTON_ID = "editComboButton";
 exports.DEV_MODAL_EDIT_TOTAL_BUTTON_ID = "editTotalButton";
 exports.DEV_MODAL_EDIT_INFO_BUTTON_ID = "editInfoButton";
 exports.DEV_MODAL_EDIT_DELETE_BUTTON_ID = "editDeleteButton";
+exports.DEV_MODAL_ADD_TOURNEYS_BUTTON_ID = "addTourneysButton";
 exports.PAGE_PREV_BUTTON_ID = "paginateLeftButton";
 exports.PAGE_NEXT_BUTTON_ID = "paginateRightButton";
 exports.PAGE_SELECT_BUTTON_ID = "selectRowButton";
@@ -102,6 +107,7 @@ exports.DEV_MODAL_EDIT_TOTAL_ID = "editTotalModal";
 exports.DEV_MODAL_EDIT_INFO_ID = "editInfoModal";
 exports.DEV_MODAL_EDIT_DELETE_ID = "editDeleteModal";
 exports.DEV_MODAL_SELECT_ID = "selectRowModal";
+exports.DEV_MODAL_ADD_TOURNEYS_ID = "addTourneysModal";
 
 // Modals' User-Input Text Field ID's created using Discord.TextInputBuilder() and accessed by interaction.fields.getTextInputValue();
 modalTextPerfectId = "perfectInput";
@@ -109,6 +115,7 @@ modalTextGreatId   = "greatInput";
 modalTextGoodId    = "goodInput";
 modalTextBadId     = "badInput";
 modalTextMissId    = "missInput";
+exports.DEV_MODAL_ADD_TOURNEYS_TEXT_ID    = "tourneyIds";
 exports.DEV_MODAL_EDIT_TOTAL_TEXT_ID      = "totalInput";
 exports.DEV_MODAL_EDIT_COMBO_TEXT_ID      = "comboInput";
 exports.DEV_MODAL_EDIT_GAMEID_TEXT_ID     = "gameId";

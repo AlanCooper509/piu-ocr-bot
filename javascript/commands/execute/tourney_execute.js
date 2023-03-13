@@ -3,6 +3,7 @@ const c = require("../../resources/constants.js");
 const tourneyCreate = require("./tourney_create.js");
 const tourneyView = require("./tourney_view.js");
 const tourneyAll = require("./tourney_all.js");
+const tourneyGroup = require("./tourney_group.js");
 
 module.exports = (input) => {
     let subcommand = '';
@@ -24,6 +25,9 @@ module.exports = (input) => {
             break;
         case c.COMMAND_TOURNEY_SUBCOMMAND_ALL:
             tourneyAll(input, true);
+            break;
+        case c.COMMAND_TOURNEY_SUBCOMMAND_GROUP:
+            tourneyGroup(input);
             break;
         default:
             console.log(`subcommand ${subcommand} is not found registered`);

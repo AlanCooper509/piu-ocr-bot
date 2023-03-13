@@ -20,6 +20,8 @@ const edit_info_modal = require("../commands/execute/edit_info_modal.js");
 const edit_info_submit = require("../commands/execute/edit_info_submit.js");
 const edit_delete_modal = require("../commands/execute/edit_delete_modal.js");
 const edit_delete_submit = require("../commands/execute/edit_delete_submit.js");
+const add_tourneys_modal = require("../commands/execute/add_tourneys_modal.js");
+const add_tourneys_submit = require("../commands/execute/add_tourneys_submit.js");
 const select_modal = require("../commands/execute/select_modal.js");
 const select_submit = require("../commands/execute/select_submit.js");
 
@@ -79,6 +81,9 @@ module.exports = (client, interaction) => {
             case c.DEV_MODAL_EDIT_DELETE_BUTTON_ID:
                 edit_delete_modal(interaction);
                 break;
+            case c.DEV_MODAL_ADD_TOURNEYS_BUTTON_ID:
+                add_tourneys_modal(interaction);
+                break;
             case c.PAGE_PREV_BUTTON_ID:
                 // handled as collector in another file
                 break;
@@ -117,6 +122,9 @@ module.exports = (client, interaction) => {
                 break;
             case c.DEV_MODAL_SELECT_ID:
                 select_submit(interaction);
+                break;
+            case c.DEV_MODAL_ADD_TOURNEYS_ID:
+                add_tourneys_submit(interaction);
                 break;
             default:
                 console.log(`Modal ID not recognized: ${interaction.customId}`)
