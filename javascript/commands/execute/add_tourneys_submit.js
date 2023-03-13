@@ -16,7 +16,7 @@ module.exports = (interaction) => {
     
     let runAddTourneysSQLpromise = addTourneysPromiseSQL(rows, groupID);
     runAddTourneysSQLpromise.then(
-        tourneyView(interaction, true, groupID)
+        tourneyView(interaction, true, groupID, true)
     ).catch((err) => {
         console.error(err);
         interaction.reply({ content: "Error adding tourneys to tourney group.", ephemeral: true});
@@ -44,9 +44,13 @@ module.exports = (interaction) => {
 
     function getGroupID(interaction, idType) {
         let messageRows = interaction.message.content.replaceAll(/>|`/g, '').split('\n');
+        if (interaction.message.embeds.length > 0) {
+            messageRows = interaction.message.embeds[0].description.split('\n');
+        }
         for (let i = 0; i < messageRows.length; i++) {
             // THE FOLLOWING ASSUMES SPECIFIC EMBED FIELD FORMATTING
-            let row = messageRows[i].split('|').join('');
+            // curious why the above replaceAll regex isn't picking up...
+            let row = messageRows[i].split('>').join('').split('|').join('').split('`').join('');
             if (row.startsWith(`${idType} ID: `) || row.startsWith(`${idType} ID: `)) {
                 let id = row.split(`${idType} ID: `)[1].replaceAll(/[^0-9]/g, '');
                 return id;
@@ -73,7 +77,6 @@ module.exports = (interaction) => {
                 `UPDATE ${process.env.DB_TOURNEY_TABLE} SET 
                     parent_id = ${groupID}
                     WHERE id IN (${entries.join(',')});`;
-                    console.log(sql);
             db.run(sql, (err) => {
                 if (err) {
                     console.log(err);

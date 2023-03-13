@@ -86,7 +86,7 @@ module.exports = (input) => {
                         ${input.id},
                         ${input.guild.id},
                         NULL,
-                        "${chartName}",
+                        UPPER("${chartName}"),
                         ${chartType != null ? '"' + chartType + '"' : NULL},
                         ${chartDiff != null ? chartDiff : NULL},
                         "${startISOtime}",

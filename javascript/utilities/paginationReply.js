@@ -7,9 +7,12 @@ const c = require("../resources/constants.js");
 const params = require("../resources/params.js");
 const makePaginationButtons = require("./buttonsToPaginate.js");
 
-module.exports = (input, embeds) => {
+module.exports = (input, embeds, additionalComponent = null) => {
         // Buttons below the embed for triggering edit actions
         let buttons = makePaginationButtons(embeds.length > 1);
+        if (additionalComponent) {
+            buttons.addComponents(additionalComponent);
+        }
 
         // set embed footers to show page numbers
         for (let i = 0; i < embeds.length; i++) {
