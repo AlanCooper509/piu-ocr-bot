@@ -22,8 +22,22 @@ prints the player's Game ID, Chart Name, PERFECT/GREAT/GOOD/BAD/MISS count, MAX 
 ## NodeJS (v16.17.1) with DiscordJS (v14.6.0) and SQLite3(v5.1.4)
 ### Bot Setup
 
+- #### .env file:
+    - You should probably know what this is already if you're setting this up yourself. You'll want these fields:
+        - `BOT_TOKEN`: discord bot token
+        - `CLIENT_ID`: used for deploying slash commands
+        - `GUILD_ID`: name of guild id to deploy commands to
+        - `DB_NAME`: name of your db file
+        - `DB_SCORES_TABLE`: name of scores table in db file
+        - `DB_USERS_TABLE`: name of users table in db file
+        - `DB_TOURNEY_TABLE`: name of tourney table in db file
+        - `DB_GROUPS_TABLE`: name of groups table in db file
+
 - #### Update Slash Commands:
     - `node deploy-commands.js` to quickly register updates to slash commands if needed
+
+- #### db table setup:
+    - `node database-setup.js` to setup a db table. Note this requires fields from the .env file that should be in the same `javascript` level directory as this script
 
 - #### Driver Code:
     - `node bot.js` to startup the bot and setup the listeners
