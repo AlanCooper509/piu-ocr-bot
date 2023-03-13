@@ -58,6 +58,6 @@ One purpose of utilizing Discord is as an interface for performing CRUD (Create/
 
 #### Planned:
 - break on/off support on the OCR side (currently just has emojis to manually toggle a score as break on/off after uploading)
-- "multi-chart" `/tourney` command
+- `/tourney info` command for tourney groups
 - chat name approximate matching in post-processing of OCR (probably from python side)
 - vs mode screenshot support (python side)
