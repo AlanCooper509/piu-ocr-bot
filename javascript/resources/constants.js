@@ -68,7 +68,7 @@ exports.COMMAND_TOURNEY_SUBCOMMAND_ALL_ACTIVE_ONLY_DESC = "Set as true (default)
 exports.COMMAND_TOURNEY_SUBCOMMAND_GROUP = "group";
 exports.COMMAND_TOURNEY_SUBCOMMAND_GROUP_DESC = "Group together several server-wide tourneys as one for score tracking!";
 exports.COMMAND_TOURNEY_SUBCOMMAND_GROUP_NICKNAME_NAME = "name";
-exports.COMMAND_TOURNEY_SUBCOMMAND_GROUP_NICKNAME_DESC = "Assign a name for the tourney grouping, or search for an existing one";
+exports.COMMAND_TOURNEY_SUBCOMMAND_GROUP_NICKNAME_DESC = "Assign a unique name for the tourney grouping, or search for an existing one";
 
 // Embed field names or keyword strings created using Discord.EmbedBuilder() and accessed whenever updating or reading the embed
 exports.EMBED_FIELD_PLAY_DETAILS = "PLAY DETAILS";
