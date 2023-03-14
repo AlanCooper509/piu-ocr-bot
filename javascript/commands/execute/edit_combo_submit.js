@@ -77,7 +77,7 @@ module.exports = (interaction) => {
     function discordReply(interaction, formValue, timestamp) {
         const originalEmbed = interaction.message.embeds[0];
         let updateFieldName = c.EMBED_FIELD_MAX_COMBO;
-        let updateFieldValue = `\`\`\`${formValue.toString()}\`\`\``;
+        let updateFieldValue = "```c++\n" + formValue.toString() + "\n```";
         let embed = updateEmbedField(originalEmbed, updateFieldName, updateFieldValue, timestamp);
 
         interaction.message.edit({ embeds: [embed] });

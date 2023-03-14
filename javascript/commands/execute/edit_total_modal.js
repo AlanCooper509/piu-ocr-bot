@@ -29,13 +29,14 @@ module.exports = (interaction) => {
 
         const messageEmbed = interaction.message.embeds[0];
         const totalField = messageEmbed.fields.find(e => e.name.includes(c.EMBED_FIELD_TOTAL_SCORE));
+        const value = totalField.value.replaceAll(/`/g, '').replaceAll(/(c\+\+)/g, '');
 
         // Create the action rows which are 1:1 containers of the text input components
         let actionRow = new Discord.ActionRowBuilder().addComponents(
             new Discord.TextInputBuilder()
                 .setCustomId(c.DEV_MODAL_EDIT_TOTAL_TEXT_ID)
                 .setLabel("TOTAL SCORE")
-                .setValue(totalField.value.replaceAll(/`/g, ''))
+                .setValue(value)
                 .setStyle(Discord.TextInputStyle.Short)
                 .setMaxLength(20)
                 .setPlaceholder(`Total Score Value`)

@@ -8,6 +8,7 @@ const getEntryID = require("../../utilities/getEntryID.js");
 const sqlGetPlay = require("../../utilities/sqlGetPlay.js");
 
 module.exports = (interaction) => {
+    console.log("HI");
     const entryID = getEntryID(interaction);
     let checkSQLpromise = sqlGetPlay(entryID);
 
@@ -29,13 +30,14 @@ module.exports = (interaction) => {
 
         const messageEmbed = interaction.message.embeds[0];
         const comboField = messageEmbed.fields.find(e => e.name.includes(c.EMBED_FIELD_MAX_COMBO));
+        const value = comboField.value.replaceAll(/`/g, '').replaceAll(/(c\+\+)/g, '');
 
         // Create the action rows which are 1:1 containers of the text input components
         let actionRow = new Discord.ActionRowBuilder().addComponents(
             new Discord.TextInputBuilder()
                 .setCustomId(c.DEV_MODAL_EDIT_COMBO_TEXT_ID)
                 .setLabel("MAX COMBO")
-                .setValue(comboField.value.replaceAll(/`/g, ''))
+                .setValue(value)
                 .setStyle(Discord.TextInputStyle.Short)
                 .setMaxLength(9)
                 .setPlaceholder("Max Combo Value")
