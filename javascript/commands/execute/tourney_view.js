@@ -74,7 +74,7 @@ module.exports = (input, tourneyCommand, inputID = null, info = null) => {
             chartName = row.chart_name;
             chartDetails = {type: row.chart_type, diff: row.chart_diff}
             getTourneyPlaysSQL(row).then((rows) => {
-                tourneyDiscordReply(input, rows, tourneyID, chartName, chartDetails);
+                tourneyDiscordReply(input, rows, row, chartName, chartDetails);
             });
         }
     }).catch(error => {
@@ -302,9 +302,15 @@ module.exports = (input, tourneyCommand, inputID = null, info = null) => {
         });
     }
 
-    function tourneyDiscordReply(input, rows, tourneyID, chartName, chartDetails) {
+    function tourneyDiscordReply(input, rows, tourney, chartName, chartDetails) {
+        console.log(tourney);
         let name = `Tourney Leaderboard`;
-        let description = `**Chart:\n> ${chartName}${chartDetails ? ' ' + condenseChartType(chartDetails.type) + chartDetails.diff : ''}**\n*Tourney ID: #${tourneyID}*`;
+        let description = `**Chart:\n` + 
+                            `> ${chartName}${chartDetails ? ' ' + condenseChartType(chartDetails.type) + chartDetails.diff : ''}**\n` + 
+                          `**Duration:**\n` + 
+                            `${new Date(tourney.time_start).toLocaleDateString()} ${new Date(tourney.time_start).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})} - ` +
+                            `${new Date(tourney.time_end).toLocaleDateString()} ${new Date(tourney.time_end).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}\n` +
+                            `||*Tourney ID: #${tourney.id}*||`;
         if (rows.length == 0) {
             let nextEmbed = new Discord.EmbedBuilder()
                 .setColor(14680086)
@@ -366,7 +372,7 @@ module.exports = (input, tourneyCommand, inputID = null, info = null) => {
                     name: `Tourney Leaderboard`,
                     iconURL: arrow_url
                 })
-                .setDescription(`**Chart(s):\n> ${chartName}${chartDetails ? ' ' + condenseChartType(chartDetails.type) + chartDetails.diff : ''}**\n*Tourney ID: #${tourneyID}*`);
+                .setDescription(description);
             for(let j = 0; j < fields.length; j++) {
                 nextEmbed.addFields(fields[j]);
             }
