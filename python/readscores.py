@@ -50,13 +50,13 @@ def post_process(results, debug=False):
     template[c.GRADE].value = grade.text
     
     # get chart difficulty
-    chart_diff = categorizer.guess_chart_diff(remaining_digits, template)
+    chart_diff = categorizer.guess_chart_diff(remaining_digits, template, debug)
     template[c.DIFFICULTY] = chart_diff
     if chart_diff.text != '':
         template[c.DIFFICULTY].value = int(chart_diff.text)
     
     # get single or double
-    (found_type, type_idx) = categorizer.guess_chart_type(remaining_results, template)
+    (found_type, type_idx) = categorizer.guess_chart_type(remaining_results, template, debug)
     template[c.TYPE] = found_type.copy()
     if found_type.text != '':
         template[c.TYPE].value = c.CHART_TYPES[type_idx]

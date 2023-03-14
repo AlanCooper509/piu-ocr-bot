@@ -272,37 +272,91 @@ def guess_grade(remaining_results, template):
     
     return grade
 
-def guess_chart_diff(remaining_digits, template):
+def guess_chart_diff(remaining_digits, template, debug=False):
+    if debug:
+        frame = f'{os.path.basename(__file__)}:{guess_chart_diff.__name__}()'
+        debugger = Debugger(frame)
+        debugger.start_frame()
+        debugger.write_comment("Remaining Digits")
+        print(f'[DEBUG] \t- remaining_digits: {[r.text for r in remaining_digits]}')
+        debugger.blank_line()
+
     chart_diff = Textbox(entry = None)
     double_digits = []
     for entry in remaining_digits:
         if len(entry.text) == 2:
             double_digits.append(entry)
 
+    if debug:
+        debugger.write_comment("Double Digit Entries (text_field)")
+        print(f'[DEBUG] \t- double_digits.text: {[d.text for d in double_digits]}')
+        debugger.blank_line()
+
     double_filtered = []
-    if template[c.PERFECT].area > 0 and template[c.GRADE].text != '':
-        # should be closer to GRADE than to PERFECT, also should be lower than both
-        for entry in double_digits:
-            x_pos = entry.center[0]
-            y_pos = entry.center[1]
+    for entry in double_digits:
+        x_pos = entry.center[0]
+        y_pos = entry.center[1]
+
+        # should be above the footer text
+        if template[c.FOOTER].area > 0 and y_pos > template[c.FOOTER].center[1]:
+            continue
+
+        if template[c.PERFECT].area > 0 and template[c.GRADE].text != '':
+            # should be horizontally closer to GRADE than to PERFECT, also should be lower than both
             grade_dist_x = abs(x_pos - template[c.GRADE].center[0])
             perf_dist_x = abs(x_pos - template[c.PERFECT].center[0])
             if grade_dist_x > perf_dist_x:
                 continue
             if y_pos < template[c.GRADE].center[1]:
                 continue
-            # should be above the footer text
-            if template[c.FOOTER].area > 0 and y_pos > template[c.FOOTER].center[1]:
-                continue
+            print(f'appending new entry: {entry.text}')
             double_filtered.append(entry)
+
+        if template[c.PERFECT].area > 0 and template[c.MISS].area > 0:
+            # should be vertically closer to MISS than to PERFECT, also should be lower than both
+            miss_dist_y = abs(y_pos - template[c.MISS].center[1])
+            perf_dist_y = abs(y_pos - template[c.MISS].center[1])
+            if miss_dist_y > perf_dist_y:
+                continue
+            if y_pos < template[c.TOTAL_SCORE].center[1]:
+                continue
+
+        if template[c.PERFECT].area > 0 and template[c.TOTAL_SCORE].area > 0:
+            # should be vertically closer to TOTAL_SCORE than to PERFECT, also should be lower than both
+            total_dist_y = abs(y_pos - template[c.TOTAL_SCORE].center[1])
+            perf_dist_y = abs(y_pos - template[c.PERFECT].center[1])
+            if total_dist_y > perf_dist_y:
+                continue
+            if y_pos < template[c.TOTAL_SCORE].center[1]:
+                continue
+
+        double_filtered.append(entry)
+
+    if debug:
+        debugger.write_comment("Filtered Entries (text_field)")
+        print(f'[DEBUG] \t- double_filtered.text: {[d.text for d in double_filtered]}')
+        debugger.blank_line()
 
     # not ideal, but just pick smallest y-value filtered two-digit number result
     if len(double_filtered) > 0:
         chart_diff = double_filtered[0]
     
+    if debug:
+        debugger.write_comment("chosen result (text field)")
+        print(f'[DEBUG] \t- chart_diff.text: {chart_diff.text}')
+        debugger.end_frame()
+
     return chart_diff
 
-def guess_chart_type(remaining_results, template):
+def guess_chart_type(remaining_results, template, debug=False):
+    if debug:
+        frame = f'{os.path.basename(__file__)}:{guess_chart_type.__name__}()'
+        debugger = Debugger(frame)
+        debugger.start_frame()
+        debugger.write_comment("Remaining Results")
+        print(f'[DEBUG] \t- remaining_results: {[r.text for r in remaining_results]}')
+        debugger.blank_line()
+
     found_type = Textbox(entry = None)
     type_idx = -1
 
@@ -343,7 +397,19 @@ def guess_chart_type(remaining_results, template):
         # last index of c.CHART_TYPES should be the custom error text
         not_found = Textbox()
         not_found.text = "UNKNOWN"
+
+        if debug:
+            debugger.write_comment("chosen results (text field)")
+            print(f'[DEBUG] \t- not_found.text: {found_type.text}')
+            debugger.end_frame()
+
         return (not_found, -1)
+
+    if debug:
+        debugger.write_comment("chosen results (text field)")
+        print(f'[DEBUG] \t- found_type.text: {found_type.text}')
+        debugger.end_frame()
+
     return (found_type, type_idx)
 
 def guess_username(textboxes, template, debug=False):
