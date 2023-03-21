@@ -8,7 +8,6 @@ const getEntryID = require("../../utilities/getEntryID.js");
 const sqlGetPlay = require("../../utilities/sqlGetPlay.js");
 
 module.exports = (interaction) => {
-    console.log("HI");
     const entryID = getEntryID(interaction);
     let checkSQLpromise = sqlGetPlay(entryID);
 
