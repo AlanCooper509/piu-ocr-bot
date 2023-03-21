@@ -69,6 +69,9 @@ One purpose of utilizing Discord is as an interface for performing CRUD (Create/
 #### Misc. Notes:
 - filtering chart names support partial matching, such as `/show server chart_name:The Quick Brow...` to pull up "The Quick Brown Fox Jumps Over the Lazy Dog"
 - there are implicit message commands implemented that are almost identical to the slash commands listed above
+- while hosting on Oracle 8 VM, useful setup links:
+    - https://yum.oracle.com/oracle-linux-python.html#InstallFromAppStream "Installing Python on Oracle Linux 8 via AppStream Modules"
+    - https://yum.oracle.com/oracle-linux-nodejs.html "Installing and updating Node.js - Oracle Linux 8"
 
 #### Planned:
 - break on/off support on the OCR side (currently just has emojis to manually toggle a score as break on/off after uploading)
