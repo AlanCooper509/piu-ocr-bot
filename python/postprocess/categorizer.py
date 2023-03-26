@@ -309,7 +309,6 @@ def guess_chart_diff(remaining_digits, template, debug=False):
                 continue
             if y_pos < template[c.GRADE].center[1]:
                 continue
-            print(f'appending new entry: {entry.text}')
             double_filtered.append(entry)
 
         if template[c.PERFECT].area > 0 and template[c.MISS].area > 0:
