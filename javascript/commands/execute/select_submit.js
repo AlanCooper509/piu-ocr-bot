@@ -47,9 +47,11 @@ module.exports = (modalSubmitInteraction) => {
         if (!Array.isArray(fields)) { return []; }
         let playIDs = [];
         for (let i = 0; i < fields.length; i++) {
-            let rows = fields[i].value.replaceAll(/>|`/g, '').split('\n');
+            // remove all: ">", "|", "`", "// "
+            let rows = fields[i].value.replaceAll(/>|\||`|(\/\/ )/g, '').split('\n');
             for (let j = 0; j < rows.length; j++) {
                 let row = rows[j];
+                console.log(row);
                 // THE FOLLOWING ASSUMES SPECIFIC EMBED FIELD FORMATTING
                 if (row.startsWith(`${idType} ID: `) || row.startsWith(`${idType} ID: `)) {
                     let id = row.split(`${idType} ID: `)[1].replaceAll(/[^0-9]/g, '');

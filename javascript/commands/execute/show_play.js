@@ -267,8 +267,11 @@ module.exports = (input, entryID = null) => {
 
         collector.on('end', (collected, reason) => {
             if (reason !== "messageDelete") {
-                message.reactions.cache.get('✅').remove();
-                message.reactions.cache.get('💔').remove();
+                try {
+                    message.reactions.cache.get('✅').remove();
+                    message.reactions.cache.get('💔').remove();
+                } catch (e) {
+                }
             }
         });
     }
