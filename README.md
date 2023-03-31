@@ -72,6 +72,7 @@ One purpose of utilizing Discord is as an interface for performing CRUD (Create/
 - while hosting on Oracle 8 VM, useful setup links:
     - https://yum.oracle.com/oracle-linux-python.html#InstallFromAppStream "Installing Python on Oracle Linux 8 via AppStream Modules"
     - https://yum.oracle.com/oracle-linux-nodejs.html "Installing and updating Node.js - Oracle Linux 8"
+- I had to comment out line 48 of `discord.js/src/client/actions/InteractionCreate.js`, no idea why it decided to stop recognizing `channel.isTextBased()` as a method.
 
 #### Planned:
 - break on/off support on the OCR side (currently just has emojis to manually toggle a score as break on/off after uploading)
