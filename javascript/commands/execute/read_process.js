@@ -43,7 +43,7 @@ module.exports = (input, results, timestamp, attachmentURL, customID = null) => 
 
         // user/chart information
         f_user     = results[c.JSON_TEXT_USER]    != '' ? results[c.JSON_TEXT_USER]  : c.JSON_NO_VALUE;
-        f_chart    = results[c.JSON_TEXT_CHART]   != '' ? results[c.JSON_TEXT_CHART] : c.JSON_NO_VALUE;
+        f_chart    = results[c.JSON_TEXT_CHART]   != '' ? results[c.JSON_TEXT_CHART].replaceAll(/"/g, "'") : c.JSON_NO_VALUE;
         f_type     = results[c.JSON_TEXT_TYPE]    != '' ? results[c.JSON_TEXT_TYPE]  : c.JSON_NO_VALUE;
         f_diff     = results[c.JSON_TEXT_DIFF]    != '' ? results[c.JSON_TEXT_DIFF]  : c.JSON_NO_VALUE;
         f_grade    = results[c.JSON_TEXT_GRADE]   != '' ? results[c.JSON_TEXT_GRADE] : c.JSON_NO_VALUE;
