@@ -3,6 +3,9 @@
 > "write a real readme"<br> 
 > \- *EpikWaffle, 10/18/22*
 
+## Personal Presentation
+[How to (un)Successfully build a Discord OCR Bot](https://docs.google.com/presentation/d/1GfrgZDHOObQxvXbop-QT_AWCXpwNQsjSRB299SYlq3Q/edit#slide=id.g27a9584f817_0_1173)
+
 ## Python (v3.10.7) with EasyOCR (v1.6.2)
 #### Driver Code:
 `readscores.py [<image_url>] ((optional) LOCAL) ((optional) DEBUG)`
